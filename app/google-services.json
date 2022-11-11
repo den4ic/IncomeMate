@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "44390923860",
+    "project_id": "incomemate-588d1",
+    "storage_bucket": "incomemate-588d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44390923860:android:dd98c02afa636536ed37c1",
+        "android_client_info": {
+          "package_name": "com.genesiseternity.incomemate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44390923860-kpj6ppbk3mtbi4v0trr6ddhdracqoano.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.genesiseternity.incomemate",
+            "certificate_hash": "4465d363eec60436c2bb5e9cda60f39bf7fbe9fc"
+          }
+        },
+        {
+          "client_id": "44390923860-rgcdn0lougq5huasvtlrif0spf9eio0b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLJo6EKrGLJfmxDajIdsspOlNxD_Zrk9M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "44390923860-rgcdn0lougq5huasvtlrif0spf9eio0b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/historyAmountCash"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="6dp"
+        android:textSize="20dp"
+        android:text="0"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/historyTitleCategoryName"
+        app:layout_constraintEnd_toEndOf="@+id/historyTitleCategoryName"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/historyTitleCategoryName"
+        app:layout_constraintTop_toTopOf="@+id/historyTitleCategoryName"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/historyIconCategory"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        app:shapeAppearanceOverlay="@style/roundedImageView"/>
+
+    <TextView
+        android:id="@+id/historyTitleCategoryName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="12dp"
+        android:text="Name category"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toTopOf="@+id/historyTitleWalletName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/historyIconCategory"
+        app:layout_constraintTop_toTopOf="@+id/historyIconCategory" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/historyIconWallet"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/historyIconCategory"
+        app:layout_constraintStart_toStartOf="@+id/historyTitleCategoryName"
+        app:layout_constraintTop_toBottomOf="@+id/historyTitleCategoryName"
+        app:layout_constraintVertical_bias="0.0"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/historyTitleWalletName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:text="Name wallet"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/historyIconWallet"
+        app:layout_constraintTop_toBottomOf="@+id/historyTitleCategoryName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

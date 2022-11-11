@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pieChart.PieChartFragmentView">
+
+    <!--
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintHeight_percent="0.4"
+    -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.genesiseternity.incomemate.pieChart.PieChartView
+            android:id="@+id/pieChartView"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:layout_marginTop="230dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textTtitlePieChart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Расходы"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/textExpenses"
+            app:layout_constraintEnd_toEndOf="@+id/textExpenses"
+            app:layout_constraintStart_toStartOf="@+id/textExpenses" />
+
+        <TextView
+            android:id="@+id/textExpenses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pieChartView"
+            app:layout_constraintEnd_toEndOf="@+id/pieChartView"
+            app:layout_constraintStart_toStartOf="@+id/pieChartView"
+            app:layout_constraintTop_toTopOf="@+id/pieChartView" />
+
+        <TextView
+            android:id="@+id/textIncome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/textExpenses"
+            app:layout_constraintStart_toStartOf="@+id/textExpenses"
+            app:layout_constraintTop_toBottomOf="@+id/textExpenses" />
+
+
+        <GridView
+            android:id="@+id/gridViewCategory"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:numColumns="4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pieChartView">
+
+
+            <!--
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/firstCardViewIcon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:checkable="true"
+                android:elevation="8dp"
+                app:cardCornerRadius="8dp"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0"
+                app:layout_rowWeight="1">
+
+            </com.google.android.material.card.MaterialCardView>
+            -->
+
+
+        </GridView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

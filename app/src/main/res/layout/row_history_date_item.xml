@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/historyDateAmountCash"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="0dp"
+        android:text="0"
+        android:textColor="#000000"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/historyDateDayOfWeek"
+        app:layout_constraintEnd_toEndOf="@+id/historyDateDayOfWeek"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/historyDateDayOfWeek"
+        app:layout_constraintTop_toTopOf="@+id/historyDateDayOfWeek"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/historyDateDay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textSize="36dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="01"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/historyDateMonthYear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/historyDateDayOfWeek" />
+
+    <TextView
+        android:id="@+id/historyDateMonthYear"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="январь 1970"
+        android:textSize="18dp"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/historyDateAmountCash"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/historyDateDayOfWeek"
+        app:layout_constraintTop_toBottomOf="@+id/historyDateDayOfWeek" />
+
+    <TextView
+        android:id="@+id/historyDateDayOfWeek"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="6dp"
+        android:text="четверг"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/grey"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/historyDateDay"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

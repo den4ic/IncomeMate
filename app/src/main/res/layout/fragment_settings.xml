@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".settings.SettingsFragment">
+
+
+    <!--
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    -->
+
+    <FrameLayout
+        android:id="@+id/containerSettingsViewOne"
+        android:layout_width="wrap_content"
+        android:layout_height="580dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="141dp">
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_auto_graph_24" />
+
+                <Button
+                    android:id="@+id/button7"
+                    android:layout_width="340dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Премиум-версия"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="141dp">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_currency_exchange_24" />
+
+                <Button
+                    android:id="@+id/BtnMainCurrency"
+                    android:layout_width="340dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Основная валюта: Non"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="141dp">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_calendar_today_24" />
+
+                <Button
+                    android:layout_width="340dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Начало недели"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="141dp">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_calendar_today_24" />
+
+                <Button
+                    android:layout_width="340dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Начало месяца"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/languageImg"
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_language_24" />
+
+                <Button
+                    android:id="@+id/languageBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Язык"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_password_24" />
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Код-пароль"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="52dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_brush_24" />
+
+                <Switch
+                    android:id="@+id/switchTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="16dp"
+                    android:text="Ночной режим"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black"
+                    android:textSize="17sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_file_open_24" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:text="Экспорт в CSV файл"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_shopping_cart_24" />
+
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Восстановить покупки"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_history_edu_24" />
+
+                <Button
+                    android:id="@+id/button5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:text="Политика конфиденциальности"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="52dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_baseline_delete_24" />
+
+                <Button
+                    android:id="@+id/removeAllData"
+                    android:layout_width="340dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Удалить все данные"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+            </TableRow>
+        </TableLayout>
+
+    </FrameLayout>
+
+    <!--
+    <FrameLayout
+        android:id="@+id/containerSettingsViewTwo"
+        android:layout_width="379dp"
+        android:layout_height="407dp"
+        android:layout_below="@+id/containerSettingsViewOne"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp">
+
+    </FrameLayout>
+    -->
+
+</RelativeLayout>

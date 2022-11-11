@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PremiumSubscriptionActivity">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Выберите план подписки"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="premium_gold.json"
+        app:lottie_loop="true" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/lottieAnimationView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/lottieAnimationView"
+        app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="12dp"
+                        android:scaleType="centerCrop"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="credit_card_scanning.json"
+                        app:lottie_loop="true" />
+
+                    <TextView
+                        android:id="@+id/textViewRowSub1"
+                        android:layout_width="270dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Счета\nСоздавайте любое количество категорий, расходов и доходов."
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="12dp"
+                        android:scaleType="centerCrop"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="history.json"
+                        app:lottie_loop="true" />
+
+                    <TextView
+                        android:id="@+id/textViewRowSub2"
+                        android:layout_width="270dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Категории\nСоздавайте любое количество счетов, долгов и целей."
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="12dp"
+                        android:scaleType="centerCrop"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="ad_block.json"
+                        app:lottie_loop="true" />
+
+                    <TextView
+                        android:id="@+id/textViewRowSub3"
+                        android:layout_width="270dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Никакой рекламы\nПользуйтесь всеми возможностями премиум версии."
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="12dp"
+                        android:scaleType="centerCrop"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="data_analysis.json"
+                        app:lottie_loop="true" />
+
+                    <TextView
+                        android:id="@+id/textViewRowSub4"
+                        android:layout_width="270dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Экспорт\nЭкспорт данных в CSV формате."
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/mainMenuBtn"
+        android:layout_width="259dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rectangle"
+        android:text="Премиум"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        app:layout_constraintStart_toStartOf="@+id/scrollView2"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+    <Button
+        android:id="@+id/selectFreeSubPlanBtn"
+        android:layout_width="260dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rectangle"
+        android:text="Продолжить бесплатно"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/mainMenuBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/mainMenuBtn"
+        app:layout_constraintTop_toBottomOf="@+id/mainMenuBtn"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

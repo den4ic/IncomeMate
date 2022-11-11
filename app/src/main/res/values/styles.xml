@@ -1,0 +1,60 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CustomIncomeMate" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <!-- <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>-->
+        <item name="android:statusBarColor">@color/black</item>
+        <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
+    </style>
+
+
+    <style name="Theme.ChoiceColor" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryVariant">@color/green</item>
+        <item name="colorOnPrimary">@color/blue</item>
+        <item name="colorSecondary">@color/yellow</item>
+
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+    </style>
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5dp</item>
+        <item name="color">@color/white</item>
+    </style>
+
+    <style name="roundImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+        <item name="color">@color/white</item>
+    </style>
+
+    <style name="circleImageView" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+</resources>

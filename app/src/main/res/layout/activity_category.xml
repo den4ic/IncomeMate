@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:scrollbars="none"
+    android:layout_height="match_parent">
+    <!-- android:overScrollMode="never" -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".pieChart.CategoryActivity">
+
+        <TextView
+            android:id="@+id/idCategory"
+            android:layout_width="13dp"
+            android:layout_height="19dp"
+            android:layout_marginTop="4dp"
+            android:text="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.012"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextTitleCategory"
+            android:layout_width="340dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Наименование категории"
+            android:text="Новая категория №999"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextAmountCategory"
+            android:layout_width="340dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="15dp"
+            android:inputType="numberDecimal|numberSigned"
+            android:hint="Расход"
+            android:text="999999.99"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="@+id/editTextTitleCategory"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/editTextTitleCategory"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTitleCategory" />
+
+        <TextView
+            android:id="@+id/textViewCurr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Валюта категории"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@+id/editTextAmountCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/editTextAmountCategory"
+            app:layout_constraintTop_toBottomOf="@+id/editTextAmountCategory" />
+
+        <Button
+            android:id="@+id/btnCurrencyCategory"
+            android:layout_width="340dp"
+            android:layout_height="46dp"
+            android:text="Укажите валюту"
+            android:background="@android:color/transparent"
+            android:textColor="@color/black"
+            android:textAlignment="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textViewCurr"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewCurr"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCurr"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textViewIcons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Иконки"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@+id/editTextAmountCategory"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/editTextAmountCategory"
+            app:layout_constraintTop_toBottomOf="@+id/btnCurrencyCategory" />
+
+        <!-- android:numColumns="4" -->
+        <!--
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/gridViewCategoryIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:columnCount="4"
+            app:rowCount="4"
+            app:layout_constraintEnd_toEndOf="@+id/textViewIcons"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewIcons"
+            app:layout_constraintTop_toBottomOf="@+id/textViewIcons">
+        </androidx.gridlayout.widget.GridLayout>
+        -->
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/gridViewCategoryIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="70dp"
+            android:minWidth="70dp"
+            android:layout_marginTop="1dp"
+            app:columnCount="4"
+            app:rowCount="4"
+            app:layout_constraintEnd_toEndOf="@+id/textViewIcons"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewIcons"
+            app:layout_constraintTop_toBottomOf="@+id/textViewIcons">
+
+        </androidx.gridlayout.widget.GridLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addNewColorPickerCategory"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/ic_baseline_add_circle_24"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/gridViewCategoryIcon"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/gridViewCategoryIcon"
+            app:layout_constraintTop_toBottomOf="@+id/gridViewCategoryIcon"
+            app:layout_constraintVertical_bias="0.1">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <RadioGroup
+            android:id="@+id/listColorChangeCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="@+id/addNewColorPickerCategory"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addNewColorPickerCategory"
+            app:layout_constraintTop_toTopOf="@+id/addNewColorPickerCategory"
+            app:layout_constraintHorizontal_bias="0.12"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/red"
+                android:button="@null"
+                android:drawableEnd="@null"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/green"
+                android:drawableEnd="@null"
+                android:button="@null"
+                android:layout_weight="1"/>
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/blue"
+                android:drawableEnd="@null"
+                android:button="@null"
+                android:layout_weight="1"/>
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/purple"
+                android:drawableEnd="@null"
+                android:button="@null"
+                android:layout_weight="1"/>
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/yellow"
+                android:button="@null"
+                android:drawableEnd="@null"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/deleteBtnCategoryData"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_shape_choice_color"
+            android:text="Удалить категорию"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/addNewColorPickerCategory"
+            app:layout_constraintTop_toBottomOf="@+id/addNewColorPickerCategory"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/saveBtnCategoryData"
+            android:layout_width="340dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/btn_shape_choice_color"
+            android:text="Сохранить"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/deleteBtnCategoryData"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/deleteBtnCategoryData"
+            app:layout_constraintTop_toBottomOf="@+id/deleteBtnCategoryData"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

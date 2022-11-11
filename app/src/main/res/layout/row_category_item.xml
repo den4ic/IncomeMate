@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:layout_margin="8dp"
+    android:checkable="true"
+    android:elevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/titleCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title name"
+            android:textSize="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageCategory"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_baseline_bar_chart_24"
+            android:background="@color/green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleCategory"
+            app:shapeAppearanceOverlay="@style/roundedImageView" />
+
+        <TextView
+            android:id="@+id/amountCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="9 999 999"
+            android:textSize="16dp"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageCategory" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

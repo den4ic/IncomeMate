@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">IncomeMate</string>
+    <string name="income_mate">Income Mate</string>
+    <string name="hello_blank_fragment">Blank fragment</string>
+
+    <!--
+    <integer-array name="list_color">
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/yellow</item>
+        <item>@color/purple</item>
+        <item>@color/pink</item>
+        <item>@color/orange</item>
+        <item>@color/grey</item>
+
+        <item>@color/lightGreen</item>
+        <item>@color/lightBlue</item>
+        <item>@color/lightGray</item>
+        <item>@color/lightPurple</item>
+        <item>@color/lightPink</item>
+        <item>@color/lightBrown</item>
+
+        <item>@color/black</item>
+        <item>@color/white</item>
+    </integer-array>
+    -->
+
+    <string-array name="list_currency">
+        <item>Карта</item>
+        <item>Наличные</item>
+        <!-- <item>Добавить счёт</item> -->
+    </string-array>
+
+    <string-array name="list_amount_currency">
+        <item>0</item>
+        <item>0</item>
+        <!-- <item>0</item> -->
+    </string-array>
+
+    <string-array name="calculator">
+        <item>÷</item>
+        <item>×</item>
+        <item>-</item>
+        <item>+</item>
+        <item>,</item>
+        <item>=</item>
+    </string-array>
+
+    <!--  private String[] listСurrencies = { "Российский рубль", "Доллар США", "Евро", "Дирхам ОАЭ", "Китайский юань",
+    "Австралийский доллар", "Британский фунт", "Канадский доллар", "Швейцарский франк", "Японская йена" }; -->
+    <string-array name="list_currencies">
+        <item>Российский рубль</item>
+        <item>Доллар США</item>
+        <item>Евро</item>
+        <item>Дирхам ОАЭ</item>
+        <item>Китайский юань</item>
+        <item>Австралийский доллар</item>
+        <item>Британский фунт</item>
+        <item>Канадский доллар</item>
+        <item>Швейцарский франк</item>
+        <item>Японская йена</item>
+    </string-array>
+
+    <!-- private final String[] currencySymbol = {"₽", "$", "€", "AED", "¥", "$", "£", "$", "₣", "¥"}; -->
+    <string-array name="list_currency_symbol">
+        <item>₽</item>
+        <item>$</item>
+        <item>€</item>
+        <item>AED</item>
+        <item>¥</item>
+        <item>$</item>
+        <item>£</item>
+        <item>$</item>
+        <item>₣</item>
+        <item>¥</item>
+    </string-array>
+
+
+    <string name="hyperlinkPrivacyPolicy">Регистрируясь или подключаясь к вышеуказанным службам, вы соглашаетесь с правилами, установленными <a href="https://127.0.0.1">Пользовательским соглашением</a> и\n<a href="https://127.0.0.1">Политикой конфиденциальности</a></string>
+
+    <string-array name="list_monetary_account">
+        <item>Все счета</item>
+    </string-array>
+
+    <!--
+    private int[] imageCurrencyType = {R.drawable.ic_baseline_bar_chart_24, R.drawable.ic_baseline_pie_chart_24, R.drawable.ic_baseline_account_balance_wallet_24,
+    R.drawable.ic_baseline_history_edu_24, R.drawable.ic_baseline_assured_workload_24, R.drawable.ic_baseline_business_center_24,
+    R.drawable.ic_baseline_calendar_today_24, R.drawable.ic_baseline_celebration_24, R.drawable.ic_baseline_chair_24,
+    R.drawable.ic_baseline_child_friendly_24, R.drawable.ic_baseline_directions_car_24, R.drawable.ic_baseline_home_24 };
+    -->
+
+    <integer-array name="image_currency_type">
+        <item>@drawable/ic_baseline_bar_chart_24</item>
+        <item>@drawable/ic_baseline_pie_chart_24</item>
+        <item>@drawable/ic_baseline_account_balance_wallet_24</item>
+        <item>@drawable/ic_baseline_history_edu_24</item>
+        <item>@drawable/ic_baseline_assured_workload_24</item>
+        <item>@drawable/ic_baseline_business_center_24</item>
+        <item>@drawable/ic_baseline_calendar_today_24</item>
+        <item>@drawable/ic_baseline_celebration_24</item>
+        <item>@drawable/ic_baseline_chair_24</item>
+        <item>@drawable/ic_baseline_child_friendly_24</item>
+        <item>@drawable/ic_baseline_directions_car_24</item>
+        <item>@drawable/ic_baseline_home_24</item>
+    </integer-array>
+
+    <integer-array name="image_category_type">
+        <item>@drawable/ic_baseline_health_and_safety_24</item>
+        <item>@drawable/ic_baseline_restaurant_24</item>
+        <item>@drawable/ic_baseline_local_movies_24</item>
+        <item>@drawable/ic_baseline_commute_24</item>
+        <item>@drawable/ic_baseline_shopping_cart_24</item>
+        <item>@drawable/ic_baseline_fitness_center_24</item>
+        <item>@drawable/ic_baseline_family_restroom_24</item>
+        <item>@drawable/ic_baseline_local_taxi_24</item>
+        <item>@drawable/ic_baseline_local_mall_24</item>
+    </integer-array>
+
+    <string-array name="list_category_pie_chart">
+        <item>Здоровье</item>
+        <item>Кафе</item>
+        <item>Досуг</item>
+        <item>Транспорт</item>
+        <item>Продукты</item>
+        <item>Зал</item>
+        <item>Семья</item>
+        <item>Такси</item>
+        <item>Покупки</item>
+    </string-array>
+
+</resources>
