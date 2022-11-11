@@ -69,6 +69,10 @@ class WalletFragment : DaggerFragment() {
         itemDecorator.setDrawable(ContextCompat.getDrawable(view.context, R.drawable.row_item_divider_cut)!!)
         recyclerView.addItemDecoration(itemDecorator)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of e5a661f (Update WalletFragment.kt)
         walletViewModel.initRecyclerCurrency(
             currencySymbol,
             imageCurrencyType,
