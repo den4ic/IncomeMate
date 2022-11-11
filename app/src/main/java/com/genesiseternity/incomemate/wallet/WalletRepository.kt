@@ -343,9 +343,7 @@ class WalletRepository (
         return currencyCbtModelLiveData
     }
 
-    @Inject
-    lateinit var currencyCbrRepository: dagger.Lazy<CurrencyCbrRepository>
-
+    @Inject lateinit var currencyCbrRepository: dagger.Lazy<CurrencyCbrRepository>
 
     private fun updateAllAmountCurrency()
     {
