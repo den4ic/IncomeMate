@@ -346,6 +346,7 @@ class WalletRepository (
     @Inject
     lateinit var currencyCbrRepository: dagger.Lazy<CurrencyCbrRepository>
 
+
     private fun updateAllAmountCurrency()
     {
         currencyCbrRepository.get().getLastCurrencyDate()
