@@ -11,17 +11,12 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 
-class CurrencyFormat {
+class CurrencyFormat
+{
     private lateinit var suffix: String
     private lateinit var currencySymbol: Array<String>
 
-    fun getSuffix(): String { return suffix }
-    fun setSuffix(selectedCurrency: Int) { this.suffix = " " + currencySymbol[selectedCurrency] }
-    fun getCurrencySymbol(): Array<String> { return currencySymbol }
-
     private lateinit var editTextCurrency: EditText
-    //public EditText getEditTextCurrency() { return editTextCurrency }
-    //public void setEditTextCurrency(EditText editTextCurrency) { this.editTextCurrency = editTextCurrency }
 
     private var previousCleanString: String = ""
     private val MAX_LENGTH: Int = 20
@@ -29,13 +24,16 @@ class CurrencyFormat {
 
     private lateinit var disposableTextChanges: Disposable
 
+    fun getSuffix(): String { return suffix }
+    fun setSuffix(selectedCurrency: Int) { this.suffix = " " + currencySymbol[selectedCurrency] }
+    fun getCurrencySymbol(): Array<String> { return currencySymbol }
+
     fun initFormatCurrencyEditText(editTextCurrency: EditText, currencySymbol: Array<String>, selectedCurrency: Int)
     {
         this.editTextCurrency = editTextCurrency
         this.currencySymbol = currencySymbol
 
         suffix = " " + currencySymbol[selectedCurrency]
-        //editTextCurrency.addTextChangedListener(this)
 
         disposableTextChanges = editTextCurrency.textChanges()
             .map { it.toString() }
@@ -56,18 +54,8 @@ class CurrencyFormat {
     fun initFormatCurrencyEditText(editTextCurrency: EditText)
     {
         this.editTextCurrency = editTextCurrency
-
         suffix = ""
-        //editTextCurrency.addTextChangedListener(this)
     }
-
-    //public void SetFormatFirstInit(int selectedCurrency)
-    //{
-    //    String suffix = "0 " + currencySymbol[selectedCurrency]
-    //    editTextCurrency.removeTextChangedListener(this)
-    //    editTextCurrency.setText(suffix)
-    //    editTextCurrency.addTextChangedListener(this)
-    //}
 
     fun updateSelectedCurrencyType(selectedCurrency: Int)
     {
@@ -76,18 +64,11 @@ class CurrencyFormat {
         setSuffix(selectedCurrency)
         val setTempText: String = getTempText.toString() + getSuffix()
 
-        //editTextCurrency.removeTextChangedListener(this)
         editTextCurrency.setText(setTempText)
-        //editTextCurrency.addTextChangedListener(this)
     }
 
-    //public String SetStringTextFormated(String text, boolean formatIsNegative)
     fun setStringTextFormatted(text: String): String
     {
-        //if (text == "0")
-        //    return text
-
-        //String cleanString = text.replaceAll(formatIsNegative ? "[^\\d.-]" : "[^\\d.]", "")
         val cleanString: String = text.replace("[^\\d.-]".toRegex(), "")
         return if (cleanString.contains(".")) formatDecimalWithoutSuffix(cleanString) else formatIntegerWithoutSuffix(cleanString)
     }
@@ -106,9 +87,7 @@ class CurrencyFormat {
             return
         }
 
-        //String cleanString = str.replace(suffix, "").replaceAll("[,.]", "")
-        //String cleanString = str.replace(suffix, "").replaceAll("[, ]", "")
-        //String cleanString = str.replace(suffix, "").replaceAll("[\\D, ]", "")
+        // [,.] [, ] [\\D, ]
         val cleanString: String = str.replace(suffix, "").replace("[^\\d.-]".toRegex(), "")
 
         if (cleanString.equals(previousCleanString) || cleanString.isEmpty())
@@ -204,7 +183,7 @@ class CurrencyFormat {
         return decimalPattern.toString()
     }
 
-    fun beforeTextChanged()
+    private fun beforeTextChanged()
     {
         editTextCurrency.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
 

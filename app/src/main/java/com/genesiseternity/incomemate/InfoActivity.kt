@@ -9,11 +9,13 @@ import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
-class InfoActivity : AppCompatActivity() {
+class InfoActivity : AppCompatActivity()
+{
     private lateinit var binding: ActivityInfoBinding
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         binding = ActivityInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -30,7 +32,8 @@ class InfoActivity : AppCompatActivity() {
             })
     }
 
-    override fun onDestroy() {
+    override fun onDestroy()
+    {
         compositeDisposable.dispose()
         super.onDestroy()
     }

@@ -24,14 +24,13 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity() {
-
+class MainActivity : DaggerAppCompatActivity()
+{
     private lateinit var binding: ActivityMainBinding
     companion object {
         var defaultCurrencyType: Int = 0
         var isFirstInit: Boolean = false
     }
-    //private static Fragment lastFragmentActivity
 
     @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
 
@@ -48,10 +47,10 @@ class MainActivity : DaggerAppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .subscribe(
                 {
-                    Log.d("MainActivity", " update 111 ")
+                    Log.d("MainActivity", " update 1")
                 },
                 {
-                    Log.d("MainActivity", " update 222 ")
+                    Log.d("MainActivity", " update 2")
                 }
             )
     }
@@ -115,8 +114,6 @@ class MainActivity : DaggerAppCompatActivity() {
             getDefaultCurrencyType()
         )
 
-
-
         currencySettingsDao.get().getAllCurrencySettingsData()
             .filter {
                 if (it.isNotEmpty()) {
@@ -145,11 +142,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 },
                 {
                 })
-
-
     }
-
-
 
     //region StatusBar
     private fun setStatusBarTransparent() {

@@ -20,14 +20,12 @@ import javax.inject.Inject
 class WalletRepository (
     private val application: Application,
     private val currencyDetailsDao: CurrencyDetailsDao,
-    private val currencyFormat: CurrencyFormat
+    private val currencyFormat: CurrencyFormat,
+    private var currencyCbrRepository: CurrencyCbrRepository
     ) {
 
     private val currencyRecyclerModelLiveData: MutableLiveData<ArrayList<CurrencyRecyclerModel>>
-    fun getCurrencyRecyclerModelLiveData(): MutableLiveData<ArrayList<CurrencyRecyclerModel>> = currencyRecyclerModelLiveData
-
     private val notifyItemAdapterLiveData: MutableLiveData<Int>
-    fun getNotifyItemAdapterLiveData(): MutableLiveData<Int> = notifyItemAdapterLiveData
 
     private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel> = ArrayList()
 
@@ -40,17 +38,15 @@ class WalletRepository (
     //@Inject lateinit var currencyConverterCbrApi: CurrencyConverterCbrApi
     private lateinit var cbrCurrencyList: FloatArray
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    fun getCurrencyRecyclerModelLiveData(): MutableLiveData<ArrayList<CurrencyRecyclerModel>> = currencyRecyclerModelLiveData
+    fun getNotifyItemAdapterLiveData(): MutableLiveData<Int> = notifyItemAdapterLiveData
     fun getCompositeDisposable(): CompositeDisposable = compositeDisposable
 
     init {
         currencyRecyclerModelLiveData = MutableLiveData()
         notifyItemAdapterLiveData = MutableLiveData()
     }
-
-    //override fun onCleared() {
-    //    compositeDisposable.dispose()
-    //    super.onCleared()
-    //}
 
     fun initRecyclerCurrency(
         currencySymbol: Array<String>,
@@ -230,26 +226,9 @@ class WalletRepository (
             0))
     }
 
-
-    //private Boolean updateCurrentCurrency(int id, Cursor res)
-    //{
-    //    if (currencyRecyclerModel.get(id).getIdCurrency() == res.getInt(0))
-    //    {
-    //        currencyRecyclerModel.get(id).setTitleCurrencyName(res.getString(1))
-    //        currencyRecyclerModel.get(id).setAmountCurrency(res.getString(2))
-    //        currencyRecyclerModel.get(id).setCurrencyType(res.getInt(3))
-    //        currencyRecyclerModel.get(id).setImgIconCurrency(imageCurrencyType.getResourceId(res.getInt(4), 0))
-    //        currencyRecyclerModel.get(id).setSelectedColorId(res.getInt(5))
-    //        return true
-    //    }
-    //    return false
-    //}
-
     fun onItemClick(pos: Int)
     {
         val insertIndex: Int = currencyRecyclerModel.size-1
-        //Log.d("123", "1 --- " + pos)
-        //Log.d("123", "2 --- " + insertIndex)
 
         if (pos != insertIndex)
         {
@@ -317,6 +296,8 @@ class WalletRepository (
 
     fun getAllAmountCurrency(): String
     {
+        updateAllAmountCurrency()
+
         var amountCurrency: Float = 0.0f
 
         for (i in 0 until currencyRecyclerModel.size-1)
@@ -343,11 +324,12 @@ class WalletRepository (
         return currencyCbtModelLiveData
     }
 
-    @Inject lateinit var currencyCbrRepository: dagger.Lazy<CurrencyCbrRepository>
+    //@Inject lateinit var currencyCbrRepository: dagger.Lazy<CurrencyCbrRepository>
 
     private fun updateAllAmountCurrency()
     {
-        currencyCbrRepository.get().getLastCurrencyDate()
+        //currencyCbrRepository.get().getLastCurrencyDate()
+        currencyCbrRepository.getLastCurrencyDate()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

@@ -4,11 +4,11 @@ import android.util.Log
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 
-class DisposableManager() {
-
-    companion object Dispose {
+class DisposableManager()
+{
+    companion object Dispose
+    {
         //fun create(): DisposableManager = DisposableManager()
-
         private val TAG: String = DisposableManager::class.simpleName.toString()
         private lateinit var compositeDisposable: CompositeDisposable
 
@@ -39,5 +39,4 @@ class DisposableManager() {
             return compositeDisposable
         }
     }
-
 }

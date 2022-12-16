@@ -358,7 +358,7 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
 
     //public PieChartCategoriesEntity initCategoriesEntity(String id, String titleCategory, String amountCategory, int currencyType, int idIcon, int idColorIcon)
-    fun initCategoriesEntity(id: String, amountCategory: String): PieChartCategoriesEntity
+    private fun initCategoriesEntity(id: String, amountCategory: String): PieChartCategoriesEntity
     {
         val currencyDetailsEntity: PieChartCategoriesEntity = PieChartCategoriesEntity(
             id.toInt(),

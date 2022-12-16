@@ -53,11 +53,11 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
         binding = FragmentPieChartViewBinding.inflate(inflater, container, false)
         viewTemp = binding.root
 
-        listCategory = getResources().getStringArray(R.array.list_category_pie_chart)
-        imageCategoryType = getResources().obtainTypedArray(R.array.image_category_type)
-        colorRed = ContextCompat.getColor(viewTemp.getContext(), R.color.red)
-        colorGreen = ContextCompat.getColor(viewTemp.getContext(), R.color.green)
-        defaultCurrencyType = (getActivity() as MainActivity).getDefaultCurrencyType()
+        listCategory = resources.getStringArray(R.array.list_category_pie_chart)
+        imageCategoryType = resources.obtainTypedArray(R.array.image_category_type)
+        colorRed = ContextCompat.getColor(viewTemp.context, R.color.red)
+        colorGreen = ContextCompat.getColor(viewTemp.context, R.color.green)
+        defaultCurrencyType = (activity as MainActivity).getDefaultCurrencyType()
 
 
         val args: Bundle? = arguments

@@ -19,7 +19,8 @@ import javax.inject.Inject
 class WalletViewModel @Inject constructor(
     application: Application,
     currencyDetailsDao: CurrencyDetailsDao,
-    currencyFormat: CurrencyFormat
+    currencyFormat: CurrencyFormat,
+    currencyCbrRepository: CurrencyCbrRepository
     //private val currencyCbrRepository: CurrencyCbrRepository
 ) : ViewModel(), IRecyclerView {
 
@@ -31,7 +32,7 @@ class WalletViewModel @Inject constructor(
     private val notifyItemAdapterLiveData: MutableLiveData<Int>
 
     init {
-        walletRepository = WalletRepository(application, currencyDetailsDao, currencyFormat)
+        walletRepository = WalletRepository(application, currencyDetailsDao, currencyFormat, currencyCbrRepository)
         currencyRecyclerModelLiveData = walletRepository.getCurrencyRecyclerModelLiveData()
         notifyItemAdapterLiveData = walletRepository.getNotifyItemAdapterLiveData()
     }

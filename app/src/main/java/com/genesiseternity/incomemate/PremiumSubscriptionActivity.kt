@@ -9,11 +9,13 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
-class PremiumSubscriptionActivity : AppCompatActivity() {
+class PremiumSubscriptionActivity : AppCompatActivity()
+{
     private lateinit var binding: ActivityPremiumSubscriptionBinding
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         binding = ActivityPremiumSubscriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -38,7 +40,8 @@ class PremiumSubscriptionActivity : AppCompatActivity() {
         compositeDisposable.addAll(disposableMainMenuBtn, disposableSubPlanBtn)
     }
 
-    override fun onDestroy() {
+    override fun onDestroy()
+    {
         compositeDisposable.dispose()
         super.onDestroy()
     }

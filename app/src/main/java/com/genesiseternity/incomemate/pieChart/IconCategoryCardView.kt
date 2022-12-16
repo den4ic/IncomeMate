@@ -43,7 +43,7 @@ class IconCategoryCardView(
     private lateinit var cardView: ArrayList<MaterialCardView>
     private lateinit var selectedCardView: View
 
-    public fun getSelectedCardViewId(): Int
+    fun getSelectedCardViewId(): Int
     {
         return selectedCardViewId
     }

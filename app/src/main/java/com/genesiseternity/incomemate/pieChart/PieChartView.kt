@@ -72,7 +72,7 @@ class PieChartView : View {
         }
     }
 
-    fun hasData(data: FloatArray) : Boolean
+    private fun hasData(data: FloatArray) : Boolean
     {
         for (i in 0 until data.size-1)
         {
