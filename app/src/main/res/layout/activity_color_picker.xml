@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="20dip"
         android:layout_gravity="center"
-        android:text="Яркость палитры"
+        android:text="@string/palette_brightness"
         android:textAlignment="center"
         android:layout_marginTop="15dp"/>
 
@@ -49,7 +49,7 @@
         android:layout_gravity="center"
         android:backgroundTint="@color/purple"
         android:background="@drawable/rectangle"
-        android:text="Выбрать цвет"
+        android:text="@string/choose_color"
         android:textColor="@color/white"
         android:textAlignment="center"
         android:layout_marginBottom="15dp"/>

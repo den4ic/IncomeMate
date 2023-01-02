@@ -40,6 +40,12 @@ class WalletFragment : DaggerFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var textViewTotalCashAccount: TextView
 
+    private lateinit var deletedCurrencyRecyclerModel: CurrencyRecyclerModel
+    private val alertSwipeTitle: String = "Удалить счёт - "
+    private val alertSwipeMessage: String = "Все операции связанные с данным счётом будут безвозвратно удалены.\n\nБаланс других счетов не поменяется."
+    private val alertSwipePositive: String = "Удалить"
+    private val alertSwipeNegative: String = "Отменить"
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,13 +54,7 @@ class WalletFragment : DaggerFragment() {
         binding = FragmentWalletBinding.inflate(inflater, container, false)
         val view: View = binding.root
 
-        val currencySymbol: Array<String> = resources.getStringArray(R.array.list_currency_symbol)
-        val imageCurrencyType: TypedArray = resources.obtainTypedArray(R.array.image_currency_type)
-        val defaultCurrencyType: Int = (activity as MainActivity).getDefaultCurrencyType()
-        val listCurrency: Array<String> = resources.getStringArray(R.array.list_currency)
-        val amountCurrency: Array<String> = resources.getStringArray(R.array.list_amount_currency)
-
-        walletViewModel = ViewModelProvider(this, providerFactory).get(WalletViewModel::class.java)
+        walletViewModel = ViewModelProvider(this, providerFactory)[WalletViewModel::class.java]
 
         recyclerView = binding.recyclerViewList
         textViewTotalCashAccount = binding.textViewTotalCashAccount
@@ -68,14 +68,6 @@ class WalletFragment : DaggerFragment() {
         val itemDecorator = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(view.context, R.drawable.row_item_divider_cut)!!)
         recyclerView.addItemDecoration(itemDecorator)
-
-        walletViewModel.initRecyclerCurrency(
-            currencySymbol,
-            imageCurrencyType,
-            defaultCurrencyType,
-            listCurrency,
-            amountCurrency)
-
 
         walletViewModel.getCurrencyRecyclerModelLiveData().observe(viewLifecycleOwner) { currencyRecyclerModels ->
             adapter.setDataCurrencyRecyclerModel(currencyRecyclerModels)
@@ -163,8 +155,6 @@ class WalletFragment : DaggerFragment() {
             TODO("Not yet implemented")
         }
     }
-
-    private lateinit var deletedCurrencyRecyclerModel: CurrencyRecyclerModel
 
     val simpleSwipeCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         override fun onMove(
@@ -263,13 +253,12 @@ class WalletFragment : DaggerFragment() {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                 //builder.setTitle("Удалить счёт - " + currencyRecyclerModel.get(position).getTitleCurrencyName() + " ?")
                 builder.setTitle(
-                    "Удалить счёт - " + adapter.getCurrencyRecyclerModel()[position].titleCurrencyName + " ?"
+                    alertSwipeTitle + adapter.getCurrencyRecyclerModel()[position].titleCurrencyName + " ?"
                 )
                 builder.setCancelable(true)
+                builder.setMessage(alertSwipeMessage)
 
-                builder.setMessage("Все операции связанные с данным счётом будут безвозвратно удалены.\n\nБаланс других счетов не поменяется.")
-
-                builder.setPositiveButton("Удалить") { dialogInterface, which ->
+                builder.setPositiveButton(alertSwipePositive) { dialogInterface, which ->
                     when (direction) {
                         ItemTouchHelper.LEFT ->
                             currencyDetailsDao.get().deleteCurrentCurrencyData(adapter.getCurrencyRecyclerModel()[position].idCurrency)
@@ -287,7 +276,7 @@ class WalletFragment : DaggerFragment() {
                                             recyclerView,
                                             deletedCurrencyRecyclerModel.titleCurrencyName,
                                             Snackbar.LENGTH_LONG
-                                        ).setAction("Отменить") {
+                                        ).setAction(alertSwipeNegative) {
                                             adapter.addCurrencyRecyclerModelToPos(position, deletedCurrencyRecyclerModel)
 
                                             currencyDetailsDao.get().insertCurrencyData(CurrencyDetailsEntity(
@@ -330,7 +319,7 @@ class WalletFragment : DaggerFragment() {
                     dialogInterface.dismiss()
                 }
 
-                builder.setNegativeButton("Отменить") { dialogInterface, which ->
+                builder.setNegativeButton(alertSwipeNegative) { dialogInterface, which ->
                     adapter.notifyItemChanged(position)
                     //dialogInterface.cancel()
                 }

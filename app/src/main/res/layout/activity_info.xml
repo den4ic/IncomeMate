@@ -26,7 +26,7 @@
         android:layout_below="@+id/textView2"
         android:layout_alignStart="@+id/textView2"
         android:layout_alignEnd="@+id/textView2"
-        android:text="Контролируй расходы и начинай сберегать"
+        android:text="@string/control_expenses_saving"
         android:textAlignment="center"
         android:textColor="#636e72"
         android:textSize="20sp"
@@ -68,7 +68,7 @@
         android:layout_alignStart="@+id/textView"
         android:layout_alignEnd="@+id/textView"
         android:layout_marginTop="116dp"
-        android:text="НАЧАТЬ"
+        android:text="@string/begin"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />

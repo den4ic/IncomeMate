@@ -47,9 +47,7 @@ class CategoryActivity : DaggerAppCompatActivity() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     @Inject lateinit var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>
-
     @Inject lateinit var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>
-
     @Inject lateinit var currencyColorDao: dagger.Lazy<CurrencyColorDao>
 
     //@Inject
@@ -58,6 +56,17 @@ class CategoryActivity : DaggerAppCompatActivity() {
     private var imageCategoryIntent: Int = 0
     private var selectedColorIdIntent: Int = 0
     private var currentIdPage: Int = 0
+
+    private val alertCurrencyTitle: String = "Основная валюта"
+    private val alertCurrencyAccept: String = "Готово"
+    private val alertCurrencyToast: String = "Выбрана валюта: "
+    private val alertCurrencyCancel: String = "Отменить"
+
+    private val alertDeleteTitlePrefix: String = "Удалить категорию - "
+    private val alertDeleteTitleSuffix: String = " ?"
+    private val alertDeleteSetMessage: String = "Все операции связанные с данной категорией будут безвозвратно удалены."
+    private val alertDeleteAccept: String = "Удалить"
+    private val alertDeleteCancel: String = "Отменить"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,14 +80,14 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
         val idCategoryIntent: Int = intent.getIntExtra("idCategory", 0)
         currentIdPage = intent.getIntExtra("idPage", 0)
-        val editTextTitleCategoryIntent: String? = getIntent().getStringExtra("titleCategoryName")
-        val editTextAmountCategoryIntent: String? = getIntent().getStringExtra("amountCategory")
+        val editTextTitleCategoryIntent: String? = intent.getStringExtra("titleCategoryName")
+        val editTextAmountCategoryIntent: String? = intent.getStringExtra("amountCategory")
         //int  = getIntent().getIntExtra("imageCategory", 0)
         //int  = getIntent().getIntExtra("selectedColorId", 0)
 
-        imageCategoryIntent = getIntent().getIntExtra("imageCategory", 0)
-        selectedColorIdIntent = getIntent().getIntExtra("selectedColorId", 0)
-        val defaultCurrencyTypeIntent: Int  = getIntent().getIntExtra("defaultCurrencyType", 0)
+        imageCategoryIntent = intent.getIntExtra("imageCategory", 0)
+        selectedColorIdIntent = intent.getIntExtra("selectedColorId", 0)
+        val defaultCurrencyTypeIntent: Int  = intent.getIntExtra("defaultCurrencyType", 0)
         selectedCurrency = defaultCurrencyTypeIntent
 
 
@@ -141,13 +150,9 @@ class CategoryActivity : DaggerAppCompatActivity() {
     private lateinit var listCurrencies: Array<String>
     private lateinit var btnCurrencyType: Button
 
-    private val alertCurrencyTitle: String = "Основная валюта"
-    private val alertCurrencyAccept: String = "Готово"
-    private val alertCurrencyCancel: String = "Отменить"
-
     private fun choiceCurrencyType()
     {
-        btnCurrencyType.setText(listCurrencies[selectedCurrency])
+        btnCurrencyType.text = listCurrencies[selectedCurrency]
 
         btnCurrencyType.setOnClickListener()
         {
@@ -162,7 +167,7 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
             alertDialogBuilder.setPositiveButton(alertCurrencyAccept) { dialogInterface, i ->
                 btnCurrencyType.setText(listCurrencies[selectedCurrency])
-                Toast.makeText(it.context, "Выбрана валюта: " + listCurrencies[selectedCurrency], Toast.LENGTH_LONG).show()
+                Toast.makeText(it.context, alertCurrencyToast + listCurrencies[selectedCurrency], Toast.LENGTH_LONG).show()
 
                 currencyFormat.get().updateSelectedCurrencyType(selectedCurrency)
 
@@ -179,9 +184,9 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
     private fun initInsertDB()
     {
-        val idCategoryTXT: String = idCategory.getText().toString()
-        val editTextTitleCategoryTXT: String = editTextTitleCategory.getText().toString()
-        val editTextAmountCategoryTXT: String = editTextAmountCategory.getText().toString()
+        val idCategoryTXT: String = idCategory.text.toString()
+        val editTextTitleCategoryTXT: String = editTextTitleCategory.text.toString()
+        val editTextAmountCategoryTXT: String = editTextAmountCategory.text.toString()
 
         val id: Int = Integer.parseInt(idCategoryTXT)
 
@@ -212,6 +217,7 @@ class CategoryActivity : DaggerAppCompatActivity() {
                             it.filter { it.id == id }
                         }
                         .flatMapObservable { t -> Observable.fromIterable(t) }
+                        //.flatMapIterable { it }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                             {
@@ -443,12 +449,6 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
         compositeDisposable.add(disposableSaveBtn)
     }
-
-    private val alertDeleteTitlePrefix: String = "Удалить категорию - "
-    private val alertDeleteTitleSuffix: String = " ?"
-    private val alertDeleteSetMessage: String = "Все операции связанные с данной категорией будут безвозвратно удалены."
-    private val alertDeleteAccept: String = "Удалить"
-    private val alertDeleteCancel: String = "Отменить"
 
     private fun deleteDataCurrency()
     {

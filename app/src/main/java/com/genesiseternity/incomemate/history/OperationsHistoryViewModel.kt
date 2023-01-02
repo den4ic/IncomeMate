@@ -20,7 +20,6 @@ import javax.inject.Inject
 class OperationsHistoryViewModel @Inject constructor(private val application: Application) : ViewModel(), IRecyclerView {
 
     @Inject lateinit var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>
-
     @Inject lateinit var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>
 
     private var historyRecyclerModelLiveData: MutableLiveData<List<HistoryRecyclerModel>>
@@ -225,7 +224,7 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
 
                         for (j in pieChartCategoriesTitleEntities.indices)
                         {
-                            if (pieChartCategoriesTitleEntities.get(j).id == pieChartCategoriesEntities.get(i).id)
+                            if (pieChartCategoriesTitleEntities[j].id == pieChartCategoriesEntities[i].id)
                             {
                                 historyRecyclerModels.add(HistoryRecyclerModel(
                                     "",

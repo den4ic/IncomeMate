@@ -9,6 +9,7 @@ import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
 import com.genesiseternity.incomemate.room.CurrencyDetailsDao
+import com.genesiseternity.incomemate.room.CurrencySettingsDao
 import com.genesiseternity.incomemate.room.entities.CurrencyDetailsEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -21,6 +22,7 @@ class WalletRepository (
     private val application: Application,
     private val currencyDetailsDao: CurrencyDetailsDao,
     private val currencyFormat: CurrencyFormat,
+    private val currencySettingsDao: CurrencySettingsDao,
     private var currencyCbrRepository: CurrencyCbrRepository
     ) {
 
@@ -30,7 +32,6 @@ class WalletRepository (
     private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel> = ArrayList()
 
     private lateinit var currencySymbol: Array<String>
-    private lateinit var imageCurrencyType: TypedArray
     private var defaultCurrencyType: Int = 0
     private lateinit var listCurrency: Array<String>
     private lateinit var amountCurrency: Array<String>
@@ -38,6 +39,10 @@ class WalletRepository (
     //@Inject lateinit var currencyConverterCbrApi: CurrencyConverterCbrApi
     private lateinit var cbrCurrencyList: FloatArray
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private val textAddAccount: String = "Добавить счет"
+    private val textDefaultCurrency: String = "Валюта по умолчанию - "
+    private val textNewAccount: String = "Новый счет №"
 
     fun getCurrencyRecyclerModelLiveData(): MutableLiveData<ArrayList<CurrencyRecyclerModel>> = currencyRecyclerModelLiveData
     fun getNotifyItemAdapterLiveData(): MutableLiveData<Int> = notifyItemAdapterLiveData
@@ -50,14 +55,10 @@ class WalletRepository (
 
     fun initRecyclerCurrency(
         currencySymbol: Array<String>,
-        imageCurrencyType: TypedArray,
-        defaultCurrencyType: Int,
         listCurrency: Array<String>,
         amountCurrency: Array<String>
     ) {
         this.currencySymbol = currencySymbol
-        this.imageCurrencyType = imageCurrencyType
-        this.defaultCurrencyType = defaultCurrencyType
         this.listCurrency = listCurrency
         this.amountCurrency = amountCurrency
 
@@ -101,6 +102,10 @@ class WalletRepository (
 
          */
 
+        compositeDisposable.add(currencySettingsDao.getDefaultCurrencyByIdPage()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe( { defaultCurrencyType = it }, {} ))
 
         //compositeDisposable.add(currencyDetailsDao.getAll()
         compositeDisposable.add(currencyDetailsDao.getAllSortedCurrencyData()
@@ -130,7 +135,7 @@ class WalletRepository (
                         currencyDetailsEntities.titleCurrency,
                         currencyDetailsEntities.amountCurrency,
                         currencyDetailsEntities.currencyType,
-                        imageCurrencyType.getResourceId(currencyDetailsEntities.idCardViewIcon, 0),
+                        currencyDetailsEntities.idCardViewIcon,
                         currencyDetailsEntities.idColorIcon
                     ))
                 },
@@ -163,7 +168,7 @@ class WalletRepository (
                 listCurrency[i],
                 amountCurrency[i],
                 defaultCurrencyType,
-                imageCurrencyType.getResourceId(0, 0),
+                0,
                 0))
         }
 
@@ -219,10 +224,10 @@ class WalletRepository (
     {
         currencyRecyclerModel.add(CurrencyRecyclerModel(
             -1,
-            "Добавить счет",
-            "Валюта по умолчанию - " + currencySymbol[defaultCurrencyType],
+            textAddAccount,
+            textDefaultCurrency + currencySymbol[defaultCurrencyType],
             defaultCurrencyType,
-            R.drawable.ic_baseline_add_circle_24,
+            -1,
             0))
     }
 
@@ -253,10 +258,11 @@ class WalletRepository (
             {
                 currencyRecyclerModel.add(missingIndex, CurrencyRecyclerModel(
                     missingIndex,
-                    "Новый счет №" + missingIndex,
+                    textNewAccount + missingIndex,
                     "0",
                     defaultCurrencyType,
-                    imageCurrencyType.getResourceId(0, 0), 0))
+                    0,
+                    0))
 
                 goToSelectedActivity(missingIndex)
             }
@@ -265,10 +271,11 @@ class WalletRepository (
                 var numAccount: Int = insertIndex
                 currencyRecyclerModel.add(insertIndex, CurrencyRecyclerModel(
                     pos,
-                    "Новый счет №" + ++numAccount,
+                    textNewAccount + ++numAccount,
                     "0",
                     defaultCurrencyType,
-                    imageCurrencyType.getResourceId(0, 0), 0))
+                    0,
+                    0))
 
                 //adapter.notifyItemInserted(insertIndex)
                 notifyItemAdapterLiveData.value = insertIndex
@@ -286,11 +293,9 @@ class WalletRepository (
         intent.putExtra("editTextCurrency", currencyRecyclerModel[idPos].titleCurrencyName)
         intent.putExtra("editTextAmountCurrency", currencyRecyclerModel[idPos].amountCurrency)
         intent.putExtra("imageViewCurrencyOne", currencyRecyclerModel[idPos].imgIconCurrency)
-
-        //defaultCurrencyType = 0
-        currencyRecyclerModel[idPos].currencyType = defaultCurrencyType
-
         intent.putExtra("defaultCurrencyType", currencyRecyclerModel[idPos].currencyType)
+
+        currencyRecyclerModel[idPos].currencyType = defaultCurrencyType
         application.startActivity(intent)
     }
 

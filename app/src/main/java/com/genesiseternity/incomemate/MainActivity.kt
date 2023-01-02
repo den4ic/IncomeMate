@@ -35,7 +35,7 @@ class MainActivity : DaggerAppCompatActivity()
     @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
 
     fun getDefaultCurrencyType(): Int { return defaultCurrencyType }
-    fun setDefaultCurrencyType(defaultCurrencyType: Int)
+    private fun setDefaultCurrencyType(defaultCurrencyType: Int)
     {
         MainActivity.defaultCurrencyType = defaultCurrencyType
 
@@ -137,7 +137,7 @@ class MainActivity : DaggerAppCompatActivity()
             .subscribeOn(Schedulers.io())
             .subscribe(
                 {
-                    setDefaultCurrencyType(it[0].defaultCurrencyType)
+                    //setDefaultCurrencyType(it[0].defaultCurrencyType)
                     Log.d("MainActivity", " 444 setDefaultCurrencyType " + it[0].defaultCurrencyType)
                 },
                 {

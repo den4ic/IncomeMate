@@ -305,9 +305,9 @@ class PieChartFragment : DaggerFragment() {
         val imageCurrencyType: TypedArray = resources.obtainTypedArray(R.array.image_currency_type)
 
         val allMonetaryAccount: Spinner = binding.spinnerMonetaryAccount
-        val listMonetaryAccounts: Array<String> = resources.getStringArray(R.array.list_monetary_account)
+        val listMonetaryAccounts: String = resources.getString(R.string.list_monetary_account)
 
-        currencyRecyclerModel.add(CurrencyRecyclerModel(0, listMonetaryAccounts[0], "0",0, imageCurrencyType.getResourceId(0, 0), 0))
+        currencyRecyclerModel.add(CurrencyRecyclerModel(0, listMonetaryAccounts, "0",0, imageCurrencyType.getResourceId(0, 0), 0))
 
         val disposableSortedData: Disposable = currencyDetailsDao.get().getAllSortedCurrencyData()
             .subscribeOn(Schedulers.io())

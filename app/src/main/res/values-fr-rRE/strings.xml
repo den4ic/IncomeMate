@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IncomeMate</string>
+
+    <string name="list_monetary_account">All accounts</string>
+
+    <!-- list_currency -->
+    <string name="card">Carte</string>
+    <string name="cash">En espèces</string>
+
+    <!-- list_currencies -->
+    <string name="russian_ruble">Rouble russe</string>
+    <string name="dollar">Dollars américain</string>
+    <string name="euro">Euro</string>
+    <string name="dirham">Dirham</string>
+    <string name="cny">CNY</string>
+    <string name="australian_dollar">Dollar australien</string>
+    <string name="british_pound">Livre sterling</string>
+    <string name="canadian_dollar">Dollar canadien</string>
+    <string name="swiss_frank">Franc suisse</string>
+    <string name="japanese_yen">Yen japonais</string>
+
+    <!-- list_category_pie_chart -->
+    <string name="health">Santé</string>
+    <string name="cafe">Café</string>
+    <string name="leisure">Loisirs</string>
+    <string name="transport">Transport</string>
+    <string name="products">Des produits</string>
+    <string name="gym">Salle de sport</string>
+    <string name="family">Famille</string>
+    <string name="taxi">Taxi</string>
+    <string name="purchases">Achats</string>
+
+    <!-- Settings -->
+    <string name="premium_version">Version premium</string>
+    <string name="main_currency">Devise principale: Non</string>
+    <string name="beginning_week">Début de la semaine</string>
+    <string name="beginning_month">Le début du mois</string>
+    <string name="language">Langue</string>
+    <string name="passcode">Code d\'accès</string>
+    <string name="night_mode">Mode nuit</string>
+    <string name="export_csv_file">Exporter vers un fichier CSV</string>
+    <string name="restore_purchases">Restaurer les achats</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="delete_all_data">Supprimer toutes les données</string>
+
+    <!-- Fragment PieChart -->
+    <string name="expenses">Frais</string>
+    <string name="income">Revenu</string>
+
+    <!-- Register -->
+    <string name="create_new_account">Créer un nouveau compte</string>
+    <string name="e_mail">E-mail</string>
+    <string name="new_password">Nouveau mot de passe</string>
+    <string name="confirm_password">Confirmez le mot de passe</string>
+    <string name="register">Enregistrer</string>
+
+    <!-- Login -->
+    <string name="sign_in">Connectez-vous pour continuer</string>
+    <string name="password">Mot de passe</string>
+    <string name="forgot_password">Mot de passe oublié?</string>
+    <string name="continue_btn">Continuer</string>
+    <string name="havent_account">Vous n\'avez pas de compte? </string>
+    <string name="continue_without_reg">Continuer sans créer de compte</string>
+    <string name="hyperlinkPrivacyPolicy">En vous inscrivant ou en vous connectant aux services ci-dessus, vous acceptez les règles énoncées dans les <a href="https://sites.google.com/view/privacypolicyincomemate/"> Conditions d\'utilisation</a>  et la\n<a href="https://sites.google.com/view/privacypolicyincomemate/">Politique de confidentialité</a></string>
+
+    <!-- Info -->
+    <string name="control_expenses_saving">Contrôlez vos dépenses et commencez à économiser</string>
+    <string name="begin">Pour commencer</string>
+
+    <!-- Premium Subscription -->
+    <string name="choose_subscription_plan">Choisissez une formule d\'abonnement</string>
+    <string name="lottie_credit_card_scanning">Comptes\nCréez n\'importe quel nombre de catégories, de dépenses et de revenus.</string>
+    <string name="lottie_history">Catégories\nCréez n\'importe quel nombre de comptes, de dettes et d\'objectifs.</string>
+    <string name="lottie_ad_block">Pas de pubs\nProfitez de toutes les fonctionnalités de la version premium.</string>
+    <string name="lottie_data_analysis">Exporter\nExporter les données au format CSV.</string>
+    <string name="premium">Prime</string>
+    <string name="continue_free">Continuer gratuitement</string>
+
+    <!-- Currency -->
+    <string name="account_name">Nom du compte</string>
+    <string name="new_account">Nouveau compte</string>
+    <string name="balance">Solde</string>
+    <string name="account_currency">Devise du compte</string>
+    <string name="specify_currency">Spécifiez la devise</string>
+    <string name="icons">Icônes</string>
+    <string name="delete_account">Supprimer le compte</string>
+    <string name="save">Sauver</string>
+    <string name="add_total_balance">Ajouter au solde total</string>
+
+    <!-- Color Picker -->
+    <string name="palette_brightness">Luminosité de la palette</string>
+    <string name="choose_color">Choisir la couleur</string>
+
+    <!-- Category -->
+    <string name="category_name">Nom de catégorie</string>
+    <string name="new_category">Nouvelle catégorie</string>
+    <string name="category_currency">Devise de la catégorie</string>
+    <string name="delete_category">Supprimer la catégorie</string>
+
+    <!-- Wallet -->
+    <string name="total">Total:</string>
+
+    <!-- Bottom Menu -->
+    <string name="accounts">Comptes</string>
+    <string name="categories">Catégories</string>
+    <string name="history">L\'histoire</string>
+    <string name="settings">Réglages</string>
+</resources>

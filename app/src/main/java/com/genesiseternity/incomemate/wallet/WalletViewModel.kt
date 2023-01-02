@@ -10,6 +10,7 @@ import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
 import com.genesiseternity.incomemate.room.CurrencyDetailsDao
+import com.genesiseternity.incomemate.room.CurrencySettingsDao
 import com.genesiseternity.incomemate.room.entities.CurrencyDetailsEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -20,6 +21,7 @@ class WalletViewModel @Inject constructor(
     application: Application,
     currencyDetailsDao: CurrencyDetailsDao,
     currencyFormat: CurrencyFormat,
+    currencySettingsDao: CurrencySettingsDao,
     currencyCbrRepository: CurrencyCbrRepository
     //private val currencyCbrRepository: CurrencyCbrRepository
 ) : ViewModel(), IRecyclerView {
@@ -32,29 +34,23 @@ class WalletViewModel @Inject constructor(
     private val notifyItemAdapterLiveData: MutableLiveData<Int>
 
     init {
-        walletRepository = WalletRepository(application, currencyDetailsDao, currencyFormat, currencyCbrRepository)
+        walletRepository = WalletRepository(application, currencyDetailsDao, currencyFormat, currencySettingsDao, currencyCbrRepository)
         currencyRecyclerModelLiveData = walletRepository.getCurrencyRecyclerModelLiveData()
         notifyItemAdapterLiveData = walletRepository.getNotifyItemAdapterLiveData()
+
+        val currencySymbol: Array<String> = application.resources.getStringArray(R.array.list_currency_symbol)
+        val listCurrency: Array<String> = application.resources.getStringArray(R.array.list_currency)
+        val amountCurrency: Array<String> = application.resources.getStringArray(R.array.list_amount_currency)
+
+        walletRepository.initRecyclerCurrency(
+            currencySymbol,
+            listCurrency,
+            amountCurrency)
     }
 
     fun getCurrencyRecyclerModelLiveData(): MutableLiveData<ArrayList<CurrencyRecyclerModel>> = currencyRecyclerModelLiveData
     fun getNotifyItemAdapterLiveData(): MutableLiveData<Int> = notifyItemAdapterLiveData
     fun getAllAmountCurrency(): String = walletRepository.getAllAmountCurrency()
-
-    fun initRecyclerCurrency(
-        currencySymbol: Array<String>,
-        imageCurrencyType: TypedArray,
-        defaultCurrencyType: Int,
-        listCurrency: Array<String>,
-        amountCurrency: Array<String>
-    ) {
-        walletRepository.initRecyclerCurrency(
-            currencySymbol,
-            imageCurrencyType,
-            defaultCurrencyType,
-            listCurrency,
-            amountCurrency)
-    }
 
     override fun onCleared() {
         walletRepository.getCompositeDisposable().dispose()

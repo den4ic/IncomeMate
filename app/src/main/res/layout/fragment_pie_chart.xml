@@ -47,7 +47,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="left"
                 android:background="@color/red"
-                android:text="Расходы"
+                android:text="@string/expenses"
                 android:textColor="@color/white">
             </androidx.appcompat.widget.AppCompatButton>
 
@@ -58,7 +58,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="right"
                 android:background="@color/blue"
-                android:text="Доходы"
+                android:text="@string/income"
                 android:textColor="@color/white">
             </androidx.appcompat.widget.AppCompatButton>
         </LinearLayout>

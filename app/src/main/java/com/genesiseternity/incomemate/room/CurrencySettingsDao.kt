@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
+import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
@@ -22,4 +23,7 @@ interface CurrencySettingsDao {
 
     @Query("DELETE FROM " + CurrencySettingsEntity.TABLE_NAME)
     fun deleteAllCurrencySettingsData(): Completable
+
+    @Query("SELECT default_currency_type FROM " + CurrencySettingsEntity.TABLE_NAME)
+    fun getDefaultCurrencyByIdPage(): Single<Int>
 }

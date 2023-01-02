@@ -28,7 +28,7 @@
             android:id="@+id/textTtitlePieChart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Расходы"
+            android:text="@string/expenses"
             android:textSize="20dp"
             app:layout_constraintBottom_toTopOf="@+id/textExpenses"
             app:layout_constraintEnd_toEndOf="@+id/textExpenses"

@@ -23,6 +23,12 @@ class InfoActivity : AppCompatActivity()
         initLoginPage()
     }
 
+    override fun onDestroy()
+    {
+        compositeDisposable.dispose()
+        super.onDestroy()
+    }
+
     private fun initLoginPage()
     {
         compositeDisposable.add(binding.selectLoginBtn.clicks()
@@ -30,11 +36,5 @@ class InfoActivity : AppCompatActivity()
             .subscribe {
                 startActivity(Intent(this, LoginActivity::class.java))
             })
-    }
-
-    override fun onDestroy()
-    {
-        compositeDisposable.dispose()
-        super.onDestroy()
     }
 }

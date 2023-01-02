@@ -12,7 +12,7 @@ import com.genesiseternity.incomemate.R
 import com.google.android.material.card.MaterialCardView
 
 class IconCategoryCardView(
-    private var context: Context,
+    private val context: Context,
     gridLayout: androidx.gridlayout.widget.GridLayout,
     private var selectedColor: Int,
     private var selectedCardViewId: Int
@@ -66,15 +66,15 @@ class IconCategoryCardView(
     private fun initChoiceCardView(gridListCardView: androidx.gridlayout.widget.GridLayout)
     {
         if (selectedColor == 0)
-            selectedColor = context.getResources().getColor(R.color.green)
+            selectedColor = context.resources.getColor(R.color.green)
 
         //gridListCardView = binding.gridViewCategoryIcon
 
         val total: Int = 9
         val column: Int = 4
         val row: Int = total / column
-        gridListCardView.setColumnCount(column)
-        gridListCardView.setRowCount(row + 1)
+        gridListCardView.columnCount = column
+        gridListCardView.rowCount = row + 1
 
         fillGridLayoutCardView(gridListCardView)
 
@@ -126,7 +126,7 @@ class IconCategoryCardView(
     {
         // R.array.image_category_type | R.array.image_currency_type
         //imageCategoryType = getResources().obtainTypedArray(R.array.image_currency_type)
-        imageCategoryType = context.getResources().obtainTypedArray(R.array.image_category_type)
+        imageCategoryType = context.resources.obtainTypedArray(R.array.image_category_type)
         //materialCardViewList = new MaterialCardView[imageCategoryType.length()]
 
         val layoutParams: FrameLayout.LayoutParams = FrameLayout.LayoutParams(

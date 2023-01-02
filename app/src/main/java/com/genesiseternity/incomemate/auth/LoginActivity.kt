@@ -1,5 +1,7 @@
 package com.genesiseternity.incomemate.auth
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.widget.EditText
@@ -96,40 +98,4 @@ class LoginActivity : DaggerAppCompatActivity() {
         compositeDisposable.dispose()
         super.onDestroy()
     }
-
-    /*
-    private void performInputValidation()
-    {
-        this.email.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                isValidateEmail()
-            }
-        })
-
-        this.password.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                isValidatePassword()
-            }
-        })
-    }
-     */
-
 }

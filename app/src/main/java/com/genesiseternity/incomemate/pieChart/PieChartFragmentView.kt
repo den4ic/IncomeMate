@@ -14,6 +14,7 @@ import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.MainActivity
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.databinding.FragmentPieChartViewBinding
+import com.genesiseternity.incomemate.room.CurrencySettingsDao
 import com.genesiseternity.incomemate.room.PieChartCategoriesDao
 import com.genesiseternity.incomemate.room.PieChartCategoriesTitleDao
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesTitleEntity
@@ -32,9 +33,8 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     @Inject lateinit var currencyFormat: dagger.Lazy<CurrencyFormat>
-
     @Inject lateinit var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>
-
+    @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
     @Inject lateinit var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>
 
     private lateinit var viewTemp: View
@@ -44,6 +44,9 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
     private var colorGreen: Int = 0
 
     private var idPage: Int = 0
+
+    private val textAdd = "Добавить"
+    private val textNewCategory = "Новая категория №"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +60,19 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
         imageCategoryType = resources.obtainTypedArray(R.array.image_category_type)
         colorRed = ContextCompat.getColor(viewTemp.context, R.color.red)
         colorGreen = ContextCompat.getColor(viewTemp.context, R.color.green)
-        defaultCurrencyType = (activity as MainActivity).getDefaultCurrencyType()
+
+        //defaultCurrencyType = (activity as MainActivity).getDefaultCurrencyType()
+        compositeDisposable.add(currencySettingsDao.get().getDefaultCurrencyByIdPage()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    defaultCurrencyType = it
+                },
+                {
+
+                }
+            ))
 
 
         val args: Bundle? = arguments
@@ -108,11 +123,10 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
         return viewTemp
     }
 
-
     private fun testFillPieChart()
     {
-        pieChartCategoryArrayList = ArrayList()
-        adapter = PieChartCategoryViewAdapter(viewTemp.context, pieChartCategoryArrayList, this)
+        pieChartCategoryModelArrayList = ArrayList()
+        adapter = PieChartCategoryViewAdapter(viewTemp.context, pieChartCategoryModelArrayList, this)
         binding.gridViewCategory.adapter = adapter
 
         val colorRandList: IntArray = IntArray(listCategory.size)
@@ -122,7 +136,7 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
             val rnd: Random = Random()
             colorRandList[i] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
 
-            pieChartCategoryArrayList.add(PieChartCategory(
+            pieChartCategoryModelArrayList.add(PieChartCategoryModel(
                 i,
                 listCategory[i],
                 rnd.nextInt(4096).toString(),
@@ -131,7 +145,7 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
                 defaultCurrencyType))
 
         }
-        pieChartCategoryArrayList.add(PieChartCategory(-1, "Добавить", "", R.drawable.ic_baseline_add_circle_24, 0, defaultCurrencyType))
+        pieChartCategoryModelArrayList.add(PieChartCategoryModel(-1, textAdd, "", R.drawable.ic_baseline_add_circle_24, 0, defaultCurrencyType))
         fillPieChart()
     }
 
@@ -143,19 +157,21 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
 
     private var defaultCurrencyType: Int = 0
 
-    private lateinit var pieChartCategoryArrayList: ArrayList<PieChartCategory>
+    private lateinit var pieChartCategoryModelArrayList: ArrayList<PieChartCategoryModel>
     private lateinit var adapter: PieChartCategoryViewAdapter
 
     private fun initPieChart()
     {
-        pieChartCategoryArrayList = ArrayList()
-        adapter = PieChartCategoryViewAdapter(viewTemp.context, pieChartCategoryArrayList, this)
+        pieChartCategoryModelArrayList = ArrayList()
+        adapter = PieChartCategoryViewAdapter(viewTemp.context, pieChartCategoryModelArrayList, this)
         binding.gridViewCategory.adapter = adapter
 
         //pieChartCategoriesDao.get().getAllSortedPieChartCategoriesData()
         val disposablePieChartCategories: Disposable = pieChartCategoriesDao.get().getPieChartCategoryByIdPage(idPage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            //.flatMapIterable { it }
+            //.flatMapObservable { t -> Observable.fromIterable(t) }
             .subscribe(
                 {
                     pieChartCategoriesEntities ->
@@ -163,6 +179,9 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
                     val disposablePieChartCategoriesTitle: Disposable = pieChartCategoriesTitleDao.get().getAllPieChartCategoriesTitleData()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        //.flatMapIterable { it }
+                        //.flatMapObservable { t -> Observable.fromIterable(t) }
+                        //.doOnSubscribe { it.request(Long.MAX_VALUE) }
                         .subscribe(
                             {
                                 pieChartCategoriesTitleEntities ->
@@ -171,22 +190,21 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
                                 {
                                     for (i in pieChartCategoriesTitleEntities.indices)
                                     {
-                                        pieChartCategoryArrayList.add(PieChartCategory(
+                                        pieChartCategoryModelArrayList.add(PieChartCategoryModel(
                                             pieChartCategoriesTitleEntities[i].id,
                                             pieChartCategoriesTitleEntities[i].titleCategory,
                                             "0",
-                                            imageCategoryType.getResourceId(
-                                                pieChartCategoriesTitleEntities[i].idCardViewIcon, 0),
-                                                pieChartCategoriesTitleEntities[i].idColorIcon,
-                                                pieChartCategoriesTitleEntities[i].currencyType))
+                                            imageCategoryType.getResourceId(pieChartCategoriesTitleEntities[i].idCardViewIcon, 0),
+                                            pieChartCategoriesTitleEntities[i].idColorIcon,
+                                            pieChartCategoriesTitleEntities[i].currencyType))
 
                                         for (j in pieChartCategoriesEntities.indices)
                                         {
                                             if (i == pieChartCategoriesEntities[j].id)
                                             {
-                                                pieChartCategoryArrayList.removeAt(pieChartCategoriesEntities[j].id)
+                                                pieChartCategoryModelArrayList.removeAt(pieChartCategoriesEntities[j].id)
 
-                                                pieChartCategoryArrayList.add(PieChartCategory(
+                                                pieChartCategoryModelArrayList.add(PieChartCategoryModel(
                                                     pieChartCategoriesEntities[j].id,
                                                     pieChartCategoriesTitleEntities[i].titleCategory,
                                                     pieChartCategoriesEntities[j].amountCategory,
@@ -201,7 +219,7 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
                                 {
                                     for (i in pieChartCategoriesTitleEntities.indices)
                                     {
-                                        pieChartCategoryArrayList.add(PieChartCategory(
+                                        pieChartCategoryModelArrayList.add(PieChartCategoryModel(
                                             pieChartCategoriesTitleEntities[i].id,
                                             pieChartCategoriesTitleEntities[i].titleCategory,
                                             "0",
@@ -210,7 +228,7 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
                                             pieChartCategoriesTitleEntities[i].currencyType))
                                     }
                                 }
-                                pieChartCategoryArrayList.add(PieChartCategory(-1, "Добавить", "", R.drawable.ic_baseline_add_circle_24, 0, defaultCurrencyType))
+                                pieChartCategoryModelArrayList.add(PieChartCategoryModel(-1, textAdd, "", R.drawable.ic_baseline_add_circle_24, 0, defaultCurrencyType))
 
                                 fillPieChart()
                                 adapter.notifyDataSetChanged()
@@ -269,7 +287,7 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
 
     override fun onItemClick(pos: Int)
     {
-        val insertIndex: Int = pieChartCategoryArrayList.size-1
+        val insertIndex: Int = pieChartCategoryModelArrayList.size-1
 
         if (pos != insertIndex)
         {
@@ -278,8 +296,8 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
         else
         {
             var numAccount: Int = insertIndex
-            val titleCategoryName: String = "Новая категория №" + ++numAccount
-            pieChartCategoryArrayList.add(insertIndex, PieChartCategory(pos, titleCategoryName, "0", imageCategoryType.getResourceId(0, 0), 0, defaultCurrencyType))
+            val titleCategoryName: String = textNewCategory + ++numAccount
+            pieChartCategoryModelArrayList.add(insertIndex, PieChartCategoryModel(pos, titleCategoryName, "0", imageCategoryType.getResourceId(0, 0), 0, defaultCurrencyType))
             // adapter.notifyItemInserted(insertIndex)
             adapter.notifyDataSetChanged()
 
@@ -307,19 +325,19 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
     private fun goToSelectedActivity(idPos: Int)
     {
         val intent: Intent = Intent(viewTemp.context, CategoryActivity::class.java)
-        intent.putExtra("idCategory", pieChartCategoryArrayList[idPos].idCategory)
+        intent.putExtra("idCategory", pieChartCategoryModelArrayList[idPos].idCategory)
         intent.putExtra("idPage", idPage)
-        intent.putExtra("titleCategoryName", pieChartCategoryArrayList[idPos].titleCategoryName)
-        intent.putExtra("amountCategory", pieChartCategoryArrayList[idPos].amountCategory)
-        intent.putExtra("imageCategory", pieChartCategoryArrayList[idPos].imageCategory)
-        intent.putExtra("selectedColorId", pieChartCategoryArrayList[idPos].selectedColorId)
-        intent.putExtra("defaultCurrencyType", pieChartCategoryArrayList[idPos].currencyType)
+        intent.putExtra("titleCategoryName", pieChartCategoryModelArrayList[idPos].titleCategoryName)
+        intent.putExtra("amountCategory", pieChartCategoryModelArrayList[idPos].amountCategory)
+        intent.putExtra("imageCategory", pieChartCategoryModelArrayList[idPos].imageCategory)
+        intent.putExtra("selectedColorId", pieChartCategoryModelArrayList[idPos].selectedColorId)
+        intent.putExtra("defaultCurrencyType", pieChartCategoryModelArrayList[idPos].currencyType)
         startActivity(intent)
     }
 
     private fun fillPieChart()
     {
-        val sizeCategoryArrayList: Int = pieChartCategoryArrayList.size-1
+        val sizeCategoryArrayList: Int = pieChartCategoryModelArrayList.size-1
         val data: FloatArray = FloatArray(sizeCategoryArrayList)
         val color: IntArray = IntArray(size = sizeCategoryArrayList)
 
@@ -328,8 +346,8 @@ class PieChartFragmentView : DaggerFragment(), IPieChartCategoryView {
         for (i in 0 until sizeCategoryArrayList)
         {
             //String tempAmountCurrency = recyclerCurrencies.get(i).getAmountCurrency().replaceAll("[^0-9]", "")
-            val tempAmountCurrency: String = pieChartCategoryArrayList[i].amountCategory.replace("[^\\d.-]".toRegex(), "")
-            val tempSelectedColorId: Int = pieChartCategoryArrayList[i].selectedColorId
+            val tempAmountCurrency: String = pieChartCategoryModelArrayList[i].amountCategory.replace("[^\\d.-]".toRegex(), "")
+            val tempSelectedColorId: Int = pieChartCategoryModelArrayList[i].selectedColorId
 
             if (tempAmountCurrency.isNotEmpty())
             {

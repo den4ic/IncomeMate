@@ -67,6 +67,16 @@ class CurrencyActivity : DaggerAppCompatActivity() {
     private var selectedColor: Int = Color.parseColor("#00b894")
     private var selectedBtnColorId: Int = 0
 
+    private val textChoiceCurrBuilderTitle: String = "Основная валюта"
+    private val textChoiceCurrBuilderPositive: String = "Готово"
+    private val textChoiceCurrToast: String = "Выбрана валюта: "
+    private val textChoiceCurrBuilderNegative: String = "Отменить"
+
+    private val textDeleteDataCurrBuilderTitle: String = "Удалить счёт - "
+    private val textDeleteDataCurrBuilderMessage: String = "Все операции связанные с данным счётом будут безвозвратно удалены.\n\nБаланс других счетов не поменяется."
+    private val textDeleteDataCurrBuilderPositive: String = "Удалить"
+    private val textDeleteDataCurrBuilderNegative: String = "Отменить"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -128,23 +138,21 @@ class CurrencyActivity : DaggerAppCompatActivity() {
         btnCurrencyType.setOnClickListener()
         {
             val alertDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(it.context)
-            alertDialogBuilder.setTitle("Основная валюта")
+            alertDialogBuilder.setTitle(textChoiceCurrBuilderTitle)
             alertDialogBuilder.setCancelable(true)
 
             alertDialogBuilder.setSingleChoiceItems(listCurrencies, selectedCurrency) { dialogInterface, index ->
                 selectedCurrency = index
             }
 
-            alertDialogBuilder.setPositiveButton("Готово", DialogInterface.OnClickListener() { dialogInterface, i ->
+            alertDialogBuilder.setPositiveButton(textChoiceCurrBuilderPositive) { dialogInterface, i ->
                 btnCurrencyType.text = listCurrencies[selectedCurrency]
-                Toast.makeText(it.context, "Выбрана валюта: " + listCurrencies[selectedCurrency], Toast.LENGTH_LONG).show()
+                Toast.makeText(it.context, textChoiceCurrToast + listCurrencies[selectedCurrency], Toast.LENGTH_LONG).show()
                 currencyFormat.get().updateSelectedCurrencyType(selectedCurrency)
                 dialogInterface.dismiss()
-            })
+            }
 
-            alertDialogBuilder.setNegativeButton("Отменить", DialogInterface.OnClickListener() { dialogInterface, i ->
-
-            })
+            alertDialogBuilder.setNegativeButton(textChoiceCurrBuilderNegative) { dialogInterface, i -> }
 
             val alertDialog: AlertDialog = alertDialogBuilder.create()
             alertDialog.setCanceledOnTouchOutside(true)
@@ -317,7 +325,7 @@ class CurrencyActivity : DaggerAppCompatActivity() {
 
     private fun setColorIconCardView()
     {
-        val img: Drawable = getResources().getDrawable(R.drawable.ic_baseline_check_24)
+        val img: Drawable = resources.getDrawable(R.drawable.ic_baseline_check_24)
         val listColorChange: RadioGroup = binding.listColorChange
         countColorBtn = listColorChange.childCount-1
         btnsColorChange = ArrayList(countColorBtn)
@@ -464,11 +472,11 @@ class CurrencyActivity : DaggerAppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder.setTitle("Удалить счёт - " + editTextCurrencyTXT + " ?")
+                builder.setTitle(textDeleteDataCurrBuilderTitle + editTextCurrencyTXT + " ?")
                 builder.setCancelable(true)
-                builder.setMessage("Все операции связанные с данным счётом будут безвозвратно удалены.\n\nБаланс других счетов не поменяется.")
+                builder.setMessage(textDeleteDataCurrBuilderMessage)
 
-                builder.setPositiveButton("Удалить") { dialogInterface, i ->
+                builder.setPositiveButton(textDeleteDataCurrBuilderPositive) { dialogInterface, i ->
 
                 currencyDetailsDao.deleteCurrentCurrencyData(Integer.parseInt(idCurrencyTXT))
                     .observeOn(AndroidSchedulers.mainThread())
@@ -483,7 +491,7 @@ class CurrencyActivity : DaggerAppCompatActivity() {
                     )
                 }
 
-                builder.setNegativeButton("Отменить") { dialogInterface, i ->
+                builder.setNegativeButton(textDeleteDataCurrBuilderNegative) { dialogInterface, i ->
                     dialogInterface.cancel()
                 }
                 builder.show()

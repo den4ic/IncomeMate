@@ -1,4 +1,4 @@
-package com.genesiseternity.incomemate
+package com.genesiseternity.incomemate.utils
 
 import android.util.Log
 import io.reactivex.rxjava3.disposables.CompositeDisposable

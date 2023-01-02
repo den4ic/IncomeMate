@@ -1,6 +1,6 @@
 package com.genesiseternity.incomemate.pieChart
 
-data class PieChartCategory (
+data class PieChartCategoryModel (
     val idCategory: Int,
     val titleCategoryName: String,
     val amountCategory: String,

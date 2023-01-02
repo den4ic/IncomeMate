@@ -3,18 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/wallet"
-        android:title="Счета"
+        android:title="@string/accounts"
         android:icon="@drawable/ic_baseline_account_balance_wallet_24"/>
     <item
         android:id="@+id/pie_chart"
-        android:title="Категории"
+        android:title="@string/categories"
         android:icon="@drawable/ic_baseline_pie_chart_24"/>
     <item
         android:id="@+id/operations_history"
-        android:title="История"
+        android:title="@string/history"
         android:icon="@drawable/ic_baseline_history_edu_24"/>
     <item
         android:id="@+id/settings"
-        android:title="Настройки"
+        android:title="@string/settings"
         android:icon="@drawable/ic_baseline_settings_24"/>
 </menu>

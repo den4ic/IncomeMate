@@ -1,103 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">IncomeMate</string>
-    <string name="income_mate" translatable="false">Income Mate</string>
-    <string name="hello_blank_fragment" translatable="false">Blank fragment</string>
+    <string name="app_name">IncomeMate</string>
 
-    <string-array name="list_currency">
-        <item>@string/card</item>
-        <item>@string/cash</item>
-    </string-array>
-
-    <string-array name="list_amount_currency">
-        <item>0</item>
-        <item>0</item>
-    </string-array>
-
-    <string-array name="calculator">
-        <item>÷</item>
-        <item>×</item>
-        <item>-</item>
-        <item>+</item>
-        <item>,</item>
-        <item>=</item>
-    </string-array>
-
-    <!--  private String[] listСurrencies = { "Российский рубль", "Доллар США", "Евро", "Дирхам ОАЭ", "Китайский юань",
-    "Австралийский доллар", "Британский фунт", "Канадский доллар", "Швейцарский франк", "Японская йена" }; -->
-    <string-array name="list_currencies">
-        <item>@string/russian_ruble</item>
-        <item>@string/dollar</item>
-        <item>@string/euro</item>
-        <item>@string/dirham</item>
-        <item>@string/cny</item>
-        <item>@string/australian_dollar</item>
-        <item>@string/british_pound</item>
-        <item>@string/canadian_dollar</item>
-        <item>@string/swiss_frank</item>
-        <item>@string/japanese_yen</item>
-    </string-array>
-
-    <!-- private final String[] currencySymbol = {"₽", "$", "€", "AED", "¥", "$", "£", "$", "₣", "¥"}; -->
-    <string-array name="list_currency_symbol">
-        <item>₽</item>
-        <item>$</item>
-        <item>€</item>
-        <item>AED</item>
-        <item>¥</item>
-        <item>$</item>
-        <item>£</item>
-        <item>$</item>
-        <item>₣</item>
-        <item>¥</item>
-    </string-array>
-
-    <string name="list_monetary_account">Все счета</string>
-
-    <!--
-    private int[] imageCurrencyType = {R.drawable.ic_baseline_bar_chart_24, R.drawable.ic_baseline_pie_chart_24, R.drawable.ic_baseline_account_balance_wallet_24,
-    R.drawable.ic_baseline_history_edu_24, R.drawable.ic_baseline_assured_workload_24, R.drawable.ic_baseline_business_center_24,
-    R.drawable.ic_baseline_calendar_today_24, R.drawable.ic_baseline_celebration_24, R.drawable.ic_baseline_chair_24,
-    R.drawable.ic_baseline_child_friendly_24, R.drawable.ic_baseline_directions_car_24, R.drawable.ic_baseline_home_24 };
-    -->
-
-    <integer-array name="image_currency_type">
-        <item>@drawable/ic_baseline_bar_chart_24</item>
-        <item>@drawable/ic_baseline_pie_chart_24</item>
-        <item>@drawable/ic_baseline_account_balance_wallet_24</item>
-        <item>@drawable/ic_baseline_history_edu_24</item>
-        <item>@drawable/ic_baseline_assured_workload_24</item>
-        <item>@drawable/ic_baseline_business_center_24</item>
-        <item>@drawable/ic_baseline_calendar_today_24</item>
-        <item>@drawable/ic_baseline_celebration_24</item>
-        <item>@drawable/ic_baseline_chair_24</item>
-        <item>@drawable/ic_baseline_child_friendly_24</item>
-        <item>@drawable/ic_baseline_directions_car_24</item>
-        <item>@drawable/ic_baseline_home_24</item>
-    </integer-array>
-
-    <integer-array name="image_category_type">
-        <item>@drawable/ic_baseline_health_and_safety_24</item>
-        <item>@drawable/ic_baseline_restaurant_24</item>
-        <item>@drawable/ic_baseline_local_movies_24</item>
-        <item>@drawable/ic_baseline_commute_24</item>
-        <item>@drawable/ic_baseline_shopping_cart_24</item>
-        <item>@drawable/ic_baseline_fitness_center_24</item>
-        <item>@drawable/ic_baseline_family_restroom_24</item>
-        <item>@drawable/ic_baseline_local_taxi_24</item>
-        <item>@drawable/ic_baseline_local_mall_24</item>
-    </integer-array>
-
-    <string-array name="list_category_pie_chart">
-        <item>@string/health</item>
-        <item>@string/cafe</item>
-        <item>@string/leisure</item>
-        <item>@string/transport</item>
-        <item>@string/purchases</item>
-        <item>@string/gym</item>
-        <item>@string/family</item>
-        <item>@string/taxi</item>
-        <item>@string/purchases</item>
-    </string-array>
+    <string name="list_monetary_account">All accounts</string>
 
     <!-- list_currency -->
     <string name="card">Карта</string>
@@ -126,12 +31,12 @@
     <string name="taxi">Такси</string>
     <string name="purchases">Покупки</string>
 
-    <!-- Settings -->
+    <!-- Settings <string name=""></string> -->
     <string name="premium_version">Премиум-версия</string>
     <string name="main_currency">Основная валюта: Non</string>
     <string name="beginning_week">Начало недели</string>
     <string name="beginning_month">Начало месяца</string>
-    <string name="language">Язык: Русский</string>
+    <string name="language">Язык</string>
     <string name="passcode">Код-пароль</string>
     <string name="night_mode">Ночной режим</string>
     <string name="export_csv_file">Экспорт в CSV файл</string>
@@ -201,24 +106,5 @@
     <string name="categories">Категории</string>
     <string name="history">История</string>
     <string name="settings">Настройки</string>
-
-    <!-- Английский Арабский Испанский Итальянский Китайский Корейский Немецкий
-        Португальский Русский Сербский Турецкий Французский Японский -->
-
-    <string-array name="list_languages">
-        <item>English</item>
-        <item>عربي</item>
-        <item>Español</item>
-        <item>Italiano</item>
-        <item>中國人</item>
-        <item>한국인</item>
-        <item>Deutsch</item>
-        <item>Português</item>
-        <item>Русский</item>
-        <item>Српски</item>
-        <item>Türkçe</item>
-        <item>Français</item>
-        <item>日本</item>
-    </string-array>
 
 </resources>

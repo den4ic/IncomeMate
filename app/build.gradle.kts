@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
 
+    //id("kotlin-parcelize")
     //id("kotlin-android-extensions")
     id("kotlin-android")
     id("kotlin-kapt")
@@ -67,9 +68,14 @@ dependencies {
     implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     // JUnit
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    //testImplementation("junit:junit:4.13.2")
+    //androidTestImplementation("androidx.test.ext:junit-ktx:1.1.4")
+    //androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.mockito:mockito-core:4.10.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 
     //implementation "androidx.navigation:navigation-fragment:2.4.2"
     //implementation "androidx.navigation:navigation-ui:2.4.2"
@@ -92,6 +98,11 @@ dependencies {
 
     implementation("com.jakewharton.rxbinding4:rxbinding:4.0.0")
 
+    // Coroutines
+    //val coroutines_version = "1.6.4"
+    //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
+    //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
+
     // Dagger2
     val dagger_version = "2.44"
     //implementation("com.google.dagger:dagger:$dagger_version")
@@ -113,7 +124,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     //annotationProcessor("androidx.room:room-compiler:$room_version")
-    testImplementation("android.arch.persistence.room:testing:$room_version")
+    ////testImplementation("android.arch.persistence.room:testing:$room_version")
     implementation("androidx.room:room-rxjava3:$room_version")
 
     // REST API
@@ -129,4 +140,11 @@ dependencies {
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
 
 
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    //useJUnitPlatform {
+    //    includeEngines("spek")
+    //}
 }

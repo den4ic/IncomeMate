@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".settings.SettingsFragment">
 
-
-    <!--
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    -->
-
     <FrameLayout
         android:id="@+id/containerSettingsViewOne"
         android:layout_width="wrap_content"
@@ -47,7 +40,7 @@
                     android:layout_width="340dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Премиум-версия"
+                    android:text="@string/premium_version"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -66,7 +59,7 @@
                     android:layout_width="340dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Основная валюта: Non"
+                    android:text="@string/main_currency"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -84,7 +77,7 @@
                     android:layout_width="340dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Начало недели"
+                    android:text="@string/beginning_week"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -102,7 +95,7 @@
                     android:layout_width="340dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Начало месяца"
+                    android:text="@string/beginning_month"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -122,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Язык"
+                    android:text="@string/language"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
 
@@ -139,11 +132,11 @@
                     android:src="@drawable/ic_baseline_password_24" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/passcodeBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Код-пароль"
+                    android:text="@string/passcode"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
 
@@ -164,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="16dp"
-                    android:text="Ночной режим"
+                    android:text="@string/night_mode"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black"
                     android:textSize="17sp" />
@@ -181,10 +174,11 @@
                     android:src="@drawable/ic_baseline_file_open_24" />
 
                 <Button
+                    android:id="@+id/exportCSV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
-                    android:text="Экспорт в CSV файл"
+                    android:text="@string/export_csv_file"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -204,7 +198,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Восстановить покупки"
+                    android:text="@string/restore_purchases"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -220,11 +214,11 @@
                     android:src="@drawable/ic_baseline_history_edu_24" />
 
                 <Button
-                    android:id="@+id/button5"
+                    android:id="@+id/settingsPrivacyPolicy"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
-                    android:text="Политика конфиденциальности"
+                    android:text="@string/privacy_policy"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>
@@ -244,7 +238,7 @@
                     android:layout_width="340dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Удалить все данные"
+                    android:text="@string/delete_all_data"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black" />
             </TableRow>

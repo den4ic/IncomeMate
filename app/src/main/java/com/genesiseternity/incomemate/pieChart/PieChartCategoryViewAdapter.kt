@@ -11,36 +11,36 @@ import com.genesiseternity.incomemate.R
 
 class PieChartCategoryViewAdapter(
     context: Context,
-    pieChartCategoryArrayList: ArrayList<PieChartCategory>,
+    pieChartCategoryModelArrayList: ArrayList<PieChartCategoryModel>,
     private val iPieChartCategoryView: IPieChartCategoryView
-) : ArrayAdapter<PieChartCategory>(context, 0, pieChartCategoryArrayList) {
+) : ArrayAdapter<PieChartCategoryModel>(context, 0, pieChartCategoryModelArrayList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val res = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_category_item, parent, false)
 
-        val pieChartCategory: PieChartCategory? = getItem(position)
+        val pieChartCategoryModel: PieChartCategoryModel? = getItem(position)
 
         val titleCategory: TextView = res.findViewById(R.id.titleCategory)
         val imageCategory: ImageView = res.findViewById(R.id.imageCategory)
         val amountCategory: TextView = res.findViewById(R.id.amountCategory)
         val currencySymbol: Array<String> = res.resources.getStringArray(R.array.list_currency_symbol)
 
-        titleCategory.text = pieChartCategory!!.titleCategoryName
-        imageCategory.setImageResource(pieChartCategory.imageCategory)
+        titleCategory.text = pieChartCategoryModel!!.titleCategoryName
+        imageCategory.setImageResource(pieChartCategoryModel.imageCategory)
         //amountCategory.setText(pieChartCategory.getAmountCategory())
-        imageCategory.setBackgroundColor(pieChartCategory.selectedColorId)
+        imageCategory.setBackgroundColor(pieChartCategoryModel.selectedColorId)
 
 
-        if (pieChartCategory.idCategory != -1)
+        if (pieChartCategoryModel.idCategory != -1)
         {
             //amountCategory.setText(pieChartCategory.getAmountCategory() + " " + currencySymbol[pieChartCategory.getCurrencyType()])
-            if (pieChartCategory.amountCategory.length == 1 && pieChartCategory.amountCategory.startsWith("0"))
+            if (pieChartCategoryModel.amountCategory.length == 1 && pieChartCategoryModel.amountCategory.startsWith("0"))
             {
-                amountCategory.text = pieChartCategory.amountCategory + " " + currencySymbol[pieChartCategory.currencyType]
+                amountCategory.text = pieChartCategoryModel.amountCategory + " " + currencySymbol[pieChartCategoryModel.currencyType]
             }
             else
             {
-                amountCategory.text = pieChartCategory.amountCategory
+                amountCategory.text = pieChartCategoryModel.amountCategory
             }
         }
         else

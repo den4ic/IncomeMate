@@ -1,11 +1,16 @@
 package com.genesiseternity.incomemate.wallet
 
 import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.genesiseternity.incomemate.R
@@ -49,7 +54,15 @@ class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: I
             holder.amountCurrency.text = rCurrency.amountCurrency
         }
 
-        holder.imgIconCurrency.setImageResource(rCurrency.imgIconCurrency)
+        if (rCurrency.imgIconCurrency != -1)
+        {
+            holder.imgIconCurrency.setImageDrawable(holder.imageCurrencyType.getDrawable(rCurrency.imgIconCurrency))
+        }
+        else
+        {
+            holder.imgIconCurrency.setImageDrawable(holder.drawAddingBtn)
+        }
+
         holder.imgIconCurrency.setBackgroundColor(rCurrency.selectedColorId)
 
         /*
@@ -109,13 +122,20 @@ class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: I
         val amountCurrency: TextView
         val imgIconCurrency: ImageView
         val currencySymbol: Array<String>
+        val imageCurrencyType: TypedArray
+        val drawAddingBtn: Drawable
 
-        init {
+        init
+        {
             idCurrency = itemView.findViewById(R.id.idCurrency)
             titleCurrencyName = itemView.findViewById(R.id.titleCurrencyName)
             amountCurrency = itemView.findViewById(R.id.amountCurrency)
             imgIconCurrency = itemView.findViewById(R.id.imgIconCurrency)
-            currencySymbol = itemView.getResources().getStringArray(R.array.list_currency_symbol)
+            imgIconCurrency.setColorFilter(Color.parseColor("#2d3436"))
+            currencySymbol = itemView.resources.getStringArray(R.array.list_currency_symbol)
+
+            drawAddingBtn = ResourcesCompat.getDrawable(itemView.resources, R.drawable.ic_baseline_add_circle_24, null)!!
+            imageCurrencyType = itemView.resources.obtainTypedArray(R.array.image_currency_type)
 
             itemView.setOnClickListener()
             {

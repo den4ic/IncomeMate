@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:grid="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Passcode"
+    android:orientation="vertical"
+    android:weightSum="100">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/diodeList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center|bottom"
+            android:paddingBottom="32dp">
+
+            <View
+                android:id="@+id/diodeOne"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/lightGray"/>
+
+            <View
+                android:id="@+id/diodeTwo"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/lightGray"
+                android:layout_marginLeft="12sp"/>
+
+            <View
+                android:id="@+id/diodeThree"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/lightGray"
+                android:layout_marginLeft="12sp"/>
+
+            <View
+                android:id="@+id/diodeFour"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/lightGray"
+                android:layout_marginLeft="12sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <androidx.gridlayout.widget.GridLayout
+                android:id="@+id/gridBtnList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="fill"
+                app:orientation="horizontal"
+                app:alignmentMode="alignBounds"
+                app:useDefaultMargins="false"
+                app:columnCount="3"
+                app:rowCount="3">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/oneBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="1" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/twoBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="2" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/threeBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="3" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/fourBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="4" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/fiveBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="5" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/sixBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="6" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/sevenBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="7" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/eightBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="8" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/nineBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="9" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/clearPassBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="Clear Pass" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/zeroBtn"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="0" />
+
+                <TableRow
+                    android:id="@+id/backspaceView"
+                    grid:layout_columnWeight="1"
+                    grid:layout_rowWeight="1"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="@drawable/ic_baseline_backspace_24" />
+                </TableRow>
+
+            </androidx.gridlayout.widget.GridLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
