@@ -418,10 +418,8 @@ class CurrencyActivity : DaggerAppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-
                 },
                 {
-
                 }
             )
         }

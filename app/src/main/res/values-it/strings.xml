@@ -107,5 +107,7 @@
     <string name="history">История</string>
     <string name="settings">Настройки</string>
 
+    <!-- Passcode -->
+    <string name="exit">Exit</string>
 
 </resources>

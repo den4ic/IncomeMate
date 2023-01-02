@@ -107,5 +107,7 @@
     <string name="history">History</string>
     <string name="settings">Settings</string>
 
+    <!-- Passcode -->
+    <string name="exit">Exit</string>
 
 </resources>

@@ -106,4 +106,8 @@
     <string name="categories">Catégories</string>
     <string name="history">L\'histoire</string>
     <string name="settings">Réglages</string>
+
+    <!-- Passcode -->
+    <string name="exit">Se déconnecter</string>
+
 </resources>
