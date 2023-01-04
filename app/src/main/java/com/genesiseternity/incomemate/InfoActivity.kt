@@ -5,14 +5,24 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.genesiseternity.incomemate.auth.LoginActivity
 import com.genesiseternity.incomemate.databinding.ActivityInfoBinding
+import com.genesiseternity.incomemate.room.CurrencySettingsDao
+import com.genesiseternity.incomemate.settings.PageSequenceNumber
+import com.genesiseternity.incomemate.settings.Passcode
+import com.genesiseternity.incomemate.settings.StateActionPasscode
 import com.jakewharton.rxbinding4.view.clicks
+import dagger.android.support.DaggerAppCompatActivity
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class InfoActivity : AppCompatActivity()
+class InfoActivity : DaggerAppCompatActivity()
 {
     private lateinit var binding: ActivityInfoBinding
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -34,7 +44,33 @@ class InfoActivity : AppCompatActivity()
         compositeDisposable.add(binding.selectLoginBtn.clicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
             .subscribe {
-                startActivity(Intent(this, LoginActivity::class.java))
+
+                compositeDisposable.add(currencySettingsDao.get().getEnabledPasscodeByIdPage()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+                            if (it)
+                            {
+                                initNewPage(Passcode::class.java)
+                            }
+                            else
+                            {
+                                initNewPage(LoginActivity::class.java)
+                            }
+                        },
+                        {
+                            it.printStackTrace()
+                        }
+                    ))
             })
+    }
+
+    private fun <T> initNewPage(Klass: Class<T>)
+    {
+        val intent: Intent = Intent(this, Klass)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.putExtra("stateActionId", StateActionPasscode.DEFAULT.ordinal)
+        startActivity(intent)
     }
 }

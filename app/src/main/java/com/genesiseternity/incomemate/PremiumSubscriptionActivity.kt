@@ -28,16 +28,23 @@ class PremiumSubscriptionActivity : AppCompatActivity()
         val disposableMainMenuBtn: Disposable = binding.mainMenuBtn.clicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
             .subscribe {
-                startActivity(Intent(this, MainActivity::class.java))
+                initMainActivity()
             }
 
         val disposableSubPlanBtn: Disposable = binding.selectFreeSubPlanBtn.clicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
             .subscribe {
-                startActivity(Intent(this, MainActivity::class.java))
+                initMainActivity()
             }
 
         compositeDisposable.addAll(disposableMainMenuBtn, disposableSubPlanBtn)
+    }
+
+    private fun initMainActivity()
+    {
+        val intent: Intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
     }
 
     override fun onDestroy()

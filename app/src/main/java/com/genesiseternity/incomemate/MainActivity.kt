@@ -1,5 +1,6 @@
 package com.genesiseternity.incomemate
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -11,12 +12,16 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.genesiseternity.incomemate.auth.LoginActivity
 import com.genesiseternity.incomemate.databinding.ActivityMainBinding
 import com.genesiseternity.incomemate.history.OperationsHistoryFragment
 import com.genesiseternity.incomemate.pieChart.PieChartFragment
 import com.genesiseternity.incomemate.room.CurrencySettingsDao
 import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
+import com.genesiseternity.incomemate.settings.Passcode
 import com.genesiseternity.incomemate.settings.SettingsFragment
+import com.genesiseternity.incomemate.settings.StateActionPasscode
+import com.genesiseternity.incomemate.utils.LanguageConfig
 import com.genesiseternity.incomemate.wallet.WalletFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.android.support.DaggerAppCompatActivity
@@ -28,32 +33,10 @@ class MainActivity : DaggerAppCompatActivity()
 {
     private lateinit var binding: ActivityMainBinding
     companion object {
-        var defaultCurrencyType: Int = 0
         var isFirstInit: Boolean = false
     }
 
     @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
-
-    fun getDefaultCurrencyType(): Int { return defaultCurrencyType }
-    private fun setDefaultCurrencyType(defaultCurrencyType: Int)
-    {
-        MainActivity.defaultCurrencyType = defaultCurrencyType
-
-        currencySettingsDao.get().updateCurrencySettingsData(CurrencySettingsEntity(
-            0,
-            defaultCurrencyType
-            ))
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    Log.d("MainActivity", " update 1")
-                },
-                {
-                    Log.d("MainActivity", " update 2")
-                }
-            )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +44,11 @@ class MainActivity : DaggerAppCompatActivity()
         setContentView(binding.root)
 
         setStatusBarTransparent()
+        initSettings()
+    }
 
-        initInsertDB()
-
+    private fun initialize()
+    {
         val idPage = intent.getIntExtra("idNavigationPage", 0)
 
         if (!isFirstInit)
@@ -107,24 +92,25 @@ class MainActivity : DaggerAppCompatActivity()
         fragmentTransaction.commit()
     }
 
-    private fun initInsertDB()
+    private fun initSettings()
     {
-        val currencySettingsEntity: CurrencySettingsEntity = CurrencySettingsEntity(
-            0,
-            getDefaultCurrencyType()
-        )
-
         currencySettingsDao.get().getAllCurrencySettingsData()
             .filter {
                 if (it.isNotEmpty()) {
                     return@filter true
                 } else {
-                    currencySettingsDao.get().insertCurrencySettingsData(currencySettingsEntity)
+                    currencySettingsDao.get().insertCurrencySettingsData(CurrencySettingsEntity(
+                        0,
+                        0,
+                        0,
+                        0,
+                        false
+                        ))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                             {
-                                Log.d("MainActivity", " update 333 ")
+                                Log.d("MainActivity", " insertCurrencySettingsData ")
                             },
                             {
 
@@ -138,9 +124,13 @@ class MainActivity : DaggerAppCompatActivity()
             .subscribe(
                 {
                     //setDefaultCurrencyType(it[0].defaultCurrencyType)
-                    Log.d("MainActivity", " 444 setDefaultCurrencyType " + it[0].defaultCurrencyType)
+
+                    LanguageConfig(this.resources).setLanguage(it[0].defaultLanguageType)
+                    initialize()
                 },
                 {
+                    initialize()
+                    it.printStackTrace()
                 })
     }
 

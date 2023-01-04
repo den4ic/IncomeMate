@@ -203,6 +203,7 @@
     <string name="settings">Настройки</string>
 
     <!-- Passcode -->
+    <string name="title_passcode">Введите код</string>
     <string name="exit">Выйти</string>
 
     <!-- Английский Арабский Испанский Итальянский Китайский Корейский Немецкий

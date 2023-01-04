@@ -108,6 +108,7 @@
     <string name="settings">Настройки</string>
 
     <!-- Passcode -->
+    <string name="title_passcode">Enter code</string>
     <string name="exit">Exit</string>
 
 </resources>

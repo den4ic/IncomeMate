@@ -30,7 +30,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -38,61 +37,65 @@ import javax.inject.Inject
 class PieChartFragment : DaggerFragment() {
 
     private lateinit var binding: FragmentPieChartBinding
-
     private lateinit var pieChartViewModel: PieChartViewModel
 
     @Inject lateinit var pieChartDao: dagger.Lazy<PieChartDao>
     @Inject lateinit var providerFactory: ViewModelProviderFactory
     @Inject lateinit var currencyDetailsDao: dagger.Lazy<CurrencyDetailsDao>
+    @Inject lateinit var currencyFormat: dagger.Lazy<CurrencyFormat>
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    //@Override
-    //public void onCreate(Bundle savedInstanceState)
-    //{
-    //    super.onCreate(savedInstanceState)
-    //    pieChartViewModel = new ViewModelProvider(this, providerFactory).get(PieChartViewModel.class)
-    //}
+    private lateinit var viewPager: ViewPager2
+    lateinit var viewPagerCallback: ViewPager2.OnPageChangeCallback
+    private lateinit var pagerAdapter: FragmentStateAdapter
+    private val NUM_PAGES: Int = 376200 // 1970 - 3000
+    private val MAX_COUNT_UPDATE_PAGE: Int = 2
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewPager.unregisterOnPageChangeCallback(viewPagerCallback)
-        compositeDisposable.dispose()
+    companion object {
+        private var isFirstInitPage: Boolean = true
+        private var counterUpdatePage: Int = 0
+        private var lastDate: Date = Date()
+        private var currentDate: Date = Date()
     }
 
+    private lateinit var dateFormat: DateFormat
+    private val computePatternDate: String = "dd.MM.yyyy"
+    private val uiPatternDate: String = "EEE, dd MMMM yyyy"
+    private lateinit var centerDateBtn: Button
+    private lateinit var leftDateBtn: Button
+    private lateinit var rightDateBtn: Button
+
+    private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //AndroidSupportInjection.inject(this)
         binding = FragmentPieChartBinding.inflate(inflater, container, false)
         val view: View = binding.root
-
         pieChartViewModel = ViewModelProvider(this, providerFactory).get(PieChartViewModel::class.java)
 
-        initAllMonetaryAccount(view)
+        counterUpdatePage++
 
+        if (counterUpdatePage >= MAX_COUNT_UPDATE_PAGE)
+        {
+            lastDate = Date()
+            counterUpdatePage = 0
+        }
+
+        currentDate = if (isFirstInitPage) Date() else lastDate
+
+        initAllMonetaryAccount(view)
         return view
     }
 
-
-
-    private lateinit var viewPager: ViewPager2
-    lateinit var viewPagerCallback: ViewPager2.OnPageChangeCallback
-    private lateinit var pagerAdapter: FragmentStateAdapter
-    private val NUM_PAGES: Int = 376200 // 1970 - 3000
-
-    private lateinit var currentDate: Date
-    private lateinit var dateFormat: DateFormat
-    //private val referenceDate: String = "01.01.1970"
-    private val computePatternDate: String = "dd.MM.yyyy"
-    private val uiPatternDate: String = "EEE, dd MMMM yyyy"
-    private lateinit var centerDateBtn: Button
-    private lateinit var leftDateBtn: Button
-    private lateinit var rightDateBtn: Button
+    override fun onDestroy() {
+        super.onDestroy()
+        viewPager.unregisterOnPageChangeCallback(viewPagerCallback)
+        compositeDisposable.dispose()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,7 +108,6 @@ class PieChartFragment : DaggerFragment() {
         pagerAdapter = ScreenSlideViewPagerAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = pagerAdapter
 
-        currentDate = Date()
 
 
         /////////val calendar: Calendar = Calendar.getInstance()
@@ -119,11 +121,7 @@ class PieChartFragment : DaggerFragment() {
 
         val calFirst: Calendar = Calendar.getInstance()
         val calSecond: Calendar = Calendar.getInstance()
-
-        //calFirst.time = dateFormat.parse(referenceDate) as Date
-        //calSecond.time = dateFormat.parse(dateFormat.format(currentDate)) as Date
         calFirst.clear()
-
         val daysBetween: Int = daysBetween(calFirst.time, calSecond.time)
 
         viewPager.setCurrentItem(daysBetween, false)
@@ -157,7 +155,6 @@ class PieChartFragment : DaggerFragment() {
             }
         }
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
-
     }
 
     inner class ScreenSlideViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
@@ -168,17 +165,6 @@ class PieChartFragment : DaggerFragment() {
             val args: Bundle = Bundle()
             args.putInt("id_page", position)
             fragmentView.arguments = args
-
-            //PieChartEntity pieChartEntities = new PieChartEntity()
-            //pieChartEntities.setIdPage(position)
-            //PieChartCategoriesEntity pieChartCategoriesEntity = new PieChartCategoriesEntity()
-            //pieChartCategoriesEntity.setId(0)
-            //pieChartCategoriesEntity.setTitleCategory("test1")
-            //pieChartCategoriesEntity.setAmountCategory("test1")
-            //pieChartCategoriesEntity.setCurrencyType(0)
-            //pieChartCategoriesEntity.setIdIcon(0)
-            //pieChartCategoriesEntity.setIdColorIcon(0)
-            //pieChartEntities.setPieChartCategoriesEntity(pieChartCategoriesEntity)
 
             val pieChartEntities: PieChartEntity = PieChartEntity(
                 position,
@@ -273,7 +259,7 @@ class PieChartFragment : DaggerFragment() {
 
     }
 
-    //public int SecondsBetween(Date d1, Date d2){
+    //public int secondsBetween(Date d1, Date d2){
     //    //return (int)((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) // day
     //    return (int)((d2.getTime() - d1.getTime()) / (1000)) // sec
     //}
@@ -293,18 +279,14 @@ class PieChartFragment : DaggerFragment() {
         val dt: String = dateFormat.format(calendar.time)
         centerDateBtn.text = dt
 
+        isFirstInitPage = false
+        lastDate = calendar.time
     }
-
-
-
-
-    private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel> = ArrayList()
 
     private fun initAllMonetaryAccount(view: View)
     {
-        val imageCurrencyType: TypedArray = resources.obtainTypedArray(R.array.image_currency_type)
-
         val allMonetaryAccount: Spinner = binding.spinnerMonetaryAccount
+        val imageCurrencyType: TypedArray = resources.obtainTypedArray(R.array.image_currency_type)
         val listMonetaryAccounts: String = resources.getString(R.string.list_monetary_account)
 
         currencyRecyclerModel.add(CurrencyRecyclerModel(0, listMonetaryAccounts, "0",0, imageCurrencyType.getResourceId(0, 0), 0))
@@ -375,9 +357,6 @@ class PieChartFragment : DaggerFragment() {
         UpdateAmountCurrency()
          */
     }
-
-    @Inject lateinit var currencyFormat: dagger.Lazy<CurrencyFormat>
-    //CurrencyFormat currencyFormat = new CurrencyFormat()
 
     private fun updateAmountCurrency()
     {

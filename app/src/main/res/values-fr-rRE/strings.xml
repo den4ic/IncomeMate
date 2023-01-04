@@ -108,6 +108,7 @@
     <string name="settings">Réglages</string>
 
     <!-- Passcode -->
+    <string name="title_passcode">Entrez un code</string>
     <string name="exit">Se déconnecter</string>
 
 </resources>

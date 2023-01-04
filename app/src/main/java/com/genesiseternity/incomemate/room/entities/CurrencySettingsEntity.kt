@@ -9,7 +9,10 @@ import androidx.room.PrimaryKey
 )
 data class CurrencySettingsEntity (
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "default_currency_type") val defaultCurrencyType: Int
+    @ColumnInfo(name = "default_currency_type") val defaultCurrencyType: Int,
+    @ColumnInfo(name = "default_language_type") val defaultLanguageType: Int,
+    @ColumnInfo(name = "passcode") val passcode: Int,
+    @ColumnInfo(name = "is_enabled_passcode") val isEnabledPasscode: Boolean
 ) {
     companion object {
         const val TABLE_NAME: String  = "CurrencySettings"

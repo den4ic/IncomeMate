@@ -2,45 +2,49 @@ package com.genesiseternity.incomemate.settings
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.helper.widget.Carousel.Adapter
+import androidx.constraintlayout.helper.widget.Carousel.TEXT_ALIGNMENT_CENTER
 import androidx.core.content.FileProvider
+import androidx.core.graphics.green
+import androidx.core.view.allViews
+import androidx.core.view.get
+import androidx.core.view.indices
 import com.genesiseternity.incomemate.MainActivity
-import com.genesiseternity.incomemate.Passcode
 import com.genesiseternity.incomemate.R
+import com.genesiseternity.incomemate.auth.LoginActivity
 import com.genesiseternity.incomemate.databinding.FragmentSettingsBinding
 import com.genesiseternity.incomemate.history.HistoryRecyclerModel
 import com.genesiseternity.incomemate.room.*
 import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesTitleEntity
+import com.genesiseternity.incomemate.utils.LanguageConfig
 import dagger.android.support.DaggerFragment
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.time.Duration.Companion.seconds
 
 class SettingsFragment : DaggerFragment() {
 
@@ -63,7 +67,7 @@ class SettingsFragment : DaggerFragment() {
     private val alertChoiceCurrTitle: String = "Основная валюта"
     private val alertChoiceCurrToast: String = "Выбрана валюта: "
 
-    private val textLanguageBtn: String = "Язык:\n"
+    private val textLanguageBtn: String = "Язык: "
     private val alertTranslateTitle: String = "Основной язык"
     private val alertTranslateToast: String = "Выбран язык: "
 
@@ -88,12 +92,10 @@ class SettingsFragment : DaggerFragment() {
             removeAllDataSettings()
         }
 
-        binding.languageBtn.setOnClickListener {
-            translateLanguage()
-        }
+        translateLanguage()
 
         binding.passcodeBtn.setOnClickListener {
-            openPagePasscode()
+            openPagePasscode(view)
         }
 
         binding.exportCSV.setOnClickListener {
@@ -217,9 +219,7 @@ class SettingsFragment : DaggerFragment() {
 
                         builder.setPositiveButton(alertDialogPositive) { dialogInterface, i ->
 
-                            currencySettingsDao.get().updateCurrencySettingsData(
-                                CurrencySettingsEntity(0, selectedCurrency
-                                ))
+                            currencySettingsDao.get().updateDefaultCurrency(0, selectedCurrency)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(
@@ -400,88 +400,137 @@ class SettingsFragment : DaggerFragment() {
     {
         listLanguages = resources.getStringArray(R.array.list_languages)
         val languageBtn: Button = binding.languageBtn
-        languageBtn.text = textLanguageBtn + listLanguages[selectedLanguage]
 
-        languageBtn.setOnClickListener() {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder.setTitle(alertTranslateTitle)
-            builder.setCancelable(true)
-
-            builder.setSingleChoiceItems(listLanguages, selectedLanguage) { dialogInterface, index ->
-                selectedLanguage = index
-            }
-
-            builder.setPositiveButton(alertDialogPositive) { dialogInterface, i ->
-                when (selectedLanguage)
+        compositeDisposable.add(currencySettingsDao.get().getDefaultLanguageByIdPage()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
                 {
-                    0 -> setLocale("en") // Английский
-                    1 -> setLocale("") // Арабский
-                    2 -> setLocale("") // Испанский
-                    3 -> setLocale("it") // Итальянский
-                    4 -> setLocale("zh") // Китайский
-                    5 -> setLocale("") // Корейский
-                    6 -> setLocale("") // Немецкий
-                    7 -> setLocale("") // Португальский
-                    8 -> setLocale("ru") // Русский
-                    9 -> setLocale("") // Сербский
-                    10 -> setLocale("") // Турецкий
-                    11 -> setLocale("fr") // Французский
-                    12 -> setLocale("") // Японский
-                }
+                    selectedLanguage = it
 
-                languageBtn.text = textLanguageBtn + listLanguages[selectedLanguage]
-                Toast.makeText(context, alertTranslateToast + listLanguages[selectedLanguage], Toast.LENGTH_LONG).show()
-                dialogInterface.dismiss()
+                    languageBtn.text = textLanguageBtn + listLanguages[selectedLanguage]
 
-                val intent: Intent = Intent(context, MainActivity::class.java)
-                startActivity(intent)
-                //(activity as MainActivity).recreate()
+                    languageBtn.setOnClickListener() {
+                        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                        builder.setTitle(alertTranslateTitle)
+                        builder.setCancelable(true)
 
-                /*
-                currencySettingsDao.get().updateCurrencySettingsData(
-                    CurrencySettingsEntity(
-                        0,
-                        selectedCurrency,
-                        selectedLanguage
-                    ))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                        {
-                            languageBtn.text = "Основной язык:\n" + listLanguages[selectedLanguage]
-                            Toast.makeText(activity, "Выбран язык: " + listLanguages[selectedLanguage], Toast.LENGTH_LONG).show()
-                            dialogInterface.dismiss()
-                        },
-                        {
-                            dialogInterface.dismiss()
-                            it.printStackTrace()
+                        builder.setSingleChoiceItems(listLanguages, selectedLanguage) { dialogInterface, index ->
+                            selectedLanguage = index
                         }
-                    )
 
-                 */
-            }
+                        builder.setPositiveButton(alertDialogPositive) { dialogInterface, i ->
 
-            builder.setNegativeButton(alertDialogNegative) { dialogInterface, i -> }
-            builder.show()
-        }
-    }
+                            compositeDisposable.add(currencySettingsDao.get().updateDefaultLanguage(0, selectedLanguage)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(
+                                    {
+                                        //setLanguage(selectedLanguage)
+                                        LanguageConfig(this.resources).setLanguage(selectedLanguage)
 
-    private fun setLocale(language: String)
-    {
-        val resources: Resources = this.resources
-        val configuration: Configuration = resources.configuration
-        val locale: Locale = Locale(language)
-        Locale.setDefault(locale)
-        configuration.setLocale(locale)
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+                                        languageBtn.text = textLanguageBtn + listLanguages[selectedLanguage]
+                                        Toast.makeText(context, alertTranslateToast + listLanguages[selectedLanguage], Toast.LENGTH_LONG).show()
+                                        dialogInterface.dismiss()
+
+                                        val intent: Intent = Intent(context, MainActivity::class.java)
+                                        startActivity(intent)
+                                        //(activity as MainActivity).recreate()
+
+                                    },
+                                    {
+                                        it.printStackTrace()
+                                    }
+                                ))
+                        }
+
+                        builder.setNegativeButton(alertDialogNegative) { dialogInterface, i -> }
+                        builder.show()
+                    }
+                },
+                {
+
+                }
+            ))
     }
     //endregion
 
     //region Passcode
-    private fun openPagePasscode()
+    private fun openPagePasscode(view: View)
     {
-        val intent: Intent = Intent(context, Passcode::class.java)
-        startActivity(intent)
+        val listAction : Array<String> = arrayOf("Включить код-пароль", "Сменить код-пароль", "Выключить код-пароль")
+
+        val viewDialog: View = layoutInflater.inflate(R.layout.custom_dialog_setting_passcode, null)
+        val listView = viewDialog.findViewById<ListView>(R.id.listViewDialogPasscode)
+        val adapter = ArrayAdapter<String>(view.context, android.R.layout.simple_list_item_1 , listAction)
+
+        compositeDisposable.add(currencySettingsDao.get().getEnabledPasscodeByIdPage()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+
+                    listView.setOnItemClickListener { parent, view, position, id ->
+                        if (it) {
+                            if (position == 0) {
+                                view.isEnabled = false
+                                return@setOnItemClickListener
+                            }
+                        } else {
+                            if (position == 2) {
+                                view.isEnabled = false
+                                return@setOnItemClickListener
+                            }
+                        }
+
+                        // FIXME: destroy display a dialog box after exiting an activity -> alertDialog.show()
+                        val intent: Intent = Intent(context, Passcode::class.java)
+                        intent.putExtra("stateActionId", position)
+                        startActivity(intent)
+                    }
+
+                    listView.adapter = adapter
+
+                    builder.setTitle("Код-пароль")
+                    .setCancelable(true)
+                    //.setItems(listAction) { dialogInterface, i ->
+                    //    val intent: Intent = Intent(context, Passcode::class.java)
+                    //    intent.putExtra("stateActionId", i)
+                    //    startActivity(intent)
+                    //    dialogInterface.dismiss()
+                    //}
+                    .setNegativeButton("Отмена") { dialogInterface, i ->
+                        dialogInterface.cancel()
+                    }
+                    .setView(viewDialog)
+
+                    val alertDialog: AlertDialog = builder.create()
+                    alertDialog.show()
+                },
+                {
+                    it.printStackTrace()
+                }
+            ))
+    }
+
+    private fun sendStateActionAlert(listAction: Array<String>)
+    {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            .setTitle("Код-пароль")
+            .setCancelable(true)
+            .setItems(listAction) { dialogInterface, i ->
+                val intent: Intent = Intent(context, Passcode::class.java)
+                intent.putExtra("stateActionId", i)
+                startActivity(intent)
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton("Отмена") { dialogInterface, i ->
+                dialogInterface.cancel()
+            }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
     }
     //endregion
 }

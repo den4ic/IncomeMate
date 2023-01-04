@@ -6,7 +6,7 @@
     xmlns:grid="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Passcode"
+    tools:context=".settings.Passcode"
     android:orientation="vertical"
     android:weightSum="100">
 
@@ -15,11 +15,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/titleTextPasscode"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center|bottom"
+            android:layout_weight="1.0"
+            android:text="@string/title_passcode"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:id="@+id/diodeList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:orientation="horizontal"
             android:gravity="center|bottom"
             android:paddingBottom="32dp">
@@ -61,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1.5">
 
             <androidx.gridlayout.widget.GridLayout
                 android:id="@+id/gridBtnList"
@@ -192,7 +204,7 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="48dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_backspace_24" />
                 </TableRow>

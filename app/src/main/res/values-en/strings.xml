@@ -108,6 +108,7 @@
     <string name="settings">Settings</string>
 
     <!-- Passcode -->
+    <string name="title_passcode">Enter code</string>
     <string name="exit">Exit</string>
 
 </resources>
