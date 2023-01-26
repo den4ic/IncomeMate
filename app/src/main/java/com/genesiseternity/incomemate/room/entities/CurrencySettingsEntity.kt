@@ -12,7 +12,9 @@ data class CurrencySettingsEntity (
     @ColumnInfo(name = "default_currency_type") val defaultCurrencyType: Int,
     @ColumnInfo(name = "default_language_type") val defaultLanguageType: Int,
     @ColumnInfo(name = "passcode") val passcode: Int,
-    @ColumnInfo(name = "is_enabled_passcode") val isEnabledPasscode: Boolean
+    @ColumnInfo(name = "is_enabled_passcode") val isEnabledPasscode: Boolean,
+    @ColumnInfo(name = "is_enabled_night_mode") val isEnabledNightMode: Boolean,
+    @ColumnInfo(name = "default_id_currency_account") val defaultIdCurrencyAccount: Int
 ) {
     companion object {
         const val TABLE_NAME: String  = "CurrencySettings"

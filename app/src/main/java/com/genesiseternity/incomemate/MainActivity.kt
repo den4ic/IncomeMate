@@ -1,6 +1,6 @@
 package com.genesiseternity.incomemate
 
-import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,24 +8,23 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.genesiseternity.incomemate.auth.LoginActivity
 import com.genesiseternity.incomemate.databinding.ActivityMainBinding
 import com.genesiseternity.incomemate.history.OperationsHistoryFragment
-import com.genesiseternity.incomemate.pieChart.PieChartFragment
+import com.genesiseternity.incomemate.pieChart.PieChartHeadFragment
 import com.genesiseternity.incomemate.room.CurrencySettingsDao
 import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
-import com.genesiseternity.incomemate.settings.Passcode
 import com.genesiseternity.incomemate.settings.SettingsFragment
-import com.genesiseternity.incomemate.settings.StateActionPasscode
 import com.genesiseternity.incomemate.utils.LanguageConfig
 import com.genesiseternity.incomemate.wallet.WalletFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -36,7 +35,10 @@ class MainActivity : DaggerAppCompatActivity()
         var isFirstInit: Boolean = false
     }
 
-    @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
+    //@Inject lateinit var languageConfig: dagger.Lazy<LanguageConfig>
+    //@Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
+
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +46,83 @@ class MainActivity : DaggerAppCompatActivity()
         setContentView(binding.root)
 
         setStatusBarTransparent()
-        initSettings()
+        //initSettings()
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED)
+        {
+            requestPermissions(arrayOf(android.Manifest.permission.RECEIVE_SMS), 100)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 100)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(this, "PERMISSION GRANTED", Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                Toast.makeText(this, "PERMISSION NOT GRANTED", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
+
+    }
+
+    @Inject
+    fun initSettings(languageConfig: dagger.Lazy<LanguageConfig>, currencySettingsDao: dagger.Lazy<CurrencySettingsDao>)
+    {
+        compositeDisposable.add(currencySettingsDao.get().getAllCurrencySettingsData()
+            .filter {
+                if (it.isNotEmpty()) {
+                    return@filter true
+                } else {
+                    compositeDisposable.add(currencySettingsDao.get().insertCurrencySettingsData(CurrencySettingsEntity(
+                        0,
+                        0,
+                        0,
+                        0,
+                        false,
+                        false,
+                        0
+                        ))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                            {
+                                initialize()
+                            },
+                            {
+
+                            }))
+
+                    return@filter false
+                }
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    //setDefaultCurrencyType(it[0].defaultCurrencyType)
+
+                    //LanguageConfig(this.resources).setLanguage(it[0].defaultLanguageType)
+                    languageConfig.get().setLanguage(it[0].defaultLanguageType)
+                    languageConfig.get().resources = this.resources
+                    languageConfig.get().setLanguage(it[0].defaultLanguageType)
+
+                    initialize()
+                },
+                {
+                    initialize()
+                    it.printStackTrace()
+                }))
     }
 
     private fun initialize()
@@ -54,7 +132,7 @@ class MainActivity : DaggerAppCompatActivity()
         if (!isFirstInit)
         {
             isFirstInit = true
-            replaceFragment(PieChartFragment())
+            replaceFragment(PieChartHeadFragment())
             binding.bottomNavigationView.selectedItemId = R.id.pie_chart
         }
         else
@@ -66,7 +144,7 @@ class MainActivity : DaggerAppCompatActivity()
             }
             else if (idPage == 1)
             {
-                replaceFragment(PieChartFragment())
+                replaceFragment(PieChartHeadFragment())
                 binding.bottomNavigationView.selectedItemId = R.id.pie_chart
             }
         }
@@ -76,7 +154,7 @@ class MainActivity : DaggerAppCompatActivity()
             when (it.itemId)
             {
                 (R.id.wallet) -> replaceFragment(WalletFragment())
-                (R.id.pie_chart) -> replaceFragment(PieChartFragment())
+                (R.id.pie_chart) -> replaceFragment(PieChartHeadFragment())
                 (R.id.operations_history) -> replaceFragment(OperationsHistoryFragment())
                 (R.id.settings) -> replaceFragment(SettingsFragment())
             }
@@ -90,48 +168,6 @@ class MainActivity : DaggerAppCompatActivity()
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout, fragment)
         fragmentTransaction.commit()
-    }
-
-    private fun initSettings()
-    {
-        currencySettingsDao.get().getAllCurrencySettingsData()
-            .filter {
-                if (it.isNotEmpty()) {
-                    return@filter true
-                } else {
-                    currencySettingsDao.get().insertCurrencySettingsData(CurrencySettingsEntity(
-                        0,
-                        0,
-                        0,
-                        0,
-                        false
-                        ))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            {
-                                Log.d("MainActivity", " insertCurrencySettingsData ")
-                            },
-                            {
-
-                            })
-
-                    return@filter false
-                }
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    //setDefaultCurrencyType(it[0].defaultCurrencyType)
-
-                    LanguageConfig(this.resources).setLanguage(it[0].defaultLanguageType)
-                    initialize()
-                },
-                {
-                    initialize()
-                    it.printStackTrace()
-                })
     }
 
     //region StatusBar
@@ -162,4 +198,9 @@ class MainActivity : DaggerAppCompatActivity()
         this.layoutParams = menuLayoutParams
     }
     //endregion
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
 }

@@ -19,6 +19,7 @@ data class PieChartCategoriesEntity (
     var id: Int,
     @ColumnInfo(name = "id_page") var idPage: Int,
     @ColumnInfo(name = "amount_category") var amountCategory: String,
+    @ColumnInfo(name = "id_currency_account") var idCurrencyAccount: Int,
 ) {
     companion object {
         const val TABLE_NAME: String  = "PieChartCategories"

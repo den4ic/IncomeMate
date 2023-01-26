@@ -1,51 +1,42 @@
 package com.genesiseternity.incomemate.history
 
-import android.content.Context
 import android.content.res.TypedArray
 import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.genesiseternity.incomemate.R
-import com.genesiseternity.incomemate.wallet.CurrencyRecyclerModel
-import com.genesiseternity.incomemate.wallet.CurrencyRecyclerViewAdapter
+import com.genesiseternity.incomemate.databinding.RowHistoryDateItemBinding
+import com.genesiseternity.incomemate.databinding.RowHistoryItemBinding
 import com.genesiseternity.incomemate.wallet.IRecyclerView
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-class HistoryRecyclerViewAdapter(context: Context, private val iRecyclerView: IRecyclerView) :
+class HistoryRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var inflater: LayoutInflater
     private var historyRecyclerModels: List<HistoryRecyclerModel> = emptyList()
-
     //fun getHistoryRecyclerModel(): List<HistoryRecyclerModel> = historyRecyclerModels
 
     private val TYPE_VIEW_OPERATION: Int = 1
     private val TYPE_VIEW_DATE: Int = 2
 
-    init {
-        //historyRecyclerModels = ArrayList()
-        this.inflater = LayoutInflater.from(context)
-    }
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater: LayoutInflater = LayoutInflater.from(parent.context)
+
         if (viewType == TYPE_VIEW_OPERATION)
         {
-            val view: View = inflater.inflate(R.layout.row_history_item, parent, false)
-            return OperationViewHolder(view, iRecyclerView)
+            val bindingHistoryItem: RowHistoryItemBinding = RowHistoryItemBinding.inflate(inflater, parent, false)
+            return OperationViewHolder(bindingHistoryItem, iRecyclerView)
         }
         else
         {
-            val view: View = inflater.inflate(R.layout.row_history_date_item, parent, false)
-            return DateViewHolder(view)
+            val bindingHistoryDate: RowHistoryDateItemBinding = RowHistoryDateItemBinding.inflate(inflater, parent, false)
+            return DateViewHolder(bindingHistoryDate)
         }
     }
 
@@ -88,24 +79,28 @@ class HistoryRecyclerViewAdapter(context: Context, private val iRecyclerView: IR
         //notifyDataSetChanged()
     }
 
-    class OperationViewHolder(itemView: View, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(itemView)
+    class OperationViewHolder(binding: RowHistoryItemBinding, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(binding.root)
     {
-        private var amountCash: TextView
-        private var titleCategoryName: TextView
-        private var titleWalletName: TextView
-        private var iconCategory: ImageView
-        private var iconWallet: ImageView
-        private var imageCategoryType: TypedArray
+        private val amountCash: TextView
+        private val titleCategoryName: TextView
+        private val titleWalletName: TextView
+        private val iconCategory: ImageView
+        private val iconWallet: ImageView
+        private val imageCategoryType: TypedArray
+        private val imageWalletType: TypedArray
+
+        private val bindingRoot = binding.root
 
         init {
-            amountCash = itemView.findViewById(R.id.historyAmountCash)
-            titleCategoryName = itemView.findViewById(R.id.historyTitleCategoryName)
-            titleWalletName = itemView.findViewById(R.id.historyTitleWalletName)
-            iconCategory = itemView.findViewById(R.id.historyIconCategory)
-            iconWallet = itemView.findViewById(R.id.historyIconWallet)
-            imageCategoryType = itemView.resources.obtainTypedArray(R.array.image_category_type)
+            amountCash = binding.historyAmountCash
+            titleCategoryName = binding.historyTitleCategoryName
+            titleWalletName = binding.historyTitleWalletName
+            iconCategory = binding.historyIconCategory
+            iconWallet = binding.historyIconWallet
+            imageCategoryType = bindingRoot.resources.obtainTypedArray(R.array.image_category_type)
+            imageWalletType = bindingRoot.resources.obtainTypedArray(R.array.image_currency_type)
 
-            itemView.setOnClickListener()
+            bindingRoot.setOnClickListener()
             {
                 val pos: Int = adapterPosition
 
@@ -122,13 +117,13 @@ class HistoryRecyclerViewAdapter(context: Context, private val iRecyclerView: IR
             titleCategoryName.text = historyRecyclerModel.titleCategoryName
             titleWalletName.text = historyRecyclerModel.titleWalletName
             iconCategory.setImageResource(imageCategoryType.getResourceId(historyRecyclerModel.iconCategory,0 ))
-            iconWallet.setImageResource(historyRecyclerModel.iconWallet)
+            iconWallet.setImageResource(imageWalletType.getResourceId(historyRecyclerModel.iconWallet,0 ))
             iconCategory.setBackgroundColor(historyRecyclerModel.colorIdCategory)
             iconWallet.setBackgroundColor(historyRecyclerModel.colorIdWallet)
         }
     }
 
-    class DateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class DateViewHolder(binding: RowHistoryDateItemBinding) : RecyclerView.ViewHolder(binding.root)
     {
         private val dateDay: TextView
         private val dateDayOfWeek: TextView
@@ -136,10 +131,10 @@ class HistoryRecyclerViewAdapter(context: Context, private val iRecyclerView: IR
         private val amountCash: TextView
 
         init {
-            dateDay = itemView.findViewById(R.id.historyDateDay)
-            dateDayOfWeek = itemView.findViewById(R.id.historyDateDayOfWeek)
-            dateMonthYear = itemView.findViewById(R.id.historyDateMonthYear)
-            amountCash = itemView.findViewById(R.id.historyDateAmountCash)
+            dateDay = binding.historyDateDay
+            dateDayOfWeek = binding.historyDateDayOfWeek
+            dateMonthYear = binding.historyDateMonthYear
+            amountCash = binding.historyDateAmountCash
         }
 
         fun setDate(historyRecyclerModel: HistoryRecyclerModel)

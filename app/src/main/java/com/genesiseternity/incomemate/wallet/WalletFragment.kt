@@ -6,6 +6,7 @@ import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import com.genesiseternity.incomemate.room.entities.CurrencyDetailsEntity
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
@@ -41,6 +43,8 @@ class WalletFragment : DaggerFragment() {
     private lateinit var textViewTotalCashAccount: TextView
 
     private lateinit var deletedCurrencyRecyclerModel: CurrencyRecyclerModel
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     private val alertSwipeTitle: String = "Удалить счёт - "
     private val alertSwipeMessage: String = "Все операции связанные с данным счётом будут безвозвратно удалены.\n\nБаланс других счетов не поменяется."
     private val alertSwipePositive: String = "Удалить"
@@ -58,9 +62,8 @@ class WalletFragment : DaggerFragment() {
 
         recyclerView = binding.recyclerViewList
         textViewTotalCashAccount = binding.textViewTotalCashAccount
-        //textViewTotalCashAccount.setEnabled(false)
 
-        adapter = CurrencyRecyclerViewAdapter(view.context, walletViewModel)
+        adapter = CurrencyRecyclerViewAdapter(walletViewModel)
         recyclerView.adapter = adapter
 
         recyclerView.layoutManager = object : LinearLayoutManager(context){ override fun canScrollVertically(): Boolean { return false } }
@@ -71,17 +74,24 @@ class WalletFragment : DaggerFragment() {
 
         walletViewModel.getCurrencyRecyclerModelLiveData().observe(viewLifecycleOwner) { currencyRecyclerModels ->
             adapter.setDataCurrencyRecyclerModel(currencyRecyclerModels)
-            textViewTotalCashAccount.text = walletViewModel.getAllAmountCurrency()
+            //textViewTotalCashAccount.text = walletViewModel.getAllAmountCurrency()
+        }
+
+        walletViewModel.getCurrencyCbtModelLiveData().observe(viewLifecycleOwner) {
+            textViewTotalCashAccount.text = it
         }
 
         walletViewModel.getNotifyItemAdapterLiveData().observe(viewLifecycleOwner) { adapter.notifyItemChanged(it) }
-
 
         initRecyclerTouch()
 
         return view
     }
 
+    override fun onDestroy() {
+        compositeDisposable.dispose()
+        super.onDestroy()
+    }
 
     //override fun onDestroyView() {
     //    super.onDestroyView()
@@ -261,16 +271,16 @@ class WalletFragment : DaggerFragment() {
                 builder.setPositiveButton(alertSwipePositive) { dialogInterface, which ->
                     when (direction) {
                         ItemTouchHelper.LEFT ->
-                            currencyDetailsDao.get().deleteCurrentCurrencyData(adapter.getCurrencyRecyclerModel()[position].idCurrency)
-                                .observeOn(AndroidSchedulers.mainThread())
+                            compositeDisposable.add(currencyDetailsDao.get().deleteCurrentCurrencyData(adapter.getCurrencyRecyclerModel()[position].idCurrency)
                                 .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(
                                     {
                                         deletedCurrencyRecyclerModel = adapter.getCurrencyRecyclerModel()[position]
                                         adapter.deleteCurrencyRecyclerModel(deletedCurrencyRecyclerModel)
 
-                                        //walletViewModel.GetAllAmountCurrency(textViewTotalCashAccount)
-                                        textViewTotalCashAccount.text = walletViewModel.getAllAmountCurrency()
+                                        //textViewTotalCashAccount.text = walletViewModel.getAllAmountCurrency()
+                                        textViewTotalCashAccount.text = walletViewModel.updateCurrentCurrency(adapter.getCurrencyRecyclerModel())
 
                                         Snackbar.make(
                                             recyclerView,
@@ -279,7 +289,7 @@ class WalletFragment : DaggerFragment() {
                                         ).setAction(alertSwipeNegative) {
                                             adapter.addCurrencyRecyclerModelToPos(position, deletedCurrencyRecyclerModel)
 
-                                            currencyDetailsDao.get().insertCurrencyData(CurrencyDetailsEntity(
+                                            compositeDisposable.add(currencyDetailsDao.get().insertCurrencyData(CurrencyDetailsEntity(
                                                     deletedCurrencyRecyclerModel.idCurrency,
                                                     deletedCurrencyRecyclerModel.titleCurrencyName,
                                                     deletedCurrencyRecyclerModel.amountCurrency,
@@ -289,24 +299,24 @@ class WalletFragment : DaggerFragment() {
                                                     deletedCurrencyRecyclerModel.selectedColorId
                                                 )
                                             )
-                                                .observeOn(AndroidSchedulers.mainThread())
                                                 .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
                                                 .subscribe(
                                                     {
                                                         //adapter.notifyItemInserted(position)
 
-                                                        //walletViewModel.GetAllAmountCurrency(textViewTotalCashAccount)
-                                                        textViewTotalCashAccount.text = walletViewModel.getAllAmountCurrency()
+                                                        //textViewTotalCashAccount.text = walletViewModel.getAllAmountCurrency()
+                                                        textViewTotalCashAccount.text = walletViewModel.updateCurrentCurrency(adapter.getCurrencyRecyclerModel())
                                                     },
                                                     {
 
-                                                    })
+                                                    }))
                                         }.show()
                                     },
                                     {
 
                                     }
-                                )
+                                ))
 
                         //recyclerCurrency.remove(position)
                         //adapter.notifyItemRemoved(position)

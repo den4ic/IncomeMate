@@ -14,28 +14,22 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.genesiseternity.incomemate.R
+import com.genesiseternity.incomemate.databinding.RowItemBinding
 
-class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: IRecyclerView) :
+class CurrencyRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
     RecyclerView.Adapter<CurrencyRecyclerViewAdapter.ViewHolder>() {
 
-    private val inflater: LayoutInflater
     private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>
 
-    //constructor(Context context, List<CurrencyRecyclerModel> currencyRecyclerModel, IRecyclerView iRecyclerView)
     init {
-        //this.currencyRecyclerModel = currencyRecyclerModel
         currencyRecyclerModel = ArrayList()
-        this.inflater = LayoutInflater.from(context)
     }
 
-    fun getCurrencyRecyclerModel(): ArrayList<CurrencyRecyclerModel>
-    {
-        return currencyRecyclerModel
-    }
+    fun getCurrencyRecyclerModel(): ArrayList<CurrencyRecyclerModel> = currencyRecyclerModel
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = inflater.inflate(R.layout.row_item, parent, false)
-        return ViewHolder(view, iRecyclerView)
+        val binding: RowItemBinding = RowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding, iRecyclerView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -47,7 +41,8 @@ class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: I
 
         if (rCurrency.amountCurrency.length == 1 && rCurrency.amountCurrency.startsWith("0"))
         {
-            holder.amountCurrency.text = rCurrency.amountCurrency + " " + holder.currencySymbol[rCurrency.currencyType]
+            val amountCurrencyRes = rCurrency.amountCurrency + " " + holder.currencySymbol[rCurrency.currencyType]
+            holder.amountCurrency.text = amountCurrencyRes
         }
         else
         {
@@ -115,7 +110,8 @@ class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: I
 
     private fun findIndexById(idCurrency: Int): Int = currencyRecyclerModel.indexOfFirst { it.idCurrency == idCurrency }
 
-    class ViewHolder(itemView: View, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(itemView)
+    //class ViewHolder(itemView: View, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(binding: RowItemBinding, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(binding.root)
     {
         val idCurrency: TextView
         val titleCurrencyName: TextView
@@ -125,19 +121,29 @@ class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: I
         val imageCurrencyType: TypedArray
         val drawAddingBtn: Drawable
 
+        private val bindingRoot = binding.root
+
         init
         {
-            idCurrency = itemView.findViewById(R.id.idCurrency)
-            titleCurrencyName = itemView.findViewById(R.id.titleCurrencyName)
-            amountCurrency = itemView.findViewById(R.id.amountCurrency)
-            imgIconCurrency = itemView.findViewById(R.id.imgIconCurrency)
+            //idCurrency = itemView.findViewById(R.id.idCurrency)
+            //titleCurrencyName = itemView.findViewById(R.id.titleCurrencyName)
+            //amountCurrency = itemView.findViewById(R.id.amountCurrency)
+            //imgIconCurrency = itemView.findViewById(R.id.imgIconCurrency)
+            //imgIconCurrency.setColorFilter(Color.parseColor("#2d3436"))
+            //currencySymbol = itemView.resources.getStringArray(R.array.list_currency_symbol)
+
+            idCurrency = binding.idCurrency
+            titleCurrencyName = binding.titleCurrencyName
+            amountCurrency = binding.amountCurrency
+            imgIconCurrency = binding.imgIconCurrency
             imgIconCurrency.setColorFilter(Color.parseColor("#2d3436"))
-            currencySymbol = itemView.resources.getStringArray(R.array.list_currency_symbol)
 
-            drawAddingBtn = ResourcesCompat.getDrawable(itemView.resources, R.drawable.ic_baseline_add_circle_24, null)!!
-            imageCurrencyType = itemView.resources.obtainTypedArray(R.array.image_currency_type)
+            currencySymbol = bindingRoot.resources.getStringArray(R.array.list_currency_symbol)
+            drawAddingBtn = ResourcesCompat.getDrawable(bindingRoot.resources, R.drawable.ic_baseline_add_circle_24, null)!!
+            imageCurrencyType = bindingRoot.resources.obtainTypedArray(R.array.image_currency_type)
 
-            itemView.setOnClickListener()
+            //itemView.setOnClickListener()
+            bindingRoot.setOnClickListener()
             {
                 val pos: Int = adapterPosition
 
@@ -145,24 +151,6 @@ class CurrencyRecyclerViewAdapter(context: Context, private val iRecyclerView: I
                     iRecyclerView.onItemClick(pos)
                 }
             }
-
-            /*
-            itemView.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View view)
-                {
-                    if (iRecyclerView != null){
-                        int pos = getAdapterPosition()
-
-                        if (pos != RecyclerView.NO_POSITION) {
-                            iRecyclerView.onItemLongClick(pos)
-                        }
-                    }
-                    return true
-                }
-            })
-             */
         }
     }
 

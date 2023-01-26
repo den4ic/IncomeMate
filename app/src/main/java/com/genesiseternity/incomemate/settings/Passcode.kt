@@ -52,12 +52,12 @@ class Passcode : DaggerAppCompatActivity()
 
     var stateActionId: Int = StateActionPasscode.DEFAULT.ordinal
 
-    val MAX_NUMBER_ATTEMMPTS_LOGIN = 5
+    val MAX_NUMBER_ATTEMMPTS_LOGIN: Int = 5
     val MAX_VALUE_PASSCODE: Int = 4
     val DEFAULT_DELAY_INPUT: Long = 2
     var inputPasscode: String = ""
 
-    var counterAttemptLogin = 0
+    var counterAttemptLogin: Int = 0
     var disabledInput: Boolean = false
 
     val diodeList by lazy { binding.diodeList }

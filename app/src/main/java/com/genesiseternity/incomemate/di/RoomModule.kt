@@ -1,9 +1,9 @@
 package com.genesiseternity.incomemate.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import com.genesiseternity.incomemate.room.*
+import com.genesiseternity.incomemate.utils.LanguageConfig
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,6 +20,11 @@ class RoomModule(val application: Application) {
             //.allowMainThreadQueries()
             .build()
     }
+
+
+    @Singleton
+    @Provides
+    fun provideLanguageConfig() : LanguageConfig = LanguageConfig(application.resources)
 
     /*
     @Singleton

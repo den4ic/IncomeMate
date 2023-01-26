@@ -34,4 +34,11 @@ interface CurrencyDetailsDao {
     @Query("SELECT * FROM " + CurrencyDetailsEntity.TABLE_NAME + " ORDER BY id ASC")
     fun getAll(): Flowable<List<CurrencyDetailsEntity>>
 
+
+    @Query("SELECT amount_currency FROM " + CurrencyDetailsEntity.TABLE_NAME + " WHERE id = :id")
+    fun getAmountCurrencyById(id: Int): Single<List<String>>
+
+    @Query("UPDATE " + CurrencyDetailsEntity.TABLE_NAME + " SET amount_currency = :amountCurrency WHERE id = :id")
+    fun updateCurrentAccount(id: Int, amountCurrency: String): Completable
+
 }

@@ -4,10 +4,14 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.genesiseternity.incomemate.retrofit.CurrencyList
+import com.genesiseternity.incomemate.room.CurrencyDetailsDao
 import com.genesiseternity.incomemate.room.PieChartCategoriesDao
 import com.genesiseternity.incomemate.room.PieChartCategoriesTitleDao
+import com.genesiseternity.incomemate.room.entities.CurrencyDetailsEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesTitleEntity
+import com.genesiseternity.incomemate.utils.replaceToRegex
 import com.genesiseternity.incomemate.wallet.IRecyclerView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -19,6 +23,7 @@ import javax.inject.Inject
 
 class OperationsHistoryViewModel @Inject constructor(private val application: Application) : ViewModel(), IRecyclerView {
 
+    @Inject lateinit var currencyDetailsDao: dagger.Lazy<CurrencyDetailsDao>
     @Inject lateinit var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>
     @Inject lateinit var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>
 
@@ -26,7 +31,6 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
     fun getCurrencyRecyclerModelLiveData(): MutableLiveData<List<HistoryRecyclerModel>> = historyRecyclerModelLiveData
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    fun getCompositeDisposable(): CompositeDisposable = compositeDisposable
 
     private val historyRecyclerModels: ArrayList<HistoryRecyclerModel> = ArrayList()
 
@@ -35,7 +39,7 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
     }
 
     override fun onCleared() {
-        getCompositeDisposable().dispose()
+        compositeDisposable.dispose()
         super.onCleared()
     }
 
@@ -85,7 +89,7 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
                                         amountCash = 0.0f
                                     }
 
-                                    val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replace("[^\\d.-]".toRegex(), "")
+                                    val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replaceToRegex()
                                     if (tempAmountCurrency.isNotEmpty())
                                     {
                                         amountCash += tempAmountCurrency.toFloat()
@@ -165,16 +169,22 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
             //.observeOn(AndroidSchedulers.mainThread())
 
 
+        var listCurrency: List<CurrencyDetailsEntity> = emptyList()
+
+        compositeDisposable.add(currencyDetailsDao.get().getAllCurrencyData()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe( { listCurrency = it }, { it.printStackTrace() } ))
 
 
         val map: HashMap<List<PieChartCategoriesEntity>, List<PieChartCategoriesTitleEntity>> = HashMap()
 
         compositeDisposable.add(Observable.zip(
-            Observable.fromCallable { pieChartCategoriesDao.get().getSortedPieChartCategoriesData() },
-            Observable.fromCallable { pieChartCategoriesTitleDao.get().getAllCategoriesTitleData() }
+            Observable.fromCallable { pieChartCategoriesDao.get().getSortedPieChartCategoriesData() }.subscribeOn(Schedulers.io()),
+            Observable.fromCallable { pieChartCategoriesTitleDao.get().getAllCategoriesTitleData() }.subscribeOn(Schedulers.io())
         ) { list1, list2 -> map[list1] = list2 // list1, list2 -> list1 + list2
         }
-        .subscribeOn(Schedulers.io())
+        //.subscribeOn(Schedulers.io())
         //.flatMapObservable { t -> Observable.fromIterable(t) }
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
@@ -204,7 +214,7 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
                             amountCash = 0.0f
                         }
 
-                        val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replace("[^\\d.-]".toRegex(), "")
+                        val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replaceToRegex()
                         if (tempAmountCurrency.isNotEmpty())
                         {
                             amountCash += tempAmountCurrency.toFloat()
@@ -230,11 +240,11 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
                                     "",
                                     pieChartCategoriesEntities[i].amountCategory,
                                     pieChartCategoriesTitleEntities[j].titleCategory,
-                                    pieChartCategoriesEntities[i].idPage.toString(),
+                                    listCurrency[pieChartCategoriesEntities[i].idCurrencyAccount].titleCurrency,
                                     pieChartCategoriesTitleEntities[j].idCardViewIcon,
-                                    0,
+                                    listCurrency[pieChartCategoriesEntities[i].idCurrencyAccount].idCardViewIcon,
                                     pieChartCategoriesTitleEntities[j].idColorIcon,
-                                    0
+                                    listCurrency[pieChartCategoriesEntities[i].idCurrencyAccount].idColorIcon
                                 ))
 
                             }
@@ -289,7 +299,7 @@ class OperationsHistoryViewModel @Inject constructor(private val application: Ap
                                         amountCash = 0.0f
                                     }
 
-                                    val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replace("[^\\d.-]".toRegex(), "")
+                                    val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replaceToRegex()
                                     if (tempAmountCurrency.isNotEmpty())
                                     {
                                         amountCash += tempAmountCurrency.toFloat()

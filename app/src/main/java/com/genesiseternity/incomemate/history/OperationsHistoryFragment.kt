@@ -16,9 +16,8 @@ import javax.inject.Inject
 
 class OperationsHistoryFragment : DaggerFragment() {
 
-    private lateinit var binding: FragmentOperationsHistoryBinding
-
     @Inject lateinit var providerFactory: ViewModelProviderFactory
+    private lateinit var binding: FragmentOperationsHistoryBinding
 
     private lateinit var historyViewModel: OperationsHistoryViewModel
     private lateinit var adapter: HistoryRecyclerViewAdapter
@@ -33,11 +32,10 @@ class OperationsHistoryFragment : DaggerFragment() {
         val view: View = binding.root
 
         recyclerView = binding.recyclerHistoryList
-        historyViewModel = ViewModelProvider(this, providerFactory).get(OperationsHistoryViewModel::class.java)
+        historyViewModel = ViewModelProvider(this, providerFactory)[OperationsHistoryViewModel::class.java]
 
-        adapter = HistoryRecyclerViewAdapter(view.context, historyViewModel)
+        adapter = HistoryRecyclerViewAdapter(historyViewModel)
         recyclerView.adapter = adapter
-
 
         historyViewModel.initHistoryList()
 
@@ -48,7 +46,6 @@ class OperationsHistoryFragment : DaggerFragment() {
         val itemDecorator = DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(view.context, R.drawable.row_item_divider)!!)
         recyclerView.addItemDecoration(itemDecorator)
-
 
         return view
     }

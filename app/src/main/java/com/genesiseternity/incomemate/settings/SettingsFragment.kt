@@ -31,6 +31,7 @@ import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesTitleEntity
 import com.genesiseternity.incomemate.utils.LanguageConfig
+import com.genesiseternity.incomemate.utils.replaceToRegex
 import dagger.android.support.DaggerFragment
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -56,6 +57,8 @@ class SettingsFragment : DaggerFragment() {
     @Inject lateinit var currencyColorDao: dagger.Lazy<CurrencyColorDao>
     @Inject lateinit var currencyDetailsDao: dagger.Lazy<CurrencyDetailsDao>
     @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
+
+    @Inject lateinit var languageConfig: dagger.Lazy<LanguageConfig>
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -287,7 +290,7 @@ class SettingsFragment : DaggerFragment() {
                                 amountCash = 0.0f
                             }
 
-                            val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replace("[^\\d.-]".toRegex(), "")
+                            val tempAmountCurrency: String = pieChartCategoriesEntities[i].amountCategory.replaceToRegex()
                             if (tempAmountCurrency.isNotEmpty())
                             {
                                 amountCash += tempAmountCurrency.toFloat()
@@ -426,8 +429,12 @@ class SettingsFragment : DaggerFragment() {
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(
                                     {
-                                        //setLanguage(selectedLanguage)
-                                        LanguageConfig(this.resources).setLanguage(selectedLanguage)
+                                        //LanguageConfig(this.resources).setLanguage(selectedLanguage)
+                                        //languageConfig.get().resources = this.resources
+
+                                        languageConfig.get().setLanguage(selectedLanguage)
+                                        languageConfig.get().resources = this.resources
+                                        languageConfig.get().setLanguage(selectedLanguage)
 
                                         languageBtn.text = textLanguageBtn + listLanguages[selectedLanguage]
                                         Toast.makeText(context, alertTranslateToast + listLanguages[selectedLanguage], Toast.LENGTH_LONG).show()

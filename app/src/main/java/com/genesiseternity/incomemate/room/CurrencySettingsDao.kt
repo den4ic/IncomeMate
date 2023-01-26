@@ -1,9 +1,6 @@
 package com.genesiseternity.incomemate.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import io.reactivex.rxjava3.core.Completable
@@ -41,6 +38,12 @@ interface CurrencySettingsDao {
     @Query("UPDATE " + CurrencySettingsEntity.TABLE_NAME + " SET is_enabled_passcode = :isEnabledPasscode WHERE id = :id")
     fun updateEnabledPasscode(id: Int, isEnabledPasscode: Boolean): Completable
 
+    @Query("UPDATE " + CurrencySettingsEntity.TABLE_NAME + " SET is_enabled_night_mode = :isEnabledNightMode WHERE id = :id")
+    fun updateEnabledNightMode(id: Int, isEnabledNightMode: Boolean): Completable
+
+    @Query("UPDATE " + CurrencySettingsEntity.TABLE_NAME + " SET default_id_currency_account = :defaultIdCurrencyAccount WHERE id = :id")
+    fun updateDefaultIdCurrencyAccount(defaultIdCurrencyAccount: Int, id: Int = 0): Completable
+
 
     @Query("SELECT default_currency_type FROM " + CurrencySettingsEntity.TABLE_NAME)
     fun getDefaultCurrencyByIdPage(): Single<Int>
@@ -53,4 +56,10 @@ interface CurrencySettingsDao {
 
     @Query("SELECT is_enabled_passcode FROM " + CurrencySettingsEntity.TABLE_NAME)
     fun getEnabledPasscodeByIdPage(): Single<Boolean>
+
+    @Query("SELECT is_enabled_night_mode FROM " + CurrencySettingsEntity.TABLE_NAME)
+    fun getEnabledNightModeByIdPage(): Single<Boolean>
+
+    @Query("SELECT default_id_currency_account FROM " + CurrencySettingsEntity.TABLE_NAME)
+    fun getDefaultIdCurrencyAccountByIdPage(): Single<Int>
 }

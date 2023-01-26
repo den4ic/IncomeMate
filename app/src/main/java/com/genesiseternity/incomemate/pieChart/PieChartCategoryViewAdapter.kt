@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.genesiseternity.incomemate.R
+import com.genesiseternity.incomemate.databinding.RowCategoryItemBinding
 
 class PieChartCategoryViewAdapter(
     context: Context,
@@ -16,27 +17,27 @@ class PieChartCategoryViewAdapter(
 ) : ArrayAdapter<PieChartCategoryModel>(context, 0, pieChartCategoryModelArrayList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val res = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_category_item, parent, false)
-
+        val binding: RowCategoryItemBinding = (convertView?.tag as? RowCategoryItemBinding) ?: RowCategoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val pieChartCategoryModel: PieChartCategoryModel? = getItem(position)
 
-        val titleCategory: TextView = res.findViewById(R.id.titleCategory)
-        val imageCategory: ImageView = res.findViewById(R.id.imageCategory)
-        val amountCategory: TextView = res.findViewById(R.id.amountCategory)
-        val currencySymbol: Array<String> = res.resources.getStringArray(R.array.list_currency_symbol)
+        val titleCategory: TextView = binding.titleCategory
+        val imageCategory: ImageView = binding.imageCategory
+        val amountCategory: TextView = binding.amountCategory
+        val currencySymbol: Array<String> = context.resources.getStringArray(R.array.list_currency_symbol)
+        val bindingRoot = binding.root
 
         titleCategory.text = pieChartCategoryModel!!.titleCategoryName
         imageCategory.setImageResource(pieChartCategoryModel.imageCategory)
         //amountCategory.setText(pieChartCategory.getAmountCategory())
         imageCategory.setBackgroundColor(pieChartCategoryModel.selectedColorId)
 
-
         if (pieChartCategoryModel.idCategory != -1)
         {
             //amountCategory.setText(pieChartCategory.getAmountCategory() + " " + currencySymbol[pieChartCategory.getCurrencyType()])
             if (pieChartCategoryModel.amountCategory.length == 1 && pieChartCategoryModel.amountCategory.startsWith("0"))
             {
-                amountCategory.text = pieChartCategoryModel.amountCategory + " " + currencySymbol[pieChartCategoryModel.currencyType]
+                val amountCategoryRes = pieChartCategoryModel.amountCategory + " " + currencySymbol[pieChartCategoryModel.currencyType]
+                amountCategory.text = amountCategoryRes
             }
             else
             {
@@ -48,8 +49,7 @@ class PieChartCategoryViewAdapter(
             amountCategory.text = ""
         }
 
-        res.setOnClickListener { iPieChartCategoryView.onItemClick(position) }
-        return res
+        bindingRoot.setOnClickListener { iPieChartCategoryView.onItemClick(position) }
+        return bindingRoot
     }
-
 }

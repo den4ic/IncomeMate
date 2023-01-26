@@ -6,6 +6,7 @@ import android.content.res.TypedArray
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.genesiseternity.incomemate.CurrencyConverter
 import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
@@ -20,23 +21,20 @@ import javax.inject.Inject
 class WalletViewModel @Inject constructor(
     application: Application,
     currencyDetailsDao: CurrencyDetailsDao,
-    currencyFormat: CurrencyFormat,
     currencySettingsDao: CurrencySettingsDao,
-    currencyCbrRepository: CurrencyCbrRepository
-    //private val currencyCbrRepository: CurrencyCbrRepository
+    currencyConverter: dagger.Lazy<CurrencyConverter>
 ) : ViewModel(), IRecyclerView {
-
-    //@Inject lateinit var currencyDetailsDao: CurrencyDetailsDao
-    //@Inject lateinit var currencyFormat: CurrencyFormat
 
     private val walletRepository: WalletRepository
     private val currencyRecyclerModelLiveData: MutableLiveData<ArrayList<CurrencyRecyclerModel>>
     private val notifyItemAdapterLiveData: MutableLiveData<Int>
+    private val currencyCbtModelLiveData: MutableLiveData<String>
 
     init {
-        walletRepository = WalletRepository(application, currencyDetailsDao, currencyFormat, currencySettingsDao, currencyCbrRepository)
+        walletRepository = WalletRepository(application, currencyDetailsDao, currencySettingsDao, currencyConverter)
         currencyRecyclerModelLiveData = walletRepository.getCurrencyRecyclerModelLiveData()
         notifyItemAdapterLiveData = walletRepository.getNotifyItemAdapterLiveData()
+        currencyCbtModelLiveData = walletRepository.getCurrencyCbtModelLiveData()
 
         val currencySymbol: Array<String> = application.resources.getStringArray(R.array.list_currency_symbol)
         val listCurrency: Array<String> = application.resources.getStringArray(R.array.list_currency)
@@ -50,7 +48,8 @@ class WalletViewModel @Inject constructor(
 
     fun getCurrencyRecyclerModelLiveData(): MutableLiveData<ArrayList<CurrencyRecyclerModel>> = currencyRecyclerModelLiveData
     fun getNotifyItemAdapterLiveData(): MutableLiveData<Int> = notifyItemAdapterLiveData
-    fun getAllAmountCurrency(): String = walletRepository.getAllAmountCurrency()
+    fun getCurrencyCbtModelLiveData(): MutableLiveData<String> = currencyCbtModelLiveData
+    fun updateCurrentCurrency(currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>): String = walletRepository.updateTotalCashAccount(currencyRecyclerModel)
 
     override fun onCleared() {
         walletRepository.getCompositeDisposable().dispose()

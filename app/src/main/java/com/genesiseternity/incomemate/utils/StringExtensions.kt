@@ -1,14 +1,19 @@
 package com.genesiseternity.incomemate.utils
 
+fun String.Companion.removeLastChar(str: String) : String
+{
+    return if (str.isNotEmpty()) str.replaceFirst(".$".toRegex(), "") else ""
+}
+
+fun String.replaceToRegex() : String
+{
+    return this.replace("[^\\d.-]".toRegex(), "")
+}
 
 fun String.Companion.isNumeric(word: String) : Boolean
 {
     val regex = "-?[0-9]+(\\.[0-9]+)?".toRegex()
     return word.matches(regex)
-}
-
-fun String.Companion.removeLastChar(str: String): String {
-    return if (str.isNotEmpty()) str.replaceFirst(".$".toRegex(), "") else ""
 }
 
 /*

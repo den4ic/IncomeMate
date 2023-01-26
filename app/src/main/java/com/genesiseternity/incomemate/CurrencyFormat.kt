@@ -3,6 +3,7 @@ package com.genesiseternity.incomemate
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import com.genesiseternity.incomemate.utils.replaceToRegex
 import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.disposables.Disposable
 import java.math.BigDecimal
@@ -59,7 +60,7 @@ class CurrencyFormat
 
     fun updateSelectedCurrencyType(selectedCurrency: Int)
     {
-        val getTempText: CharSequence = editTextCurrency.getText().subSequence(0,
+        val getTempText: CharSequence = editTextCurrency.text.subSequence(0,
             editTextCurrency.text.length - getSuffix().length)
         setSuffix(selectedCurrency)
         val setTempText: String = getTempText.toString() + getSuffix()
@@ -69,11 +70,11 @@ class CurrencyFormat
 
     fun setStringTextFormatted(text: String): String
     {
-        val cleanString: String = text.replace("[^\\d.-]".toRegex(), "")
+        val cleanString: String = text.replaceToRegex()
         return if (cleanString.contains(".")) formatDecimalWithoutSuffix(cleanString) else formatIntegerWithoutSuffix(cleanString)
     }
 
-    fun afterTextChanged(str: String)
+    private fun afterTextChanged(str: String)
     {
         // str = editable.toString()
         if (str.length < suffix.length)
@@ -88,7 +89,7 @@ class CurrencyFormat
         }
 
         // [,.] [, ] [\\D, ]
-        val cleanString: String = str.replace(suffix, "").replace("[^\\d.-]".toRegex(), "")
+        val cleanString: String = str.replace(suffix, "").replaceToRegex()
 
         if (cleanString.equals(previousCleanString) || cleanString.isEmpty())
         {

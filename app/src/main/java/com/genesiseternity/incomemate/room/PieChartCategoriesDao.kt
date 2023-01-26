@@ -2,14 +2,13 @@ package com.genesiseternity.incomemate.room
 
 import androidx.room.*
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
-import com.genesiseternity.incomemate.room.entities.PieChartEntity
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface PieChartCategoriesDao {
 
+    /*
     @Query("SELECT * FROM PieChartCategories LEFT JOIN" +
             " PieCharts ON PieChartCategories.id = PieCharts.id AND" +
             " PieCharts.id = :id")
@@ -17,16 +16,13 @@ interface PieChartCategoriesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertData(pieChartEntities: PieChartEntity): Completable
-
+     */
 
     @Query("SELECT * FROM " + PieChartCategoriesEntity.TABLE_NAME + " WHERE id = :id")
     fun getPieChartCategoryById(id: Int): Single<List<PieChartCategoriesEntity>>
 
-
     @Query("SELECT * FROM " + PieChartCategoriesEntity.TABLE_NAME + " WHERE id_page = :id_page")
     fun getPieChartCategoryByIdPage(id_page: Int): Single<List<PieChartCategoriesEntity>>
-
-
 
     @Query("SELECT * FROM " + PieChartCategoriesEntity.TABLE_NAME)
     fun getAllPieChartCategoriesData(): Single<List<PieChartCategoriesEntity>>
@@ -57,10 +53,12 @@ interface PieChartCategoriesDao {
     fun deleteAllPieChartCategoriesData(): Completable
 
 
-
-
-
     @Query("SELECT * FROM " + PieChartCategoriesEntity.TABLE_NAME + " ORDER BY id_page DESC")
     fun getSortedPieChartCategoriesData(): List<PieChartCategoriesEntity>
+
+
+
+    @Query("UPDATE " + PieChartCategoriesEntity.TABLE_NAME + " SET id_currency_account = :idCurrencyAccount WHERE id = :id")
+    fun updateIdCurrencyAccount(id: Int, idCurrencyAccount: Int): Completable
 
 }

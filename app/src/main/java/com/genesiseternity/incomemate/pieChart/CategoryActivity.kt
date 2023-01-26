@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,12 +16,11 @@ import com.genesiseternity.incomemate.MainActivity
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.colorPicker.ColorPickerActivity
 import com.genesiseternity.incomemate.databinding.ActivityCategoryBinding
-import com.genesiseternity.incomemate.room.CurrencyColorDao
-import com.genesiseternity.incomemate.room.PieChartCategoriesDao
-import com.genesiseternity.incomemate.room.PieChartCategoriesTitleDao
+import com.genesiseternity.incomemate.room.*
 import com.genesiseternity.incomemate.room.entities.CurrencyColorEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesTitleEntity
+import com.genesiseternity.incomemate.utils.replaceToRegex
 import com.jakewharton.rxbinding4.view.clicks
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -46,16 +46,21 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
+    @Inject lateinit var currencyDetailsDao: dagger.Lazy<CurrencyDetailsDao>
     @Inject lateinit var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>
     @Inject lateinit var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>
     @Inject lateinit var currencyColorDao: dagger.Lazy<CurrencyColorDao>
+
+    @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
 
     //@Inject
     //public CurrencyDetailsRepository currencyDetailsRepository
 
     private var imageCategoryIntent: Int = 0
     private var selectedColorIdIntent: Int = 0
+    private var defaultCurrencyTypeIntent: Int = 0
     private var currentIdPage: Int = 0
+    private var idCurrencyAccount: Int = 0
 
     private val alertCurrencyTitle: String = "Основная валюта"
     private val alertCurrencyAccept: String = "Готово"
@@ -87,15 +92,15 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
         imageCategoryIntent = intent.getIntExtra("imageCategory", 0)
         selectedColorIdIntent = intent.getIntExtra("selectedColorId", 0)
-        val defaultCurrencyTypeIntent: Int  = intent.getIntExtra("defaultCurrencyType", 0)
+        defaultCurrencyTypeIntent = intent.getIntExtra("defaultCurrencyType", 0)
         selectedCurrency = defaultCurrencyTypeIntent
 
 
 
-        editTextAmountCategory.setInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED)
+        editTextAmountCategory.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
 
 
-        idCategory.setText(idCategoryIntent.toString())
+        idCategory.text = idCategoryIntent.toString()
         editTextTitleCategory.setText(editTextTitleCategoryIntent)
         editTextAmountCategory.setText(editTextAmountCategoryIntent + " " + currencySymbol[defaultCurrencyTypeIntent])
 
@@ -105,40 +110,15 @@ class CategoryActivity : DaggerAppCompatActivity() {
         btnCurrencyType.text = listCurrencies[selectedCurrency]
 
         initInsertDB()
-        //choiceCurrencyType()
-        //currencyFormat.get().InitFormatCurrencyEditText(editTextAmountCategory, currencySymbol, selectedCurrency)
 
-        //initChoiceCardView()
-        //setColorIconCardView()
+        compositeDisposable.add(currencySettingsDao.get().getDefaultIdCurrencyAccountByIdPage()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe( { idCurrencyAccount = it }, {} ))
+
 
         saveDataCurrency()
         deleteDataCurrency()
-
-        /*
-        pieChartCategoriesDao.get().deleteAllPieChartCategoriesData()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new CompletableObserver()
-                {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d)
-                    {
-                        Log.d("123", "1 - 1")
-                    }
-
-                    @Override
-                    public void onComplete()
-                    {
-                        Log.d("123", "2 - 2")
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e)
-                    {
-                        Log.d("123", "3 - 3")
-                    }
-                })
-         */
     }
 
     override fun onDestroy() {
@@ -185,9 +165,7 @@ class CategoryActivity : DaggerAppCompatActivity() {
     private fun initInsertDB()
     {
         val idCategoryTXT: String = idCategory.text.toString()
-        val editTextTitleCategoryTXT: String = editTextTitleCategory.text.toString()
         val editTextAmountCategoryTXT: String = editTextAmountCategory.text.toString()
-
         val id: Int = Integer.parseInt(idCategoryTXT)
 
         selectedCardViewId = Integer.parseInt(idCategoryTXT)
@@ -339,7 +317,7 @@ class CategoryActivity : DaggerAppCompatActivity() {
     }
 
 
-    val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+    private val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == 80) {
@@ -364,14 +342,13 @@ class CategoryActivity : DaggerAppCompatActivity() {
 
 
     //public PieChartCategoriesEntity initCategoriesEntity(String id, String titleCategory, String amountCategory, int currencyType, int idIcon, int idColorIcon)
-    private fun initCategoriesEntity(id: String, amountCategory: String): PieChartCategoriesEntity
-    {
-        val currencyDetailsEntity: PieChartCategoriesEntity = PieChartCategoriesEntity(
+    private fun initCategoriesEntity(id: String, amountCategory: String): PieChartCategoriesEntity {
+        return PieChartCategoriesEntity(
             id.toInt(),
             currentIdPage,
-            amountCategory
+            amountCategory,
+            idCurrencyAccount
         )
-        return currencyDetailsEntity
     }
 
     private fun saveDataCategoryPieChart()
@@ -401,20 +378,16 @@ class CategoryActivity : DaggerAppCompatActivity() {
             compositeDisposable.add(currencyColorDao.get().updateCurrencyColorData(CurrencyColorEntity(
                 i,
                 btnsColorChange[i].backgroundTintList?.defaultColor!!
-            )
-            )
+            ))
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {},
-                    {}
-                ))
+            .subscribe( {}, {} ))
         }
     }
 
     private fun saveDataCurrency()
     {
-        val idCategoryTXT: String = idCategory.getText().toString()
+        val idCategoryTXT: String = idCategory.text.toString()
 
         val disposableSaveBtn: Disposable = binding.saveBtnCategoryData.clicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
@@ -426,19 +399,15 @@ class CategoryActivity : DaggerAppCompatActivity() {
                 compositeDisposable.add(pieChartCategoriesDao.get().updatePieChartCategoriesData(
                     initCategoriesEntity(
                         idCategoryTXT,
-                        //editTextTitleCategoryTXT,
                         editTextAmountCategoryTXT
-                        //selectedCurrency,
-                        //iconCategoryCardView.getSelectedCardViewId(),
-                        //selectedColor
-                    )
-                )
+                    ))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                         {
                             saveDataCategoryPieChart()
                             saveDataColorList()
+                            updateAllAccount()
                             switchActivity()
                         },
                         {
@@ -498,4 +467,62 @@ class CategoryActivity : DaggerAppCompatActivity() {
         startActivity(intent)
     }
 
+
+
+
+
+
+
+    private fun updateAllAccount()
+    {
+        compositeDisposable.add(currencyDetailsDao.get().getAmountCurrencyById(idCurrencyAccount)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    /*
+                    var amountExpenses: Float = 0f
+
+                    for (i in it.indices)
+                    {
+                        val tempAmountCurrency: String = it[i].amountCategory.replaceToRegex()
+                        amountExpenses += tempAmountCurrency.toFloat()
+                        //Log.d("PieChartFragment", " = " + tempAmountCurrency + " " + it[i].idCurrencyAccount)
+                    }
+
+
+                     */
+
+
+
+                    val amountCategory: String = editTextAmountCategory.text.toString().replaceToRegex()
+                    val amountCurrency: String = it[0].replaceToRegex()
+                    val res: Float = amountCurrency.toFloat() - amountCategory.toFloat()
+
+                    Log.d("CategoryActivity", "UPDATE 5 ACOUN  T2 " + res)
+
+                    // Spend to card = 0 id
+                    compositeDisposable.add(currencyDetailsDao.get().updateCurrentAccount(
+                        idCurrencyAccount,
+                        currencyFormat.get().setStringTextFormatted(res.toString() + " " +  currencySymbol[defaultCurrencyTypeIntent])
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                            {
+                                //customAdapter.notifyDataSetChanged()
+
+                                Log.d("CategoryActivity", "UPDATE 5 ACOUNT")
+                            },
+                            {
+                                it.printStackTrace()
+                                Log.d("CategoryActivity", "NOT UPDATE 5 ACOUNT")
+                            }
+                        ))
+                },
+                {
+                    it.printStackTrace()
+                }
+            ))
+    }
 }

@@ -1,13 +1,10 @@
 package com.genesiseternity.incomemate.utils
 
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
 import java.util.Locale
 
-class LanguageConfig(val resources: Resources)
+class LanguageConfig(var resources: Resources)
 {
     fun setLanguage(languageId: Int)
     {

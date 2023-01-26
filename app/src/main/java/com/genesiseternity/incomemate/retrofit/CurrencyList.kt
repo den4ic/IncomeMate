@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class CurrencyList(
     @SerializedName("USD") var usd: CurrencyBodyModel,
     @SerializedName("EUR") var eur: CurrencyBodyModel,
+    @SerializedName("AED") var aed: CurrencyBodyModel,
     @SerializedName("CNY") var cny: CurrencyBodyModel,
     @SerializedName("AUD") var aud: CurrencyBodyModel,
     @SerializedName("GBP") var gbp: CurrencyBodyModel,

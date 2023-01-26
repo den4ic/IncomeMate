@@ -21,18 +21,6 @@ class IconCategoryCardView(
     private lateinit var imageCategoryType: TypedArray
     //private MaterialCardView[] materialCardViewList
 
-    /*
-    public IconCategoryCardView(Context context, AttributeSet attrs)
-    {
-        super(context, attrs)
-    }
-
-    public IconCategoryCardView(Context context, AttributeSet attrs, int defStyleAttr)
-    {
-        super(context, attrs, defStyleAttr)
-    }
-    */
-
     init {
         initChoiceCardView(gridLayout)
         //init()
@@ -57,7 +45,6 @@ class IconCategoryCardView(
             if (selectedCardView == cardView[i])
             {
                 selectedCardViewId = i
-                //Log.d("123", "1111 --- " + selectedColor)
                 cardView[i].setCardBackgroundColor(selectedColor)
             }
         }

@@ -1,6 +1,9 @@
 package com.genesiseternity.incomemate.di
 
 import android.app.Application
+import com.genesiseternity.incomemate.CurrencyConverter
+import com.genesiseternity.incomemate.CurrencyFormat
+import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -21,4 +24,12 @@ class AppModule {
     }
 
      */
+
+    //@Singleton
+    @Provides
+    fun provideCurrencyConverter(currencyCbrRepository: CurrencyCbrRepository, currencyFormat: CurrencyFormat) : CurrencyConverter
+    {
+        return CurrencyConverter(currencyCbrRepository, currencyFormat)
+    }
+
 }
