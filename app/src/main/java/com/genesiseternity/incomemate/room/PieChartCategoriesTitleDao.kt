@@ -26,4 +26,7 @@ interface PieChartCategoriesTitleDao {
 
     @Query("SELECT * FROM " + PieChartCategoriesTitleEntity.TABLE_NAME)
     fun getAllCategoriesTitleData(): List<PieChartCategoriesTitleEntity>
+
+    @Query("DELETE FROM " + PieChartCategoriesTitleEntity.TABLE_NAME + " WHERE id = :id")
+    fun deleteCurrentPieChartCategoriesTitleData(id: Int): Completable
 }

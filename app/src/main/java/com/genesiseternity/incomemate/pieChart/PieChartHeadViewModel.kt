@@ -1,19 +1,13 @@
 package com.genesiseternity.incomemate.pieChart
 
 import android.app.Application
-import android.content.res.TypedArray
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.genesiseternity.incomemate.CurrencyConverter
-import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.R
-import com.genesiseternity.incomemate.retrofit.CurrencyBodyModel
-import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
 import com.genesiseternity.incomemate.room.CurrencyDetailsDao
 import com.genesiseternity.incomemate.room.CurrencySettingsDao
-import com.genesiseternity.incomemate.room.PieChartCategoriesDao
-import com.genesiseternity.incomemate.wallet.CurrencyRecyclerModel
+import com.genesiseternity.incomemate.wallet.CurrencyAccountRecyclerModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -29,18 +23,10 @@ class PieChartHeadViewModel @Inject constructor(
     private val currencySettingsDao: dagger.Lazy<CurrencySettingsDao>,
     private val currencyDetailsDao: dagger.Lazy<CurrencyDetailsDao>,
     private var currencyConverter: dagger.Lazy<CurrencyConverter>
-) : ViewModel() {
-
+) : ViewModel()
+{
     val getCounterUpdatePage: Int
     val getCurrentDate: Date
-
-    private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel> = ArrayList()
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-
-    private lateinit var dateFormat: DateFormat
-    //private val computePatternDate: String = "dd.MM.yyyy"
-    private val uiPatternDate: String = "EEE, dd MMMM yyyy"
-    private val MAX_COUNT_UPDATE_PAGE: Int = 2
 
     companion object {
         private var counterUpdatePage: Int = 0
@@ -49,10 +35,17 @@ class PieChartHeadViewModel @Inject constructor(
         private var isFirstInitPage: Boolean = true
     }
 
+    private var currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel> = ArrayList()
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private lateinit var dateFormat: DateFormat
+    private val uiPatternDate: String = "EEE, dd MMMM yyyy"
+    private val MAX_COUNT_UPDATE_PAGE: Int = 2
+
     private var defaultCurrencyType: Int = 0
     private val currencySymbol: Array<String> by lazy { application.resources.getStringArray(R.array.list_currency_symbol) }
 
-    private val listCurrencyRecyclerModel: MutableLiveData<MutableList<CurrencyRecyclerModel>> = MutableLiveData()
+    private val listCurrencyAccountRecyclerModel: MutableLiveData<MutableList<CurrencyAccountRecyclerModel>> = MutableLiveData()
 
     init
     {
@@ -73,16 +66,11 @@ class PieChartHeadViewModel @Inject constructor(
         initAllMonetaryAccount()
     }
 
-    override fun onCleared() {
+    override fun onCleared()
+    {
         compositeDisposable.dispose()
         super.onCleared()
     }
-
-
-    //public int secondsBetween(Date d1, Date d2){
-    //    //return (int)((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) // day
-    //    return (int)((d2.getTime() - d1.getTime()) / (1000)) // sec
-    //}
 
     fun setCurrentDate(): String = SimpleDateFormat(uiPatternDate, Locale.getDefault()).format(currentDate)
 
@@ -102,7 +90,7 @@ class PieChartHeadViewModel @Inject constructor(
         return dt
     }
 
-    fun getListCurrencyRecyclerModel(): MutableLiveData<MutableList<CurrencyRecyclerModel>> = listCurrencyRecyclerModel
+    fun getListCurrencyRecyclerModel(): MutableLiveData<MutableList<CurrencyAccountRecyclerModel>> = listCurrencyAccountRecyclerModel
 
     private fun getDefaultCurrencyType()
     {
@@ -124,7 +112,7 @@ class PieChartHeadViewModel @Inject constructor(
                 {
                     currencyDetailsEntities ->
 
-                    currencyRecyclerModel.add(CurrencyRecyclerModel(
+                    currencyAccountRecyclerModel.add(CurrencyAccountRecyclerModel(
                         currencyDetailsEntities.id,
                         currencyDetailsEntities.titleCurrency,
                         currencyDetailsEntities.amountCurrency,
@@ -135,15 +123,14 @@ class PieChartHeadViewModel @Inject constructor(
 
                 },
                 {
-
                 },
                 {
                     currencyConverter.get().defaultCurrencyType = defaultCurrencyType
                     currencyConverter.get().currencySymbol = currencySymbol
-                    currencyConverter.get().updateAllCurrencyAmount(::setTotalCashAccount, currencyRecyclerModel)
+                    currencyConverter.get().updateAllCurrencyAmount(::setTotalCashAccount, currencyAccountRecyclerModel)
 
-                    currencyRecyclerModel.add(CurrencyRecyclerModel(
-                        currencyRecyclerModel.lastIndex+1,
+                    currencyAccountRecyclerModel.add(CurrencyAccountRecyclerModel(
+                        currencyAccountRecyclerModel.lastIndex+1,
                         listMonetaryAccounts,
                         "0",
                         0,
@@ -155,7 +142,7 @@ class PieChartHeadViewModel @Inject constructor(
 
     private fun setTotalCashAccount(res: String)
     {
-        currencyRecyclerModel[currencyRecyclerModel.lastIndex].amountCurrency = res
-        listCurrencyRecyclerModel.value = currencyRecyclerModel
+        currencyAccountRecyclerModel[currencyAccountRecyclerModel.lastIndex].amountCurrency = res
+        listCurrencyAccountRecyclerModel.value = currencyAccountRecyclerModel
     }
 }

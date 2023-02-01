@@ -1,7 +1,5 @@
 package com.genesiseternity.incomemate.auth
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.widget.EditText
@@ -14,7 +12,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding4.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 class LoginActivity : DaggerAppCompatActivity() {
@@ -26,13 +23,10 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     private lateinit var email: EditText
     private lateinit var password: EditText
-
     private lateinit var emailLayout: TextInputLayout
     private lateinit var passwordLayout: TextInputLayout
 
-    private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var disposableEmail: Disposable
-    private lateinit var disposablePassword: Disposable
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +38,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         emailLayout = binding.editTextEmailLoginLayout
         passwordLayout = binding.editTextPasswordLoginLayout
 
-        loginViewModel = ViewModelProvider(this, providerFactory).get(LoginViewModel::class.java)
-
-        compositeDisposable = CompositeDisposable()
+        loginViewModel = ViewModelProvider(this, providerFactory)[LoginViewModel::class.java]
 
         setupPrivacyPolicyLink()
         performInputValidation()
@@ -65,18 +57,16 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     private fun performInputValidation()
     {
-        loginViewModel.getErrorEmailLiveData().observe(this) { error -> emailLayout.error = error }
-        loginViewModel.getErrorPasswordLiveData().observe(this) { error -> passwordLayout.error = error }
+        loginViewModel.errorEmailLiveData.observe(this) { error -> emailLayout.error = error }
+        loginViewModel.errorPasswordLiveData.observe(this) { error -> passwordLayout.error = error }
 
-        disposableEmail = email.textChanges()
+        compositeDisposable.add(email.textChanges()
             .map { it.toString() }
-            .subscribe { loginViewModel.setEmail(it) }
+            .subscribe { loginViewModel.setEmail(it) })
 
-        disposablePassword = password.textChanges()
+        compositeDisposable.add(password.textChanges()
             .map { it.toString() }
-            .subscribe { loginViewModel.setPassword(it) }
-
-        compositeDisposable.addAll(disposableEmail, disposablePassword)
+            .subscribe { loginViewModel.setPassword(it) })
     }
 
     private fun initWithoutSignInPage()

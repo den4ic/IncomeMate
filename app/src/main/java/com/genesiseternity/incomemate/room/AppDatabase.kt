@@ -2,7 +2,6 @@ package com.genesiseternity.incomemate.room
 
 import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.genesiseternity.incomemate.room.entities.*
 
@@ -42,7 +41,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
          */
-
     }
 
     abstract fun getCurrencyDetailsDao(): CurrencyDetailsDao

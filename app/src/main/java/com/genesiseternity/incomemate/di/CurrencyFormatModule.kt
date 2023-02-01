@@ -6,14 +6,6 @@ import dagger.Provides
 
 @Module
 abstract class CurrencyFormatModule {
-
-    //@Provides
-    //@Singleton
-    //fun provideCurrencyFormat() : CurrencyFormat
-    //{
-    //    return CurrencyFormat()
-    //}
-
     //@Module
     companion object {
         //@JvmStatic
@@ -23,5 +15,4 @@ abstract class CurrencyFormatModule {
             return CurrencyFormat()
         }
     }
-
 }

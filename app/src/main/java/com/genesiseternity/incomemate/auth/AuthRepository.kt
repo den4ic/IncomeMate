@@ -10,10 +10,10 @@ import com.google.firebase.auth.FirebaseAuthException
 
 class AuthRepository constructor(private var application: Application) {
 
-    private var firebaseAuth: FirebaseAuth
-    private var errorEmailLiveData: MutableLiveData<String>
-    private var errorPasswordLiveData: MutableLiveData<String>
-    private var errorConfirmPasswordLiveData: MutableLiveData<String>
+    private val firebaseAuth: FirebaseAuth
+    private val _errorEmailLiveData: MutableLiveData<String>
+    private val _errorPasswordLiveData: MutableLiveData<String>
+    private val _errorConfirmPasswordLiveData: MutableLiveData<String>
     private lateinit var email: String
     private lateinit var password: String
     private lateinit var confirmPassword: String
@@ -25,19 +25,26 @@ class AuthRepository constructor(private var application: Application) {
     private val shouldPasswordLength = 6
     private val textErrorShouldPassword = "Пароль должен быть не менее 6 символов."
     private val textErrorBanUser = "Учетная запись пользователя заблокирована."
+
+    private val textErrorAlreadyUseLogin: String = "Адрес электронной почты уже используется другой учетной записью."
+    private val textErrorConfirmPassword: String = "Пожалуйста, повторите пароль."
+
     private val EMPTY_STRING = ""
 
     init {
         firebaseAuth = FirebaseAuth.getInstance()
-        errorEmailLiveData = MutableLiveData<String>()
-        errorPasswordLiveData = MutableLiveData<String>()
-        errorConfirmPasswordLiveData = MutableLiveData<String>()
+        _errorEmailLiveData = MutableLiveData<String>()
+        _errorPasswordLiveData = MutableLiveData<String>()
+        _errorConfirmPasswordLiveData = MutableLiveData<String>()
     }
+
+    val errorEmailLiveData: MutableLiveData<String> get() = _errorEmailLiveData
+    val errorPasswordLiveData: MutableLiveData<String> get() = _errorPasswordLiveData
+    val errorConfirmPasswordLiveData: MutableLiveData<String> get() = _errorConfirmPasswordLiveData
 
     fun setEmail(email: String) { this.email = email }
     fun setPassword(password: String) { this.password = password }
-    fun getErrorEmailLiveData(): MutableLiveData<String> { return errorEmailLiveData }
-    fun getErrorPasswordLiveData(): MutableLiveData<String> { return errorPasswordLiveData }
+    fun setConfirmPassword(confirmPassword: String) { this.confirmPassword = confirmPassword }
 
     fun initWithoutSignInPage()
     {
@@ -62,49 +69,42 @@ class AuthRepository constructor(private var application: Application) {
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 //.addOnCompleteListener(application.getMainExecutor(), new OnCompleteListener<AuthResult>()
                 .addOnCompleteListener {
-
                     if (it.isSuccessful) {
-                        //Log.d(TAG, "createUserWithEmail:success")
-                        //Log.w(TAG, "createUserWithEmail uid: " + it.getResult().getUser().getUid())
-
                         initWithoutSignInPage()
                     }
                     else
                     {
                         //Log.w(TAG, "createUserWithEmail:failure", it.getException())
-
                         val errorCode: String = (it.exception as FirebaseAuthException).errorCode
 
                         if (errorCode.equals("ERROR_USER_DISABLED"))
                         {
-                            errorEmailLiveData.postValue(textErrorBanUser)
+                            _errorEmailLiveData.postValue(textErrorBanUser)
                         }
                         else
                         {
-                            errorEmailLiveData.postValue(textErrorNonLogin)
+                            _errorEmailLiveData.postValue(textErrorNonLogin)
                         }
                     }
-
                 }
         }
     }
-
 
     private fun isValidateEmail() : Boolean
     {
         if (email.isEmpty())
         {
-            errorEmailLiveData.postValue(textErrorLogin)
+            _errorEmailLiveData.postValue(textErrorLogin)
             return false
         }
         else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
         {
-            errorEmailLiveData.postValue(textErrorIncorrectLogin)
+            _errorEmailLiveData.postValue(textErrorIncorrectLogin)
             return false
         }
         else
         {
-            errorEmailLiveData.postValue(EMPTY_STRING)
+            _errorEmailLiveData.postValue(EMPTY_STRING)
         }
         return true
     }
@@ -113,35 +113,22 @@ class AuthRepository constructor(private var application: Application) {
     {
         if (password.isEmpty())
         {
-            errorPasswordLiveData.postValue(textErrorPassword)
+            _errorPasswordLiveData.postValue(textErrorPassword)
             return false
         }
         else if (password.length < shouldPasswordLength)
         {
-            errorPasswordLiveData.postValue(textErrorShouldPassword)
+            _errorPasswordLiveData.postValue(textErrorShouldPassword)
             return false
         }
         else
         {
-            errorPasswordLiveData.postValue(EMPTY_STRING)
+            _errorPasswordLiveData.postValue(EMPTY_STRING)
         }
         return true
     }
 
     //region Register
-    private val textErrorAlreadyUseLogin: String = "Адрес электронной почты уже используется другой учетной записью."
-    private val textErrorConfirmPassword: String = "Пожалуйста, повторите пароль."
-
-    fun setConfirmPassword(confirmPassword: String)
-    {
-        this.confirmPassword = confirmPassword
-    }
-
-    fun getErrorConfirmPasswordLiveData(): MutableLiveData<String>
-    {
-        return errorConfirmPasswordLiveData
-    }
-
     fun createUser()
     {
         if (isValidateEmail() && isValidatePassword() && isValidateConfirmPassword())
@@ -159,12 +146,9 @@ class AuthRepository constructor(private var application: Application) {
                     } else
                     {
                         //Log.w(TAG, "createUserWithEmail:failure", task.getException())
-                        errorEmailLiveData.postValue(textErrorAlreadyUseLogin)
+                        _errorEmailLiveData.postValue(textErrorAlreadyUseLogin)
                     }
                 }
-
-
-
         }
     }
 
@@ -172,15 +156,14 @@ class AuthRepository constructor(private var application: Application) {
     {
         if (confirmPassword.isEmpty() || !confirmPassword.equals(password))
         {
-            errorConfirmPasswordLiveData.postValue(textErrorConfirmPassword)
+            _errorConfirmPasswordLiveData.postValue(textErrorConfirmPassword)
             return false
         }
         else
         {
-            errorConfirmPasswordLiveData.postValue(EMPTY_STRING)
+            _errorConfirmPasswordLiveData.postValue(EMPTY_STRING)
         }
         return true
     }
     //endregion
-
 }

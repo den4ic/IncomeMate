@@ -2,10 +2,7 @@ package com.genesiseternity.incomemate.settings
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,21 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.helper.widget.Carousel.Adapter
-import androidx.constraintlayout.helper.widget.Carousel.TEXT_ALIGNMENT_CENTER
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.FileProvider
-import androidx.core.graphics.green
-import androidx.core.view.allViews
-import androidx.core.view.get
-import androidx.core.view.indices
 import com.genesiseternity.incomemate.MainActivity
 import com.genesiseternity.incomemate.R
-import com.genesiseternity.incomemate.auth.LoginActivity
 import com.genesiseternity.incomemate.databinding.FragmentSettingsBinding
 import com.genesiseternity.incomemate.history.HistoryRecyclerModel
 import com.genesiseternity.incomemate.room.*
-import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import com.genesiseternity.incomemate.room.entities.PieChartCategoriesTitleEntity
 import com.genesiseternity.incomemate.utils.LanguageConfig
@@ -45,22 +34,21 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.time.Duration.Companion.seconds
 
-class SettingsFragment : DaggerFragment() {
-
-    private lateinit var binding: FragmentSettingsBinding
-
+class SettingsFragment : DaggerFragment()
+{
     @Inject lateinit var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>
     @Inject lateinit var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>
     @Inject lateinit var pieChartDao: dagger.Lazy<PieChartDao>
     @Inject lateinit var currencyColorDao: dagger.Lazy<CurrencyColorDao>
     @Inject lateinit var currencyDetailsDao: dagger.Lazy<CurrencyDetailsDao>
     @Inject lateinit var currencySettingsDao: dagger.Lazy<CurrencySettingsDao>
-
     @Inject lateinit var languageConfig: dagger.Lazy<LanguageConfig>
 
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private lateinit var binding: FragmentSettingsBinding
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private var nightMode: Boolean = false
 
     private val alertRemoveDataTitle: String = "Удалить данные"
     private val alertRemoveDataMessage: String = "Все ваши данные (счета, категории, история операций) будут безвозвратно удалены."
@@ -84,7 +72,8 @@ class SettingsFragment : DaggerFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View
+    {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val view: View = binding.root
 
@@ -96,6 +85,7 @@ class SettingsFragment : DaggerFragment() {
         }
 
         translateLanguage()
+        switchTheme()
 
         binding.passcodeBtn.setOnClickListener {
             openPagePasscode(view)
@@ -112,7 +102,8 @@ class SettingsFragment : DaggerFragment() {
         return view
     }
 
-    override fun onDestroy() {
+    override fun onDestroy()
+    {
         compositeDisposable.dispose()
         super.onDestroy()
     }
@@ -125,66 +116,30 @@ class SettingsFragment : DaggerFragment() {
         builder.setMessage(alertRemoveDataMessage)
 
         builder.setPositiveButton(alertRemoveDataPositive) { dialogInterface, i ->
-            currencySettingsDao.get().deleteAllCurrencySettingsData()
+            compositeDisposable.add(currencySettingsDao.get().deleteAllCurrencySettingsData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("SettingsFragment", "SettingsFragment - deleteAllCurrencySettingsData")
-                    },
-                    {
-                    }
-                )
-            currencyDetailsDao.get().deleteAllCurrencyData()
+                .subscribe( { }, { it.printStackTrace() } ))
+            compositeDisposable.add(currencyDetailsDao.get().deleteAllCurrencyData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("SettingsFragment", "SettingsFragment - deleteAllCurrencyData")
-                    },
-                    {
-                    }
-                )
-            currencyColorDao.get().deleteAllCurrencyColorData()
+                .subscribe( { }, { it.printStackTrace() } ))
+            compositeDisposable.add(currencyColorDao.get().deleteAllCurrencyColorData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("SettingsFragment", "SettingsFragment - deleteAllCurrencyColorData")
-                    },
-                    {
-                    }
-                )
-            pieChartDao.get().deleteAllPieChartData()
+                .subscribe( { }, { it.printStackTrace() } ))
+            compositeDisposable.add(pieChartDao.get().deleteAllPieChartData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("SettingsFragment", "SettingsFragment - deleteAllPieChartData")
-                    },
-                    {
-                    }
-                )
-            pieChartCategoriesDao.get().deleteAllPieChartCategoriesData()
+                .subscribe( { }, { it.printStackTrace() } ))
+            compositeDisposable.add(pieChartCategoriesDao.get().deleteAllPieChartCategoriesData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("SettingsFragment", "SettingsFragment - deleteAllPieChartCategoriesData")
-                    },
-                    {
-                    }
-                )
-            pieChartCategoriesTitleDao.get().deleteAllPieChartCategoriesTitleData()
+                .subscribe( { }, { it.printStackTrace() } ))
+            compositeDisposable.add(pieChartCategoriesTitleDao.get().deleteAllPieChartCategoriesTitleData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.d("SettingsFragment", "SettingsFragment - deleteAllPieChartCategoriesTitleData")
-                    },
-                    {
-                    }
-                )
+                .subscribe( { }, { it.printStackTrace() } ))
         }
 
         builder.setNegativeButton(alertDialogNegative) { dialogInterface, i ->
@@ -222,7 +177,7 @@ class SettingsFragment : DaggerFragment() {
 
                         builder.setPositiveButton(alertDialogPositive) { dialogInterface, i ->
 
-                            currencySettingsDao.get().updateDefaultCurrency(0, selectedCurrency)
+                            compositeDisposable.add(currencySettingsDao.get().updateDefaultCurrency(0, selectedCurrency)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(
@@ -235,7 +190,7 @@ class SettingsFragment : DaggerFragment() {
                                         dialogInterface.dismiss()
                                         it.printStackTrace()
                                     }
-                                )
+                                ))
                         }
 
                         builder.setNegativeButton(alertDialogNegative) { dialogInterface, i ->
@@ -247,6 +202,40 @@ class SettingsFragment : DaggerFragment() {
                 {
                     it.printStackTrace()
                 } ))
+    }
+    //endregion
+
+    //region Night Mode
+    private fun switchTheme()
+    {
+        compositeDisposable.add(currencySettingsDao.get().getEnabledNightModeByIdPage()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    nightMode = it
+                    AppCompatDelegate.setDefaultNightMode(if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+
+                    binding.switchTheme.isChecked = nightMode
+                    binding.switchTheme.setOnClickListener {
+                        nightMode = !nightMode
+                        compositeDisposable.add(currencySettingsDao.get().updateEnabledNightMode(nightMode)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                {
+                                    AppCompatDelegate.setDefaultNightMode(if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+                                },
+                                {
+                                    it.printStackTrace()
+                                }
+                            ))
+                    }
+                },
+                {
+                    it.printStackTrace()
+                }
+            ))
     }
     //endregion
 
@@ -364,7 +353,7 @@ class SettingsFragment : DaggerFragment() {
 
                 },
                 {
-
+                    it.printStackTrace()
                 },
                 {
                 }
@@ -380,7 +369,7 @@ class SettingsFragment : DaggerFragment() {
             val dateFormatDay: DateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
             val calendar: Calendar = Calendar.getInstance()
             calendar.clear()
-            calendar.add(Calendar.DATE, Integer.parseInt(date))
+            calendar.add(Calendar.DATE, date.toInt())
             dateDay = dateFormatDay.format(calendar.time)
         }
         return dateDay
@@ -521,6 +510,7 @@ class SettingsFragment : DaggerFragment() {
             ))
     }
 
+    /*
     private fun sendStateActionAlert(listAction: Array<String>)
     {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -539,5 +529,6 @@ class SettingsFragment : DaggerFragment() {
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
     }
+     */
     //endregion
 }

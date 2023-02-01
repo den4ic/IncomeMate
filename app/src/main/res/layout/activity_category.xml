@@ -213,15 +213,18 @@
 
         </RadioGroup>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/deleteBtnCategoryData"
-            android:layout_width="wrap_content"
+            android:layout_width="180dp"
             android:layout_height="38dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/btn_shape_choice_color"
+            android:background="@drawable/rectangle"
             android:text="@string/delete_category"
             android:textAlignment="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColor="@color/white"
+            android:backgroundTint="@color/red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -229,16 +232,17 @@
             app:layout_constraintTop_toBottomOf="@+id/addNewColorPickerCategory"
             app:layout_constraintVertical_bias="0.0" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveBtnCategoryData"
             android:layout_width="340dp"
             android:layout_height="46dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="14dp"
-            android:background="@drawable/btn_shape_choice_color"
+            android:background="@drawable/rectangle"
             android:text="@string/save"
             android:textAlignment="center"
             android:textColor="@color/white"
+            android:backgroundTint="@color/blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/deleteBtnCategoryData"
             app:layout_constraintHorizontal_bias="0.0"

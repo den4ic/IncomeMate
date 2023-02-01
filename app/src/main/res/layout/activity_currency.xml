@@ -12,7 +12,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".wallet.CurrencyActivity">
+    tools:context=".wallet.CurrencyAccountActivity">
 
     <TextView
         android:id="@+id/idCurrency"
@@ -536,15 +536,16 @@
     </HorizontalScrollView>
 -->
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/deleteBtnCurrencyData"
-        android:layout_width="181dp"
+        android:layout_width="170dp"
         android:layout_height="38dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/btn_shape_choice_color"
+        android:background="@drawable/rectangle"
         android:text="@string/delete_account"
         android:textAlignment="center"
         android:textColor="@color/white"
+        android:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -552,16 +553,17 @@
         app:layout_constraintTop_toBottomOf="@+id/switchTheme"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveBtnCurrencyData"
         android:layout_width="340dp"
         android:layout_height="46dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="14dp"
-        android:background="@drawable/btn_shape_choice_color"
+        android:background="@drawable/rectangle"
         android:text="@string/save"
         android:textAlignment="center"
         android:textColor="@color/white"
+        android:backgroundTint="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/deleteBtnCurrencyData"
         app:layout_constraintHorizontal_bias="0.0"

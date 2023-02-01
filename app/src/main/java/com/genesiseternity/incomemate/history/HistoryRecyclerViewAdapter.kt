@@ -17,11 +17,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class HistoryRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+    RecyclerView.Adapter<RecyclerView.ViewHolder>()
+{
     private var historyRecyclerModels: List<HistoryRecyclerModel> = emptyList()
-    //fun getHistoryRecyclerModel(): List<HistoryRecyclerModel> = historyRecyclerModels
-
     private val TYPE_VIEW_OPERATION: Int = 1
     private val TYPE_VIEW_DATE: Int = 2
 
@@ -147,7 +145,7 @@ class HistoryRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
 
             val calendar: Calendar = Calendar.getInstance()
             calendar.clear()
-            calendar.add(Calendar.DATE, Integer.parseInt(historyRecyclerModel.date))
+            calendar.add(Calendar.DATE, historyRecyclerModel.date.toInt())
 
             dateDay.text = dateFormatDay.format(calendar.time)
             dateDayOfWeek.text = dateFormatDayOfWeek.format(calendar.time)

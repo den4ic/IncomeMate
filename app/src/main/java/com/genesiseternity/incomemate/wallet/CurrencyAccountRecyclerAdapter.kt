@@ -1,12 +1,9 @@
 package com.genesiseternity.incomemate.wallet
 
-import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.databinding.RowItemBinding
 
-class CurrencyRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
-    RecyclerView.Adapter<CurrencyRecyclerViewAdapter.ViewHolder>() {
+class CurrencyAccountRecyclerAdapter(private val iRecyclerView: IRecyclerView) :
+    RecyclerView.Adapter<CurrencyAccountRecyclerAdapter.ViewHolder>() {
 
-    private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>
+    private var currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel>
 
     init {
-        currencyRecyclerModel = ArrayList()
+        currencyAccountRecyclerModel = ArrayList()
     }
 
-    fun getCurrencyRecyclerModel(): ArrayList<CurrencyRecyclerModel> = currencyRecyclerModel
+    fun getCurrencyRecyclerModel(): ArrayList<CurrencyAccountRecyclerModel> = currencyAccountRecyclerModel
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: RowItemBinding = RowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -34,7 +31,7 @@ class CurrencyRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val rCurrency: CurrencyRecyclerModel = currencyRecyclerModel[position]
+        val rCurrency: CurrencyAccountRecyclerModel = currencyAccountRecyclerModel[position]
 
         holder.idCurrency.text = rCurrency.idCurrency.toString()
         holder.titleCurrencyName.text = rCurrency.titleCurrencyName
@@ -79,36 +76,36 @@ class CurrencyRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
     }
 
     override fun getItemCount(): Int {
-        return currencyRecyclerModel.size
+        return currencyAccountRecyclerModel.size
     }
 
-    fun setDataCurrencyRecyclerModel(currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>)
+    fun setDataCurrencyRecyclerModel(currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel>)
     {
-        val diffCallBack = CurrencyRecyclerModelDiffUtil(this.currencyRecyclerModel, currencyRecyclerModel)
+        val diffCallBack = CurrencyRecyclerModelDiffUtil(this.currencyAccountRecyclerModel, currencyAccountRecyclerModel)
         val diffRes = DiffUtil.calculateDiff(diffCallBack)
-        this.currencyRecyclerModel = currencyRecyclerModel
+        this.currencyAccountRecyclerModel = currencyAccountRecyclerModel
         //notifyDataSetChanged()
         diffRes.dispatchUpdatesTo(this)
     }
 
-    fun addCurrencyRecyclerModelToPos(pos: Int, newCurrencyRecyclerModel: CurrencyRecyclerModel)
+    fun addCurrencyRecyclerModelToPos(pos: Int, newCurrencyAccountRecyclerModel: CurrencyAccountRecyclerModel)
     {
-        this.currencyRecyclerModel.add(pos, newCurrencyRecyclerModel)
+        this.currencyAccountRecyclerModel.add(pos, newCurrencyAccountRecyclerModel)
         notifyItemInserted(pos)
     }
 
-    fun deleteCurrencyRecyclerModel(currencyRecyclerModel: CurrencyRecyclerModel)
+    fun deleteCurrencyRecyclerModel(currencyAccountRecyclerModel: CurrencyAccountRecyclerModel)
     {
-        val indexCurrency: Int = findIndexById(currencyRecyclerModel.idCurrency)
+        val indexCurrency: Int = findIndexById(currencyAccountRecyclerModel.idCurrency)
         if (indexCurrency != -1)
         {
-            this.currencyRecyclerModel = ArrayList(this.currencyRecyclerModel)
-            this.currencyRecyclerModel.removeAt(indexCurrency)
+            this.currencyAccountRecyclerModel = ArrayList(this.currencyAccountRecyclerModel)
+            this.currencyAccountRecyclerModel.removeAt(indexCurrency)
             notifyItemRemoved(indexCurrency)
         }
     }
 
-    private fun findIndexById(idCurrency: Int): Int = currencyRecyclerModel.indexOfFirst { it.idCurrency == idCurrency }
+    private fun findIndexById(idCurrency: Int): Int = currencyAccountRecyclerModel.indexOfFirst { it.idCurrency == idCurrency }
 
     //class ViewHolder(itemView: View, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(itemView)
     class ViewHolder(binding: RowItemBinding, iRecyclerView: IRecyclerView) : RecyclerView.ViewHolder(binding.root)
@@ -155,8 +152,8 @@ class CurrencyRecyclerViewAdapter(private val iRecyclerView: IRecyclerView) :
     }
 
     class CurrencyRecyclerModelDiffUtil(
-        private val oldList: ArrayList<CurrencyRecyclerModel>,
-        private val newList: ArrayList<CurrencyRecyclerModel>) : DiffUtil.Callback()
+        private val oldList: ArrayList<CurrencyAccountRecyclerModel>,
+        private val newList: ArrayList<CurrencyAccountRecyclerModel>) : DiffUtil.Callback()
     {
         override fun getOldListSize(): Int = oldList.size
         override fun getNewListSize(): Int = newList.size

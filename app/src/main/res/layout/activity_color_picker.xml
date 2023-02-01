@@ -47,7 +47,7 @@
         android:layout_width="300dp"
         android:layout_height="51dp"
         android:layout_gravity="center"
-        android:backgroundTint="@color/purple"
+        android:backgroundTint="@color/blue"
         android:background="@drawable/rectangle"
         android:text="@string/choose_color"
         android:textColor="@color/white"

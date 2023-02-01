@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.genesiseternity.incomemate.R
 import com.google.android.material.card.MaterialCardView
 
@@ -17,24 +18,16 @@ class IconCategoryCardView(
     private var selectedColor: Int,
     private var selectedCardViewId: Int
 ) {
-
     private lateinit var imageCategoryType: TypedArray
-    //private MaterialCardView[] materialCardViewList
 
     init {
         initChoiceCardView(gridLayout)
-        //init()
     }
 
-
-    //private androidx.gridlayout.widget.GridLayout gridListCardView
     private lateinit var cardView: ArrayList<MaterialCardView>
     private lateinit var selectedCardView: View
 
-    fun getSelectedCardViewId(): Int
-    {
-        return selectedCardViewId
-    }
+    fun getSelectedCardViewId(): Int = selectedCardViewId
 
     fun setColorBackgroundCardView(selectedColor: Int)
     {
@@ -53,9 +46,7 @@ class IconCategoryCardView(
     private fun initChoiceCardView(gridListCardView: androidx.gridlayout.widget.GridLayout)
     {
         if (selectedColor == 0)
-            selectedColor = context.resources.getColor(R.color.green)
-
-        //gridListCardView = binding.gridViewCategoryIcon
+            selectedColor = ContextCompat.getColor(context, R.color.green)
 
         val total: Int = 9
         val column: Int = 4
@@ -74,9 +65,9 @@ class IconCategoryCardView(
 
             if (selectedCardViewId == i)
             {
-                cardView[i].setCardBackgroundColor(selectedColor)
                 cardView[i].isChecked = true
                 cardView[i].isClickable = false
+                cardView[i].setCardBackgroundColor(selectedColor)
                 cardView[i].toggle()
 
                 selectedCardView = cardView[i]
@@ -88,7 +79,7 @@ class IconCategoryCardView(
                 {
                     if (it == cardView[j])
                     {
-                        if (cardView[j].isClickable())
+                        if (cardView[j].isClickable)
                         {
                             selectedCardView = it
                             selectedCardViewId = j
@@ -96,13 +87,13 @@ class IconCategoryCardView(
                             cardView[j].setCardBackgroundColor(selectedColor)
                             cardView[j].toggle()
                         }
-                        cardView[j].setClickable(false)
+                        cardView[j].isClickable = false
                     }
                     else // if (!cardView[i].isClickable())
                     {
                         cardView[j].setCardBackgroundColor(Color.WHITE)
-                        cardView[j].setChecked(false)
-                        cardView[j].setClickable(true)
+                        cardView[j].isChecked = false
+                        cardView[j].isClickable = true
                     }
                 }
             }
@@ -111,10 +102,7 @@ class IconCategoryCardView(
 
     private fun fillGridLayoutCardView(gridLayout: androidx.gridlayout.widget.GridLayout)
     {
-        // R.array.image_category_type | R.array.image_currency_type
-        //imageCategoryType = getResources().obtainTypedArray(R.array.image_currency_type)
         imageCategoryType = context.resources.obtainTypedArray(R.array.image_category_type)
-        //materialCardViewList = new MaterialCardView[imageCategoryType.length()]
 
         val layoutParams: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -145,7 +133,6 @@ class IconCategoryCardView(
             materialCardView.cardElevation = convertDpToInt(6).toFloat()
             materialCardView.addView(imageView)
 
-            //materialCardViewList[i] = materialCardView
             gridLayout.addView(materialCardView)
         }
     }
@@ -154,18 +141,4 @@ class IconCategoryCardView(
     {
         return (value * context.resources.displayMetrics.density).toInt()
     }
-
-    //private int convertDpToInt(int value)
-    //{
-    //    return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics())
-    //}
-
-    //private void fillGridLayoutCardView(GridLayout gridLayout)
-    //{
-    //    for (int i = 0 i < materialCardViewList.length i++)
-    //    {
-    //        gridLayout.addView(materialCardViewList[i])
-    //    }
-    //}
-
 }

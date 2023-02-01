@@ -19,55 +19,47 @@ class WalletRepository (
     private val currencySettingsDao: CurrencySettingsDao,
     private val currencyConverter: dagger.Lazy<CurrencyConverter>
     ) {
-
-    private val currencyRecyclerModelLiveData: MutableLiveData<ArrayList<CurrencyRecyclerModel>> = MutableLiveData()
-    private val notifyItemAdapterLiveData: MutableLiveData<Int> = MutableLiveData()
-
-    private var currencyRecyclerModel: ArrayList<CurrencyRecyclerModel> = ArrayList()
+    private var currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel> = ArrayList()
 
     private lateinit var currencySymbol: Array<String>
     private var defaultCurrencyType: Int = 0
     private lateinit var listCurrency: Array<String>
-    private lateinit var amountCurrency: Array<String>
-
-    private val currencyCbtModelLiveData: MutableLiveData<String> = MutableLiveData()
-
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private val textAddAccount: String = "Добавить счет"
     private val textDefaultCurrency: String = "Валюта по умолчанию - "
     private val textNewAccount: String = "Новый счет №"
 
-    fun getCurrencyRecyclerModelLiveData(): MutableLiveData<ArrayList<CurrencyRecyclerModel>> = currencyRecyclerModelLiveData
-    fun getNotifyItemAdapterLiveData(): MutableLiveData<Int> = notifyItemAdapterLiveData
-    fun getCurrencyCbtModelLiveData(): MutableLiveData<String> = currencyCbtModelLiveData
-    fun getCompositeDisposable(): CompositeDisposable = compositeDisposable
+    private val _currencyAccountRecyclerModelLiveData: MutableLiveData<ArrayList<CurrencyAccountRecyclerModel>> = MutableLiveData()
+    private val _notifyItemAdapterLiveData: MutableLiveData<Int> = MutableLiveData()
+    private val _currencyCbtModelLiveData: MutableLiveData<String> = MutableLiveData()
+    private val _compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    fun initRecyclerCurrency(
-        currencySymbol: Array<String>,
-        listCurrency: Array<String>,
-        amountCurrency: Array<String>
-    ) {
+    val currencyAccountRecyclerModelLiveData: MutableLiveData<ArrayList<CurrencyAccountRecyclerModel>> get() = _currencyAccountRecyclerModelLiveData
+    val notifyItemAdapterLiveData: MutableLiveData<Int> get() = _notifyItemAdapterLiveData
+    val currencyCbtModelLiveData: MutableLiveData<String> get() = _currencyCbtModelLiveData
+    val compositeDisposable: CompositeDisposable get() = _compositeDisposable
+
+    fun initRecyclerCurrency(currencySymbol: Array<String>, listCurrency: Array<String>)
+    {
         this.currencySymbol = currencySymbol
         this.listCurrency = listCurrency
-        this.amountCurrency = amountCurrency
 
-        compositeDisposable.add(currencySettingsDao.getDefaultCurrencyByIdPage()
+        _compositeDisposable.add(currencySettingsDao.getDefaultCurrencyByIdPage()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe( { defaultCurrencyType = it }, {} ))
 
-        //compositeDisposable.add(currencyDetailsDao.getAll()
-        compositeDisposable.add(currencyDetailsDao.getAllSortedCurrencyData()
+        //_compositeDisposable.add(currencyDetailsDao.getAll()
+        _compositeDisposable.add(currencyDetailsDao.getAllSortedCurrencyData()
             .filter {
                 if (it.isNotEmpty()) {
                     return@filter true
                 } else {
-                    compositeDisposable.add(currencyDetailsDao.insertCurrencyData(*createCurrencyRecycler().toTypedArray())
+                    _compositeDisposable.add(currencyDetailsDao.insertCurrencyData(*createCurrencyRecycler().toTypedArray())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            currencyRecyclerModelLiveData.value = currencyRecyclerModel
+                            _currencyAccountRecyclerModelLiveData.value = currencyAccountRecyclerModel
                         })
                     return@filter false
                 }
@@ -80,7 +72,7 @@ class WalletRepository (
                 {
                     currencyDetailsEntities ->
 
-                    currencyRecyclerModel.add(CurrencyRecyclerModel(
+                    currencyAccountRecyclerModel.add(CurrencyAccountRecyclerModel(
                         currencyDetailsEntities.id,
                         currencyDetailsEntities.titleCurrency,
                         currencyDetailsEntities.amountCurrency,
@@ -96,47 +88,39 @@ class WalletRepository (
                 {
                     currencyConverter.get().defaultCurrencyType = defaultCurrencyType
                     currencyConverter.get().currencySymbol = currencySymbol
-                    currencyConverter.get().updateAllCurrencyAmount(::setTotalCashAccount, currencyRecyclerModel)
+                    currencyConverter.get().updateAllCurrencyAmount(::setTotalCashAccount, currencyAccountRecyclerModel)
 
                     createCurrencyAddingRecycler(currencySymbol)
-                    currencyRecyclerModelLiveData.value = currencyRecyclerModel
+                    _currencyAccountRecyclerModelLiveData.value = currencyAccountRecyclerModel
                 }
             ))
-
-        //data is loading
-        /*
-        Completable.fromAction(() -> currencyDetailsDao.get().insertCurrencyData(currencyDetailsEntities))
-            //.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new CompletableObserver()
-         */
     }
 
-    fun updateTotalCashAccount(currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>): String = currencyConverter.get().updateTotalCashAccount(currencyRecyclerModel)
+    fun updateTotalCashAccount(currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel>): String = currencyConverter.get().updateTotalCashAccount(currencyAccountRecyclerModel)
 
-    private fun setTotalCashAccount(res: String) { currencyCbtModelLiveData.value = res }
+    private fun setTotalCashAccount(res: String) { _currencyCbtModelLiveData.value = res }
 
     private fun createCurrencyRecycler(): ArrayList<CurrencyDetailsEntity>
     {
         for (i in listCurrency.indices)
         {
-            currencyRecyclerModel.add(CurrencyRecyclerModel(
+            currencyAccountRecyclerModel.add(CurrencyAccountRecyclerModel(
                 i,
                 listCurrency[i],
-                amountCurrency[i],
+                "0",
                 defaultCurrencyType,
                 0,
                 0))
         }
 
-        val currencyDetailsEntities: ArrayList<CurrencyDetailsEntity> = ArrayList(currencyRecyclerModel.size)
+        val currencyDetailsEntities: ArrayList<CurrencyDetailsEntity> = ArrayList(currencyAccountRecyclerModel.size)
 
-        for (i in currencyRecyclerModel.indices)
+        for (i in currencyAccountRecyclerModel.indices)
         {
             val currencyDetailsEntity: CurrencyDetailsEntity = CurrencyDetailsEntity(
-                currencyRecyclerModel[i].idCurrency,
-                currencyRecyclerModel[i].titleCurrencyName,
-                currencyRecyclerModel[i].amountCurrency + " " + currencySymbol[defaultCurrencyType],
+                currencyAccountRecyclerModel[i].idCurrency,
+                currencyAccountRecyclerModel[i].titleCurrencyName,
+                currencyAccountRecyclerModel[i].amountCurrency + " " + currencySymbol[defaultCurrencyType],
                 0,0,0
             )
             currencyDetailsEntities.add(currencyDetailsEntity)
@@ -147,7 +131,7 @@ class WalletRepository (
 
     private fun createCurrencyAddingRecycler(currencySymbol: Array<String>)
     {
-        currencyRecyclerModel.add(CurrencyRecyclerModel(
+        currencyAccountRecyclerModel.add(CurrencyAccountRecyclerModel(
             -1,
             textAddAccount,
             textDefaultCurrency + currencySymbol[defaultCurrencyType],
@@ -158,7 +142,7 @@ class WalletRepository (
 
     fun onItemClick(pos: Int)
     {
-        val insertIndex: Int = currencyRecyclerModel.size-1
+        val insertIndex: Int = currencyAccountRecyclerModel.size-1
 
         if (pos != insertIndex)
         {
@@ -169,9 +153,9 @@ class WalletRepository (
             var checkRemovedCurrencyRecycler: Boolean = false
             var missingIndex: Int = 0
 
-            for (i in currencyRecyclerModel.indices)
+            for (i in currencyAccountRecyclerModel.indices)
             {
-                if (i < currencyRecyclerModel[i].idCurrency)
+                if (i < currencyAccountRecyclerModel[i].idCurrency)
                 {
                     checkRemovedCurrencyRecycler = true
                     missingIndex = i
@@ -181,7 +165,7 @@ class WalletRepository (
 
             if (checkRemovedCurrencyRecycler)
             {
-                currencyRecyclerModel.add(missingIndex, CurrencyRecyclerModel(
+                currencyAccountRecyclerModel.add(missingIndex, CurrencyAccountRecyclerModel(
                     missingIndex,
                     textNewAccount + missingIndex,
                     "0",
@@ -194,7 +178,7 @@ class WalletRepository (
             else
             {
                 var numAccount: Int = insertIndex
-                currencyRecyclerModel.add(insertIndex, CurrencyRecyclerModel(
+                currencyAccountRecyclerModel.add(insertIndex, CurrencyAccountRecyclerModel(
                     pos,
                     textNewAccount + ++numAccount,
                     "0",
@@ -202,7 +186,7 @@ class WalletRepository (
                     0,
                     0))
 
-                notifyItemAdapterLiveData.value = insertIndex
+                _notifyItemAdapterLiveData.value = insertIndex
                 goToSelectedActivity(insertIndex)
             }
         }
@@ -210,16 +194,16 @@ class WalletRepository (
 
     private fun goToSelectedActivity(idPos: Int)
     {
-        val intent: Intent = Intent(application, CurrencyActivity::class.java)
+        val intent: Intent = Intent(application, CurrencyAccountActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-        intent.putExtra("idCurrency", currencyRecyclerModel[idPos].idCurrency)
-        intent.putExtra("editTextCurrency", currencyRecyclerModel[idPos].titleCurrencyName)
-        intent.putExtra("editTextAmountCurrency", currencyRecyclerModel[idPos].amountCurrency)
-        intent.putExtra("imageViewCurrencyOne", currencyRecyclerModel[idPos].imgIconCurrency)
-        intent.putExtra("defaultCurrencyType", currencyRecyclerModel[idPos].currencyType)
+        intent.putExtra("idCurrency", currencyAccountRecyclerModel[idPos].idCurrency)
+        intent.putExtra("editTextCurrency", currencyAccountRecyclerModel[idPos].titleCurrencyName)
+        intent.putExtra("editTextAmountCurrency", currencyAccountRecyclerModel[idPos].amountCurrency)
+        intent.putExtra("imageViewCurrencyOne", currencyAccountRecyclerModel[idPos].imgIconCurrency)
+        intent.putExtra("defaultCurrencyType", currencyAccountRecyclerModel[idPos].currencyType)
 
-        currencyRecyclerModel[idPos].currencyType = defaultCurrencyType
+        currencyAccountRecyclerModel[idPos].currencyType = defaultCurrencyType
         application.startActivity(intent)
     }
 }

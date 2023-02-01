@@ -9,7 +9,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding4.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 class RegisterActivity : DaggerAppCompatActivity() {
@@ -27,10 +26,7 @@ class RegisterActivity : DaggerAppCompatActivity() {
     private lateinit var password: EditText
     private lateinit var confirmPassword: EditText
 
-    private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var disposableEmail: Disposable
-    private lateinit var disposablePassword: Disposable
-    private lateinit var disposableConfirmPassword: Disposable
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +40,7 @@ class RegisterActivity : DaggerAppCompatActivity() {
         passwordLayout = binding.editTextPasswordRegisterLayout
         confirmPasswordLayout = binding.editTextPasswordRegisterConfirmLayout
 
-        registerViewModel = ViewModelProvider(this, providerFactory).get(RegisterViewModel::class.java)
-
-        compositeDisposable = CompositeDisposable()
+        registerViewModel = ViewModelProvider(this, providerFactory)[RegisterViewModel::class.java]
 
         performInputValidation()
         initRegister()
@@ -54,23 +48,21 @@ class RegisterActivity : DaggerAppCompatActivity() {
 
     private fun performInputValidation()
     {
-        registerViewModel.getErrorEmailLiveData().observe(this) { error -> emailLayout.error = error }
-        registerViewModel.getErrorPasswordLiveData().observe(this) { error -> passwordLayout.error = error }
-        registerViewModel.getErrorConfirmPasswordLiveData().observe(this) { error -> confirmPasswordLayout.error = error }
+        registerViewModel.errorEmailLiveData.observe(this) { error -> emailLayout.error = error }
+        registerViewModel.errorPasswordLiveData.observe(this) { error -> passwordLayout.error = error }
+        registerViewModel.errorConfirmPasswordLiveData.observe(this) { error -> confirmPasswordLayout.error = error }
 
-        disposableEmail = email.textChanges()
+        compositeDisposable.add(email.textChanges()
             .map { it.toString() }
-            .subscribe { registerViewModel.setEmail(it) }
+            .subscribe { registerViewModel.setEmail(it) })
 
-        disposablePassword = password.textChanges()
+        compositeDisposable.add(password.textChanges()
             .map { it.toString() }
-            .subscribe { registerViewModel.setPassword(it) }
+            .subscribe { registerViewModel.setPassword(it) })
 
-        disposableConfirmPassword = confirmPassword.textChanges()
+        compositeDisposable.add(confirmPassword.textChanges()
             .map { it.toString() }
-            .subscribe { registerViewModel.setConfirmPassword(it) }
-
-        compositeDisposable.addAll(disposableEmail, disposablePassword, disposableConfirmPassword)
+            .subscribe { registerViewModel.setConfirmPassword(it) })
     }
 
     private fun initRegister()

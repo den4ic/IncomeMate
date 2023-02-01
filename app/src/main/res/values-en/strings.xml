@@ -5,31 +5,35 @@
     <string name="list_monetary_account">All accounts</string>
 
     <!-- list_currency -->
-    <string name="card">Карта</string>
-    <string name="cash">Наличные</string>
+    <string name="card">Card</string>
+    <string name="cash">Cash</string>
 
     <!-- list_currencies -->
-    <string name="russian_ruble">Российский рубль</string>
-    <string name="dollar">Доллар США</string>
-    <string name="euro">Евро</string>
-    <string name="dirham">Дирхам ОАЭ</string>
-    <string name="cny">Китайский юань</string>
-    <string name="australian_dollar">Австралийский доллар</string>
-    <string name="british_pound">Британский фунт</string>
-    <string name="canadian_dollar">Канадский доллар</string>
-    <string name="swiss_frank">Швейцарский франк</string>
-    <string name="japanese_yen">Японская йена</string>
+    <string name="russian_ruble">Russian ruble</string>
+    <string name="dollar">U.S. dollar</string>
+    <string name="euro">Euro</string>
+    <string name="dirham">Dirham AED</string>
+    <string name="cny">CNY</string>
+    <string name="australian_dollar">Australian dollar</string>
+    <string name="british_pound">British pound</string>
+    <string name="canadian_dollar">Canadian dollar</string>
+    <string name="swiss_frank">Swiss frank</string>
+    <string name="japanese_yen">Japanese yen</string>
 
-    <!-- list_category_pie_chart -->
-    <string name="health">Здоровье</string>
-    <string name="cafe">Кафе</string>
-    <string name="leisure">Досуг</string>
-    <string name="transport">Транспорт</string>
-    <string name="products">Продукты</string>
-    <string name="gym">Зал</string>
-    <string name="family">Семья</string>
-    <string name="taxi">Такси</string>
-    <string name="purchases">Покупки</string>
+    <!-- list_category_expenses_pie_chart -->
+    <string name="health">Health</string>
+    <string name="cafe">Cafe</string>
+    <string name="leisure">Leisure</string>
+    <string name="transport">Transport</string>
+    <string name="products">Products</string>
+    <string name="gym">Gym</string>
+    <string name="family">Family</string>
+    <string name="taxi">Taxi</string>
+    <string name="purchases">Purchases</string>
+
+    <!-- list_category_income_pie_chart -->
+    <string name="salary">Salary</string>
+    <string name="other">Other</string>
 
     <!-- Settings <string name=""></string> -->
     <string name="premium_version">Premium version</string>

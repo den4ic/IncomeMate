@@ -2,20 +2,15 @@ package com.genesiseternity.incomemate.pieChart
 
 import android.app.Application
 import android.content.Intent
-import android.content.res.TypedArray
 import android.graphics.Color
 import android.util.Log
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.genesiseternity.incomemate.CurrencyConverter
 import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.retrofit.CurrencyBodyModel
 import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
-import com.genesiseternity.incomemate.room.CurrencyDetailsDao
 import com.genesiseternity.incomemate.room.CurrencySettingsDao
 import com.genesiseternity.incomemate.room.PieChartCategoriesDao
 import com.genesiseternity.incomemate.room.PieChartCategoriesTitleDao
@@ -29,38 +24,44 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+enum class StateCategoryType
+{
+    EXPENSES, INCOME
+}
+
 class PieChartFragmentViewModel @Inject constructor(
     private var application: Application,
     private var currencyFormat: dagger.Lazy<CurrencyFormat>,
     private var pieChartCategoriesDao: dagger.Lazy<PieChartCategoriesDao>,
     private var pieChartCategoriesTitleDao: dagger.Lazy<PieChartCategoriesTitleDao>,
     currencySettingsDao: dagger.Lazy<CurrencySettingsDao>,
-
-    private val currencyCbrRepository: CurrencyCbrRepository,
-) : ViewModel(), IPieChartCategoryView {
-
-    private val TAG: String = "PieChartVM"
-
+    private val currencyCbrRepository: CurrencyCbrRepository
+) : ViewModel(), IPieChartCategoryView
+{
+    var idPage: Int = 0
     private var defaultCurrencyType: Int = 0
-
-    private val listCategory: Array<String>
-    private val imageCategoryType: TypedArray
+    private val listCategoryExpenses: Array<String>
     private var colorGreen: Int = 0
 
     private val textAdd = "Добавить"
     private val textNewCategory = "Новая категория №"
 
     private val pieChartCategoryModelArrayList: ArrayList<PieChartCategoryModel> = ArrayList()
-    var idPage: Int = 0
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private val pieChartCategoryModelListLiveData: MutableLiveData<ArrayList<PieChartCategoryModel>> = MutableLiveData()
     private val fillPieChartLiveData: MutableLiveData<PieChartModel> = MutableLiveData<PieChartModel>() // .apply { PieChartModel() }
 
-    init {
-        listCategory = application.resources.getStringArray(R.array.list_category_pie_chart)
-        imageCategoryType = application.resources.obtainTypedArray(R.array.image_category_type)
+    private lateinit var cbrCurrencyList: ArrayList<CurrencyBodyModel>
+    private val currencySymbol: Array<String> by lazy { application.resources.getStringArray(R.array.list_currency_symbol) }
+
+    private val _notifyItemAdapterLiveData: MutableLiveData<Int> = MutableLiveData()
+    val notifyItemAdapterLiveData: MutableLiveData<Int> get() = _notifyItemAdapterLiveData
+
+    init
+    {
+        listCategoryExpenses = application.resources.getStringArray(R.array.list_category_expenses_pie_chart)
         colorGreen = ContextCompat.getColor(application, R.color.green)
 
         compositeDisposable.add(currencySettingsDao.get().getDefaultCurrencyByIdPage()
@@ -68,17 +69,30 @@ class PieChartFragmentViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe( { defaultCurrencyType = it }, {} ))
 
+        firstInitPieChart()
+    }
 
-        val pieChartCategoriesTitleEntities: ArrayList<PieChartCategoriesTitleEntity> = ArrayList(listCategory.size)
+    override fun onCleared()
+    {
+        compositeDisposable.dispose()
+        super.onCleared()
+    }
+
+    fun getFillPieChartLiveData(): MutableLiveData<PieChartModel> = fillPieChartLiveData
+    fun getPieChartCategoryModelListLiveData(): MutableLiveData<ArrayList<PieChartCategoryModel>> = pieChartCategoryModelListLiveData
+
+    private fun firstInitPieChart()
+    {
+        val pieChartCategoriesTitleEntities: ArrayList<PieChartCategoriesTitleEntity> = ArrayList(listCategoryExpenses.size)
 
         val rnd: Random = Random()
-        val colorRandList: IntArray = IntArray(size = listCategory.size) { Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)) }
+        val colorRandList: IntArray = IntArray(size = listCategoryExpenses.size) { Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)) }
 
-        for (i in listCategory.indices)
+        for (i in listCategoryExpenses.indices)
         {
             val pieChartCategoriesTitleEntity: PieChartCategoriesTitleEntity = PieChartCategoriesTitleEntity(
                 i,
-                listCategory[i],
+                listCategoryExpenses[i],
                 defaultCurrencyType,
                 i,
                 colorRandList[i])
@@ -90,28 +104,12 @@ class PieChartFragmentViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                {
-                    initPieChart()
-                },
-                {
-                    initPieChart()
-                }
+                { initPieChart() }, { initPieChart() }
             ))
-
     }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
-    }
-
-
-    fun getFillPieChartLiveData(): MutableLiveData<PieChartModel> = fillPieChartLiveData
-    fun getPieChartCategoryModelListLiveData(): MutableLiveData<ArrayList<PieChartCategoryModel>> = pieChartCategoryModelListLiveData
 
     private fun initPieChart()
     {
-
         //pieChartCategoriesDao.get().getAllSortedPieChartCategoriesData()
         val disposablePieChartCategories: Disposable = pieChartCategoriesDao.get().getPieChartCategoryByIdPage(idPage)
             .subscribeOn(Schedulers.io())
@@ -123,6 +121,14 @@ class PieChartFragmentViewModel @Inject constructor(
                     pieChartCategoriesEntities ->
 
                     val disposablePieChartCategoriesTitle: Disposable = pieChartCategoriesTitleDao.get().getAllPieChartCategoriesTitleData()
+                        //.filter {
+                        //    if (it.isNotEmpty()) {
+                        //        return@filter true
+                        //    } else {
+                        //        firstInitPieChart()
+                        //        return@filter false
+                        //    }
+                        //}
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         //.flatMapIterable { it }
@@ -136,25 +142,27 @@ class PieChartFragmentViewModel @Inject constructor(
                                 {
                                     for (i in pieChartCategoriesTitleEntities.indices)
                                     {
-                                        pieChartCategoryModelArrayList.add(PieChartCategoryModel(
-                                            pieChartCategoriesTitleEntities[i].id,
-                                            pieChartCategoriesTitleEntities[i].titleCategory,
-                                            "0",
-                                            imageCategoryType.getResourceId(pieChartCategoriesTitleEntities[i].idCardViewIcon, 0),
-                                            pieChartCategoriesTitleEntities[i].idColorIcon,
-                                            pieChartCategoriesTitleEntities[i].currencyType))
-
                                         for (j in pieChartCategoriesEntities.indices)
                                         {
-                                            if (i == pieChartCategoriesEntities[j].id)
+                                            if (pieChartCategoriesTitleEntities[i].id == pieChartCategoriesEntities[j].id)
                                             {
-                                                pieChartCategoryModelArrayList.removeAt(pieChartCategoriesEntities[j].id)
-
                                                 pieChartCategoryModelArrayList.add(PieChartCategoryModel(
                                                     pieChartCategoriesEntities[j].id,
                                                     pieChartCategoriesTitleEntities[i].titleCategory,
                                                     pieChartCategoriesEntities[j].amountCategory,
-                                                    imageCategoryType.getResourceId(pieChartCategoriesTitleEntities[i].idCardViewIcon, 0),
+                                                    pieChartCategoriesTitleEntities[i].idCardViewIcon,
+                                                    pieChartCategoriesTitleEntities[i].idColorIcon,
+                                                    pieChartCategoriesTitleEntities[i].currencyType))
+                                                break
+                                            }
+                                            else if (pieChartCategoriesEntities[j].id != pieChartCategoriesTitleEntities[i].id &&
+                                                j == pieChartCategoriesEntities.size-1)
+                                            {
+                                                pieChartCategoryModelArrayList.add(PieChartCategoryModel(
+                                                    pieChartCategoriesTitleEntities[i].id,
+                                                    pieChartCategoriesTitleEntities[i].titleCategory,
+                                                    "0",
+                                                    pieChartCategoriesTitleEntities[i].idCardViewIcon,
                                                     pieChartCategoriesTitleEntities[i].idColorIcon,
                                                     pieChartCategoriesTitleEntities[i].currencyType))
                                             }
@@ -169,54 +177,51 @@ class PieChartFragmentViewModel @Inject constructor(
                                             pieChartCategoriesTitleEntities[i].id,
                                             pieChartCategoriesTitleEntities[i].titleCategory,
                                             "0",
-                                            imageCategoryType.getResourceId(pieChartCategoriesTitleEntities[i].idCardViewIcon, 0),
+                                            pieChartCategoriesTitleEntities[i].idCardViewIcon,
                                             pieChartCategoriesTitleEntities[i].idColorIcon,
                                             pieChartCategoriesTitleEntities[i].currencyType))
                                     }
                                 }
-                                pieChartCategoryModelArrayList.add(PieChartCategoryModel(-1, textAdd, "", R.drawable.ic_baseline_add_circle_24, 0, defaultCurrencyType))
-
+                                pieChartCategoryModelArrayList.add(PieChartCategoryModel(-1, textAdd, "", 0, 0, defaultCurrencyType))
                                 pieChartCategoryModelListLiveData.value = pieChartCategoryModelArrayList
 
-                                //fillPieChart()
                                 updateAllAmountCurrency()
-                                ////adapter.notifyDataSetChanged()
                             },
                             {
-
                             }
                         )
-
                     compositeDisposable.add(disposablePieChartCategoriesTitle)
                 },
                 {
-
                 }
             )
 
         compositeDisposable.add(disposablePieChartCategories)
     }
 
-    private fun testFillPieChart()
+    private fun saveNewCategory(index: Int)
     {
-        val colorRandList: IntArray = IntArray(listCategory.size)
+        var numAccount: Int = index
+        val titleCategoryName: String = textNewCategory + ++numAccount
 
-        for (i in listCategory.indices)
-        {
-            val rnd: Random = Random()
-            colorRandList[i] = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+        val pieChartCategoriesTitleEntity: PieChartCategoriesTitleEntity = PieChartCategoriesTitleEntity(
+            index,
+            titleCategoryName,
+            defaultCurrencyType,
+            0,
+            colorGreen)
 
-            pieChartCategoryModelArrayList.add(PieChartCategoryModel(
-                i,
-                listCategory[i],
-                rnd.nextInt(4096).toString(),
-                imageCategoryType.getResourceId(i, 0),
-                colorRandList[i],
-                defaultCurrencyType))
-
-        }
-        pieChartCategoryModelArrayList.add(PieChartCategoryModel(-1, textAdd, "", R.drawable.ic_baseline_add_circle_24, 0, defaultCurrencyType))
-        fillPieChart()
+        compositeDisposable.add(pieChartCategoriesTitleDao.get().insertPieChartCategoriesTitleData(pieChartCategoriesTitleEntity)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    goToSelectedActivity(index)
+                },
+                {
+                    goToSelectedActivity(index)
+                }
+            ))
     }
 
     override fun onItemClick(pos: Int)
@@ -229,37 +234,56 @@ class PieChartFragmentViewModel @Inject constructor(
         }
         else
         {
-            var numAccount: Int = insertIndex
-            val titleCategoryName: String = textNewCategory + ++numAccount
-            pieChartCategoryModelArrayList.add(insertIndex, PieChartCategoryModel(pos, titleCategoryName, "0", imageCategoryType.getResourceId(0, 0), 0, defaultCurrencyType))
-            // adapter.notifyItemInserted(insertIndex)
-            ////adapter.notifyDataSetChanged()
+            var checkRemovedCurrencyRecycler: Boolean = false
+            var missingIndex: Int = 0
 
-            val pieChartCategoriesTitleEntity: PieChartCategoriesTitleEntity = PieChartCategoriesTitleEntity(
-                insertIndex,
-                titleCategoryName,
-                defaultCurrencyType,
-                0,
-                colorGreen)
+            for (i in pieChartCategoryModelArrayList.indices)
+            {
+                if (i < pieChartCategoryModelArrayList[i].idCategory)
+                {
+                    checkRemovedCurrencyRecycler = true
+                    missingIndex = i
+                    break
+                }
+            }
 
-            compositeDisposable.add(pieChartCategoriesTitleDao.get().insertPieChartCategoriesTitleData(pieChartCategoriesTitleEntity)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        goToSelectedActivity(insertIndex)
-                    },
-                    {
-                        goToSelectedActivity(insertIndex)
-                    }
-                ))
+            if (checkRemovedCurrencyRecycler)
+            {
+                pieChartCategoryModelArrayList.add(missingIndex, PieChartCategoryModel(
+                    missingIndex,
+                    textNewCategory + missingIndex,
+                    "0",
+                    0,
+                    0,
+                    defaultCurrencyType)
+                )
+
+                saveNewCategory(missingIndex)
+            }
+            else
+            {
+                var numAccount: Int = insertIndex
+                pieChartCategoryModelArrayList.add(insertIndex, PieChartCategoryModel(
+                    pos,
+                    textNewCategory + ++numAccount,
+                    "0",
+                    0,
+                    0,
+                    defaultCurrencyType))
+
+                saveNewCategory(insertIndex)
+            }
         }
     }
 
+
     private fun goToSelectedActivity(idPos: Int)
     {
+        _notifyItemAdapterLiveData.value = idPos
+
         val intent: Intent = Intent(application.baseContext, CategoryActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra("idCategory", pieChartCategoryModelArrayList[idPos].idCategory)
         intent.putExtra("idPage", idPage)
         intent.putExtra("titleCategoryName", pieChartCategoryModelArrayList[idPos].titleCategoryName)
@@ -269,46 +293,6 @@ class PieChartFragmentViewModel @Inject constructor(
         intent.putExtra("defaultCurrencyType", pieChartCategoryModelArrayList[idPos].currencyType)
         application.startActivity(intent)
     }
-
-    /*
-    private fun fillPieChart()
-    {
-        val sizeCategoryArrayList: Int = pieChartCategoryModelArrayList.size-1
-        val data: FloatArray = FloatArray(sizeCategoryArrayList)
-        val color: IntArray = IntArray(size = sizeCategoryArrayList)
-
-        var amountCurrency: Float = 0f
-
-        for (i in 0 until sizeCategoryArrayList)
-        {
-            //String tempAmountCurrency = recyclerCurrencies.get(i).getAmountCurrency().replaceAll("[^0-9]", "")
-            val tempAmountCurrency: String = pieChartCategoryModelArrayList[i].amountCategory.replaceToRegex()
-            val tempSelectedColorId: Int = pieChartCategoryModelArrayList[i].selectedColorId
-
-            if (tempAmountCurrency.isNotEmpty())
-            {
-                data[i] = (if (tempAmountCurrency.startsWith("-")) "0" else tempAmountCurrency).toFloat()
-                amountCurrency += tempAmountCurrency.toFloat()
-            }
-
-            color[i] = tempSelectedColorId
-            //color = intArrayOf(tempSelectedColorId)
-        }
-
-        fillPieChartLiveData.value = PieChartModel(
-            if (amountCurrency != 0f) currencyFormat.get().setStringTextFormatted(amountCurrency.toString()) else "0",
-            data,
-            color
-        )
-    }
-
-     */
-
-
-
-
-    private lateinit var cbrCurrencyList: ArrayList<CurrencyBodyModel>
-    private val currencySymbol: Array<String> by lazy { application.resources.getStringArray(R.array.list_currency_symbol) }
 
     private fun fillPieChart(): PieChartModel
     {

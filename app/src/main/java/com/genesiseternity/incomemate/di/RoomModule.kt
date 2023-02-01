@@ -9,8 +9,8 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class RoomModule(val application: Application) {
-
+class RoomModule(val application: Application)
+{
     @Singleton
     @Provides
     fun provideRoomDatabase() : AppDatabase
@@ -21,7 +21,7 @@ class RoomModule(val application: Application) {
             .build()
     }
 
-
+    // TODO("move to separate module with application")
     @Singleton
     @Provides
     fun provideLanguageConfig() : LanguageConfig = LanguageConfig(application.resources)
@@ -48,14 +48,6 @@ class RoomModule(val application: Application) {
     {
         return appDatabase.getCurrencyDetailsDao()
     }
-
-    @Singleton
-    @Provides
-    fun currencyDetailsRepository(currencyDetailsDao: CurrencyDetailsDao): CurrencyDetailsRepository
-    {
-        return CurrencyDetailsSource(currencyDetailsDao)
-    }
-
 
     @Singleton
     @Provides

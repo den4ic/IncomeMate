@@ -2,7 +2,6 @@ package com.genesiseternity.incomemate.room
 
 import androidx.room.*
 import com.genesiseternity.incomemate.room.entities.CurrencySettingsEntity
-import com.genesiseternity.incomemate.room.entities.PieChartCategoriesEntity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
@@ -22,10 +21,6 @@ interface CurrencySettingsDao {
     fun deleteAllCurrencySettingsData(): Completable
 
 
-    //@Query("INSERT INTO CurrencySettings (default_currency_type) VALUES (null,:defaultCurrency,null,null)")
-    //fun insertDefaultCurrency(defaultCurrency: Int): Completable
-
-
     @Query("UPDATE " + CurrencySettingsEntity.TABLE_NAME + " SET default_currency_type = :defaultCurrency WHERE id = :id")
     fun updateDefaultCurrency(id: Int, defaultCurrency: Int): Completable
 
@@ -39,7 +34,7 @@ interface CurrencySettingsDao {
     fun updateEnabledPasscode(id: Int, isEnabledPasscode: Boolean): Completable
 
     @Query("UPDATE " + CurrencySettingsEntity.TABLE_NAME + " SET is_enabled_night_mode = :isEnabledNightMode WHERE id = :id")
-    fun updateEnabledNightMode(id: Int, isEnabledNightMode: Boolean): Completable
+    fun updateEnabledNightMode(isEnabledNightMode: Boolean, id: Int = 0): Completable
 
     @Query("UPDATE " + CurrencySettingsEntity.TABLE_NAME + " SET default_id_currency_account = :defaultIdCurrencyAccount WHERE id = :id")
     fun updateDefaultIdCurrencyAccount(defaultIdCurrencyAccount: Int, id: Int = 0): Completable

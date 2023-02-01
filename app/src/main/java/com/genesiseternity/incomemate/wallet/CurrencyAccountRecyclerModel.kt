@@ -1,6 +1,6 @@
 package com.genesiseternity.incomemate.wallet
 
-data class CurrencyRecyclerModel(
+data class CurrencyAccountRecyclerModel(
     var idCurrency: Int,
     var titleCurrencyName: String,
     var amountCurrency: String,

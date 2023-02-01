@@ -7,7 +7,7 @@ import com.genesiseternity.incomemate.auth.RegisterActivity
 import com.genesiseternity.incomemate.di.scope.ActivityScope
 import com.genesiseternity.incomemate.pieChart.CategoryActivity
 import com.genesiseternity.incomemate.settings.Passcode
-import com.genesiseternity.incomemate.wallet.CurrencyActivity
+import com.genesiseternity.incomemate.wallet.CurrencyAccountActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -33,7 +33,7 @@ abstract class ActivityBuildersModule {
 
     @ActivityScope
     @ContributesAndroidInjector
-    abstract fun contributeCurrencyActivity(): CurrencyActivity
+    abstract fun contributeCurrencyActivity(): CurrencyAccountActivity
     //endregion
 
     @ActivityScope

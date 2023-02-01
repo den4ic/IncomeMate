@@ -7,21 +7,21 @@ import javax.inject.Inject
 
 class RegisterViewModel @Inject public constructor(application: Application) : ViewModel() {
 
-    private var authRepository: AuthRepository
-    private var errorEmailLiveData: MutableLiveData<String>
-    private var errorPasswordLiveData: MutableLiveData<String>
-    private var errorConfirmPasswordLiveData: MutableLiveData<String>
+    private val authRepository: AuthRepository
+    private val _errorEmailLiveData: MutableLiveData<String>
+    private val _errorPasswordLiveData: MutableLiveData<String>
+    private val _errorConfirmPasswordLiveData: MutableLiveData<String>
 
     init {
         authRepository = AuthRepository(application)
-        errorEmailLiveData = authRepository.getErrorEmailLiveData()
-        errorPasswordLiveData = authRepository.getErrorPasswordLiveData()
-        errorConfirmPasswordLiveData = authRepository.getErrorConfirmPasswordLiveData()
+        _errorEmailLiveData = authRepository.errorEmailLiveData
+        _errorPasswordLiveData = authRepository.errorPasswordLiveData
+        _errorConfirmPasswordLiveData = authRepository.errorConfirmPasswordLiveData
     }
 
-    fun getErrorEmailLiveData(): MutableLiveData<String> { return errorEmailLiveData }
-    fun getErrorPasswordLiveData(): MutableLiveData<String> { return errorPasswordLiveData }
-    fun getErrorConfirmPasswordLiveData(): MutableLiveData<String> { return errorConfirmPasswordLiveData }
+    val errorEmailLiveData: MutableLiveData<String> get() = _errorEmailLiveData
+    val errorPasswordLiveData: MutableLiveData<String> get() = _errorPasswordLiveData
+    val errorConfirmPasswordLiveData: MutableLiveData<String> get() = _errorConfirmPasswordLiveData
 
     fun setEmail(email: String) { authRepository.setEmail(email) }
     fun setPassword(password: String) { authRepository.setPassword(password) }

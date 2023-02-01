@@ -3,7 +3,6 @@ package com.genesiseternity.incomemate.settings
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.AccelerateInterpolator
@@ -11,7 +10,6 @@ import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.ViewModel
 import com.genesiseternity.incomemate.MainActivity
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.auth.LoginActivity
@@ -25,7 +23,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 enum class StateActionPasscode
 {
@@ -50,22 +47,22 @@ class Passcode : DaggerAppCompatActivity()
     private lateinit var binding: ActivityPasscodeBinding
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    var stateActionId: Int = StateActionPasscode.DEFAULT.ordinal
+    private var stateActionId: Int = StateActionPasscode.DEFAULT.ordinal
 
-    val MAX_NUMBER_ATTEMMPTS_LOGIN: Int = 5
-    val MAX_VALUE_PASSCODE: Int = 4
-    val DEFAULT_DELAY_INPUT: Long = 2
-    var inputPasscode: String = ""
+    private val MAX_NUMBER_ATTEMMPTS_LOGIN: Int = 5
+    private val MAX_VALUE_PASSCODE: Int = 4
+    private val DEFAULT_DELAY_INPUT: Long = 2
+    private var inputPasscode: String = ""
 
-    var counterAttemptLogin: Int = 0
-    var disabledInput: Boolean = false
+    private var counterAttemptLogin: Int = 0
+    private var disabledInput: Boolean = false
 
-    val diodeList by lazy { binding.diodeList }
+    private val diodeList by lazy { binding.diodeList }
 
-    val redDiode by lazy { AppCompatResources.getColorStateList(this, R.color.red) }
-    val greenDiode by lazy { AppCompatResources.getColorStateList(this, R.color.green) }
-    val blueDiode by lazy { AppCompatResources.getColorStateList(this, R.color.blue) }
-    val disableDiode by lazy { AppCompatResources.getColorStateList(this, R.color.lightGray) }
+    private val redDiode by lazy { AppCompatResources.getColorStateList(this, R.color.red) }
+    private val greenDiode by lazy { AppCompatResources.getColorStateList(this, R.color.green) }
+    private val blueDiode by lazy { AppCompatResources.getColorStateList(this, R.color.blue) }
+    private val disableDiode by lazy { AppCompatResources.getColorStateList(this, R.color.lightGray) }
 
     private val textEnterPasscode: String = "Введите код-пароль"
     private val textConfirmNewPasscode: String = "Подтвердите свой новый код-пароль"
@@ -78,68 +75,17 @@ class Passcode : DaggerAppCompatActivity()
         super.onCreate(savedInstanceState)
         binding = ActivityPasscodeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         stateActionId = intent.getIntExtra("stateActionId", StateActionPasscode.DEFAULT.ordinal)
-
-
-        // ENABLE Введите код-пароль - Подтвердите свой новый код-пароль
-        // CHANGE Введите старый код-пароль - Введите новый код-пароль - Подтвердите свой новый код-пароль / Код-пароли не совпали. Повторите попытку
-        // DISABLE Введите код-пароль isPasscode
-        // DEFAULT Введите код-пароль isNotPasscode
 
         pageSequenceNumber = PageSequenceNumber.FIRST.ordinal
 
         when (StateActionPasscode.values()[stateActionId])
         {
-            StateActionPasscode.ENABLE -> {
-                binding.titleTextPasscode.text = textEnterPasscode
-                //isEnabledPasscode = true
-            }
-            StateActionPasscode.CHANGE -> {
-                binding.titleTextPasscode.text = textEnterOldPasscode
-                //isEnabledPasscode = true
-            }
-            StateActionPasscode.DISABLE -> {
-                binding.titleTextPasscode.text = textEnterPasscode
-            }
-            StateActionPasscode.DEFAULT -> {
-                binding.titleTextPasscode.text = textEnterPasscode
-                //isEnabledPasscode = true
-            }
+            StateActionPasscode.ENABLE -> binding.titleTextPasscode.text = textEnterPasscode
+            StateActionPasscode.CHANGE -> binding.titleTextPasscode.text = textEnterOldPasscode
+            StateActionPasscode.DISABLE -> binding.titleTextPasscode.text = textEnterPasscode
+            StateActionPasscode.DEFAULT -> binding.titleTextPasscode.text = textEnterPasscode
         }
-
-        /*
-        compositeDisposable.add(currencySettingsDao.get().updateEnabledPasscode(0, isEnabledPasscode)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-
-                },
-                {
-                    it.printStackTrace()
-                }
-            ))
-
-        compositeDisposable.add(currencySettingsDao.get().getEnabledPasscodeByIdPage()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    isEnabledPasscode = it
-                },
-                {
-                    it.printStackTrace()
-                }
-            ))
-
-        if (!isEnabledPasscode)
-        {
-            initNewPage(MainActivity::class.java)
-            return
-        }
-
-         */
 
         compositeDisposable.add(currencySettingsDao.get().getPasscodeByIdPage()
             .subscribeOn(Schedulers.io())

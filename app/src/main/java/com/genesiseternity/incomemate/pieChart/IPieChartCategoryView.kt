@@ -1,5 +1,6 @@
 package com.genesiseternity.incomemate.pieChart
 
-interface IPieChartCategoryView {
+interface IPieChartCategoryView
+{
     fun onItemClick(pos: Int)
 }

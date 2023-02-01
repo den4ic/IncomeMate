@@ -1,16 +1,12 @@
 package com.genesiseternity.incomemate.colorPicker
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +35,10 @@ class ColorPickerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener
         choiceColorPicker()
         selectedColor()
     }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { colorWheelPicker.setBrightness(progress) }
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
     private fun choiceColorPicker()
     {
@@ -89,8 +89,4 @@ class ColorPickerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener
         }
 
     }
-
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { colorWheelPicker.setBrightness(progress) }
-    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 }

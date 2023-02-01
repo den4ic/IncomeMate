@@ -3,14 +3,12 @@ package com.genesiseternity.incomemate
 import android.util.Log
 import com.genesiseternity.incomemate.retrofit.CurrencyBodyModel
 import com.genesiseternity.incomemate.retrofit.CurrencyCbrRepository
-import com.genesiseternity.incomemate.utils.isNumeric
 import com.genesiseternity.incomemate.utils.replaceToRegex
-import com.genesiseternity.incomemate.wallet.CurrencyRecyclerModel
+import com.genesiseternity.incomemate.wallet.CurrencyAccountRecyclerModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
-
 
 class CurrencyConverter @Inject constructor(
     private val currencyCbrRepository: CurrencyCbrRepository,
@@ -23,31 +21,22 @@ class CurrencyConverter @Inject constructor(
     private lateinit var cbrCurrencyList: ArrayList<CurrencyBodyModel>
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    fun updateTotalCashAccount(currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>): String
+    fun updateTotalCashAccount(currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel>): String
     {
         var amountCurrency: Float = 0.0f
 
-        //if (currencyRecyclerModel[currencyRecyclerModel.lastIndex].idCurrency != -1)
-        //{
-        //    return amountCurrency.toString()
-        //}
-
-        for (i in 0 until currencyRecyclerModel.size) /////////// -1 fro wallet
+        for (i in 0 until currencyAccountRecyclerModel.size)
         {
             //"[^0-9]"
-            val tempAmountCurrency: String = currencyRecyclerModel[i].amountCurrency.replaceToRegex()
+            val tempAmountCurrency: String = currencyAccountRecyclerModel[i].amountCurrency.replaceToRegex()
 
-
-            //if (tempAmountCurrency.isNotEmpty() && currencyRecyclerModel[i].idCurrency != -1)
-            //if (tempAmountCurrency.isNotEmpty() && String.isNumeric(tempAmountCurrency))
-            //if (tempAmountCurrency.isNotEmpty())
-            if (tempAmountCurrency.isNotEmpty() && currencyRecyclerModel[i].idCurrency != -1)
+            if (tempAmountCurrency.isNotEmpty() && currencyAccountRecyclerModel[i].idCurrency != -1)
             {
-                if (currencyRecyclerModel[i].currencyType != 0)
+                if (currencyAccountRecyclerModel[i].currencyType != 0)
                 {
                     for (j in cbrCurrencyList.indices)
                     {
-                        if (currencyRecyclerModel[i].currencyType == j)
+                        if (currencyAccountRecyclerModel[i].currencyType == j)
                         {
                             //amountCurrency += tempAmountCurrency.toFloat() * cbrCurrencyList[j]
                             amountCurrency += tempAmountCurrency.toFloat() * cbrCurrencyList[j].value
@@ -66,7 +55,7 @@ class CurrencyConverter @Inject constructor(
         return if (amountCurrency != 0.0f) currencyFormat.setStringTextFormatted(amountCurrency.toString()) + " " +  currencySymbol[defaultCurrencyType] else "0"
     }
 
-    fun updateAllCurrencyAmount(action: (res: String) -> Unit, currencyRecyclerModel: ArrayList<CurrencyRecyclerModel>) : CompositeDisposable
+    fun updateAllCurrencyAmount(action: (res: String) -> Unit, currencyAccountRecyclerModel: ArrayList<CurrencyAccountRecyclerModel>) : CompositeDisposable
     {
         compositeDisposable.add(currencyCbrRepository.getLastCurrencyDate()
             .subscribeOn(Schedulers.io())
@@ -86,11 +75,15 @@ class CurrencyConverter @Inject constructor(
                         it.currencyList.jpy
                     )
 
-                    action(updateTotalCashAccount(currencyRecyclerModel))
+                    action(updateTotalCashAccount(currencyAccountRecyclerModel))
                 },
                 {
                     it.printStackTrace()
-                    Log.d("WalletViewModel", "Невозможно получить данные")
+                    // Log.d("WalletViewModel", "Невозможно получить данные")
+
+                    // TODO("implement the preservation of current currency values during the
+                    //  initial connection to the network or set static data
+                    //  with periodic checks when accessing the network")
 
                     cbrCurrencyList = arrayListOf(
                         CurrencyBodyModel("", 1.0f, 1),
@@ -105,7 +98,7 @@ class CurrencyConverter @Inject constructor(
                         CurrencyBodyModel("", 1.0f, 1)
                     )
 
-                    action(updateTotalCashAccount(currencyRecyclerModel))
+                    action(updateTotalCashAccount(currencyAccountRecyclerModel))
                 }
             ))
 

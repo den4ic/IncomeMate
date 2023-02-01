@@ -1,18 +1,17 @@
 package com.genesiseternity.incomemate.wallet
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.res.ResourcesCompat
 import com.genesiseternity.incomemate.CurrencyFormat
 import com.genesiseternity.incomemate.MainActivity
 import com.genesiseternity.incomemate.R
@@ -32,7 +31,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CurrencyActivity : DaggerAppCompatActivity() {
+class CurrencyAccountActivity : DaggerAppCompatActivity()
+{
     @Inject lateinit var currencyFormat: dagger.Lazy<CurrencyFormat>
     @Inject lateinit var currencyDetailsDao: CurrencyDetailsDao
     @Inject lateinit var currencyColorDao: CurrencyColorDao
@@ -45,18 +45,11 @@ class CurrencyActivity : DaggerAppCompatActivity() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    //private String[] listCurrencies = { "Российский рубль", "Доллар США", "Евро", "Дирхам ОАЭ", "Китайский юань",
-    //        "Австралийский доллар", "Британский фунт", "Канадский доллар", "Швейцарский франк", "Японская йена" }
-
-    //private String[] currencySymbol = {"₽", "$", "€", "AED", "¥", "$", "£", "$", "₣", "¥"}
-    //currencySymbol = view.getResources().getStringArray(R.array.list_currency_symbol)
-
     private lateinit var listCurrencies: Array<String>
     private lateinit var btnCurrencyType: Button
     private var selectedCurrency: Int = 0
 
     private var selectedCardViewId: Int = 0
-    //private int imageCategoryIntent, selectedColorIdIntent
 
     private lateinit var gridListCardView: androidx.gridlayout.widget.GridLayout
     private lateinit var cardView: ArrayList<MaterialCardView>
@@ -73,11 +66,13 @@ class CurrencyActivity : DaggerAppCompatActivity() {
     private val textChoiceCurrBuilderNegative: String = "Отменить"
 
     private val textDeleteDataCurrBuilderTitle: String = "Удалить счёт - "
+    private val textDeleteDataCurrBuilderTitleSuffix: String = " ?"
     private val textDeleteDataCurrBuilderMessage: String = "Все операции связанные с данным счётом будут безвозвратно удалены.\n\nБаланс других счетов не поменяется."
     private val textDeleteDataCurrBuilderPositive: String = "Удалить"
     private val textDeleteDataCurrBuilderNegative: String = "Отменить"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
         binding = ActivityCurrencyBinding.inflate(layoutInflater)
@@ -87,7 +82,6 @@ class CurrencyActivity : DaggerAppCompatActivity() {
         val editTextCurrencyIntent: String? = intent.getStringExtra("editTextCurrency")
         val editTextAmountCurrencyIntent: String? = intent.getStringExtra("editTextAmountCurrency")
         val defaultCurrencyTypeIntent: Int = intent.getIntExtra("defaultCurrencyType", 0)
-        // val imageViewCurrencyOneIntent: Int  = intent.getIntExtra("imageViewCurrencyOne", 0)
 
         idCurrency = binding.idCurrency
         editTextCurrency = binding.editTextCurrency
@@ -95,15 +89,10 @@ class CurrencyActivity : DaggerAppCompatActivity() {
         editTextAmountCurrency.setInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED)
 
         currencySymbol = resources.getStringArray(R.array.list_currency_symbol)
-        //imageViewCurrencyOne = binding.imageViewCurrencyOne
 
         idCurrency.text = idCurrencyIntent.toString()
         editTextCurrency.setText(editTextCurrencyIntent)
-        //editTextAmountCurrency.setText(editTextAmountCurrencyIntent) // + " " + currencySymbol[0])
-
         editTextAmountCurrency.setText(editTextAmountCurrencyIntent + " " + currencySymbol[defaultCurrencyTypeIntent])
-        //imageViewCurrencyOne.setImageResource(imageViewCurrencyOneIntent)
-
         listCurrencies = resources.getStringArray(R.array.list_currencies)
 
         btnCurrencyType = binding.btnCurrency
@@ -112,22 +101,14 @@ class CurrencyActivity : DaggerAppCompatActivity() {
         selectedCurrency = defaultCurrencyTypeIntent
         btnCurrencyType.text = listCurrencies[selectedCurrency]
 
-        //CalculatorKeyboard keyboard = (CalculatorKeyboard) binding.calculatorKeyboard
-        //editTextAmountCurrency.setRawInputType(InputType.TYPE_CLASS_TEXT)
-        //editTextAmountCurrency.setTextIsSelectable(true)
-        //InputConnection ic = editTextAmountCurrency.onCreateInputConnection(new EditorInfo())
-        //keyboard.setInputConnection(ic)
-        //Keyboard customKeyboard = new Keyboard(this, R.layout.fragment_settings)
-
-
         initInsertDB()
         saveDataCurrency()
         deleteDataCurrency()
-
     }
 
     override fun onDestroy() {
-        currencyFormat.get().disposableCurrencyEditText()
+        compositeDisposable.dispose()
+        currencyFormat.get().dispose()
         super.onDestroy()
     }
 
@@ -180,16 +161,15 @@ class CurrencyActivity : DaggerAppCompatActivity() {
 
     private fun initInsertDB()
     {
-        val idCurrencyTXT: String = idCurrency.text.toString()
-        val editTextCurrencyTXT: String = editTextCurrency.text.toString()
-        val editTextAmountCurrencyTXT: String = editTextAmountCurrency.text.toString()
+        val idCurrency: String = idCurrency.text.toString()
+        val editTextCurrencyText: String = editTextCurrency.text.toString()
+        val editTextAmountCurrencyText: String = editTextAmountCurrency.text.toString()
+        val id: Int = idCurrency.toInt()
 
-        val id: Int = idCurrencyTXT.toInt()
-
-        currencyDetailsDao.insertCurrencyData(initCurrencyEntity(
-            idCurrencyTXT,
-            editTextCurrencyTXT,
-            editTextAmountCurrencyTXT,
+        compositeDisposable.add(currencyDetailsDao.insertCurrencyData(initCurrencyEntity(
+            idCurrency,
+            editTextCurrencyText,
+            editTextAmountCurrencyText,
             selectedCurrency,
             selectedCardViewId,
             selectedColor
@@ -205,7 +185,7 @@ class CurrencyActivity : DaggerAppCompatActivity() {
                 setColorIconCardView()
             },
             {
-                val disposableGetSortedData: Disposable = currencyDetailsDao.getAllSortedCurrencyData()
+                compositeDisposable.add(currencyDetailsDao.getAllSortedCurrencyData()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
@@ -229,11 +209,9 @@ class CurrencyActivity : DaggerAppCompatActivity() {
                         }
                     },
                     {
-                    })
-
-                compositeDisposable.add(disposableGetSortedData)
+                    }))
             }
-        )
+        ))
     }
 
     private fun initChoiceFirstCardView()
@@ -302,7 +280,7 @@ class CurrencyActivity : DaggerAppCompatActivity() {
 
     private fun getColorList(id: Int, img: Drawable)
     {
-        val disposableGetColorData: Disposable = currencyColorDao.getAllCurrencyColorData()
+        compositeDisposable.add(currencyColorDao.getAllCurrencyColorData()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe(
@@ -314,18 +292,16 @@ class CurrencyActivity : DaggerAppCompatActivity() {
                         selectedBtnColorId = id
                     }
 
-                    btnsColorChange[it[id].id].setBackgroundTintList(ColorStateList.valueOf(it[id].currentColor))
+                    btnsColorChange[it[id].id].backgroundTintList = ColorStateList.valueOf(it[id].currentColor)
                 },
                 {
                 }
-            )
-
-        compositeDisposable.add(disposableGetColorData)
+            ))
     }
 
     private fun setColorIconCardView()
     {
-        val img: Drawable = resources.getDrawable(R.drawable.ic_baseline_check_24)
+        val img: Drawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_check_24, null)!!
         val listColorChange: RadioGroup = binding.listColorChange
         countColorBtn = listColorChange.childCount-1
         btnsColorChange = ArrayList(countColorBtn)
@@ -334,12 +310,10 @@ class CurrencyActivity : DaggerAppCompatActivity() {
         {
             btnsColorChange.add(listColorChange.getChildAt(i) as RadioButton)
 
-            currencyColorDao.insertCurrencyColorData(
-                CurrencyColorEntity(
+            compositeDisposable.add(currencyColorDao.insertCurrencyColorData(CurrencyColorEntity(
                 i,
                 btnsColorChange[i].backgroundTintList!!.defaultColor
-                )
-            )
+            ))
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe(
@@ -349,19 +323,12 @@ class CurrencyActivity : DaggerAppCompatActivity() {
                 {
                     getColorList(i, img)
                 }
-            )
+            ))
 
             btnsColorChange[i].setOnCheckedChangeListener { compoundButton, isChecked ->
-                if (isChecked)
-                {
-                    //compoundButton.setCompoundDrawables(null, null, img, null)
-                    compoundButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, img, null)
-                }
-                else
-                {
-                    //compoundButton.setCompoundDrawables(null, null, null, null)
-                    compoundButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
-                }
+
+                //compoundButton.setCompoundDrawables(null, null, img, null)
+                compoundButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, if (isChecked) img else null, null)
 
                 if (btnsColorChange[i].isChecked)
                 {
@@ -372,8 +339,6 @@ class CurrencyActivity : DaggerAppCompatActivity() {
             btnsColorChange[i].setOnClickListener()
             {
                 selectedColor = it.backgroundTintList?.defaultColor!!
-                //selectedColor = ((ColorDrawable)view.getBackground()).getColor()
-
                 setColorBackgroundCardView()
             }
         }
@@ -391,9 +356,8 @@ class CurrencyActivity : DaggerAppCompatActivity() {
         }
     }
 
-    val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
+    val resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    {
         if (it.resultCode == 80) {
             val intent: Intent? = it.data
             if (intent != null) {
@@ -410,18 +374,13 @@ class CurrencyActivity : DaggerAppCompatActivity() {
     {
         for (i in 0..countColorBtn)
         {
-            currencyColorDao.updateCurrencyColorData(CurrencyColorEntity(
+            compositeDisposable.add(currencyColorDao.updateCurrencyColorData(CurrencyColorEntity(
                 i,
                 btnsColorChange[i].backgroundTintList!!.defaultColor
             ))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                },
-                {
-                }
-            )
+            .subscribe( {}, {} ))
         }
     }
 
@@ -461,63 +420,42 @@ class CurrencyActivity : DaggerAppCompatActivity() {
 
     private fun deleteDataCurrency()
     {
-        val idCurrencyTXT: String = idCurrency.text.toString()
-        val editTextCurrencyTXT: String = editTextCurrency.text.toString()
-        //Button deleteBtnCurrencyData = binding.deleteBtnCurrencyData
+        val idCurrency: Int = idCurrency.text.toString().toInt()
+        val editTextCurrency: String = editTextCurrency.text.toString()
 
-        val disposableDeleteBtn: Disposable = binding.deleteBtnCurrencyData.clicks()
+        compositeDisposable.add(binding.deleteBtnCurrencyData.clicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder.setTitle(textDeleteDataCurrBuilderTitle + editTextCurrencyTXT + " ?")
+                builder.setTitle(textDeleteDataCurrBuilderTitle + editTextCurrency + textDeleteDataCurrBuilderTitleSuffix)
                 builder.setCancelable(true)
                 builder.setMessage(textDeleteDataCurrBuilderMessage)
 
                 builder.setPositiveButton(textDeleteDataCurrBuilderPositive) { dialogInterface, i ->
 
-                currencyDetailsDao.deleteCurrentCurrencyData(Integer.parseInt(idCurrencyTXT))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                        {
-                            switchActivity()
-                            dialogInterface.dismiss()
-                        },
-                        {
-                        }
-                    )
+                    compositeDisposable.add(currencyDetailsDao.deleteCurrentCurrencyData(idCurrency)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            {
+                                switchActivity()
+                                dialogInterface.dismiss()
+                            },
+                            {
+                            }
+                        ))
                 }
 
                 builder.setNegativeButton(textDeleteDataCurrBuilderNegative) { dialogInterface, i ->
                     dialogInterface.cancel()
                 }
                 builder.show()
-            }
-
-        compositeDisposable.add(disposableDeleteBtn)
+            })
     }
-
-    //@Override
-    //public void onBackPressed()
-    //{
-    //    if (getSupportFragmentManager().getBackStackEntryCount() > 0 ){
-    //        getFragmentManager().popBackStack()
-    //    } else {
-    //        super.onBackPressed()
-    //    }
-    //}
 
     private fun switchActivity()
     {
-        //Intent intent = new Intent(this, MainActivity.class)
-        //MainActivity.LastFragmentActivity = new WalletFragment()
-        //startActivity(intent)
-
-        /////MainActivity.switchFragmentActivity(this, new WalletFragment())
-        //this.onBackPressed()
-        //finish()
-
         val intent: Intent = Intent(this, MainActivity::class.java)
         intent.putExtra("idNavigationPage", 0)
         startActivity(intent)

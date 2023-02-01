@@ -91,14 +91,16 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerBtn"
         android:layout_marginTop="20dp"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:text="@string/register"
         android:textAlignment="center"
+        android:textColor="@color/white"
         android:background="@drawable/rectangle"
+        android:backgroundTint="@color/blue"
         app:layout_constraintEnd_toEndOf="@+id/editTextPasswordRegisterConfirmLayout"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/editTextPasswordRegisterConfirmLayout"

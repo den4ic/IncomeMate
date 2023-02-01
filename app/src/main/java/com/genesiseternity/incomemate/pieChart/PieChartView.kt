@@ -13,6 +13,21 @@ import android.view.animation.Transformation
 
 class PieChartView : View
 {
+    private val paintArc: Paint = Paint()
+    private val dividerPaint: Paint = Paint()
+    private val paintInsideCircle: Paint = Paint()
+
+    private val CIRCLE_THICKNESS: Int = 30
+    private var centerX: Int = 0
+    private var centerY: Int = 0
+    private var data: FloatArray = floatArrayOf(1.0f)
+    private var color: IntArray = intArrayOf(Color.parseColor("#b2bec3"))
+    private val defaultColor: Int = Color.parseColor("#b2bec3")
+
+    private var lazyInitDraw: Boolean = false
+
+    private lateinit var angles: FloatArray
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -28,19 +43,11 @@ class PieChartView : View
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val paintArc: Paint = Paint()
-    private val dividerPaint: Paint = Paint()
-    private val paintInsideCircle: Paint = Paint()
-
-    private lateinit var angles: FloatArray
-    fun getAngles(): FloatArray {
-        return angles
-    }
-    fun setAngles(angles: FloatArray) {
+    fun getAngles(): FloatArray = angles
+    fun setAngles(angles: FloatArray)
+    {
         this.angles = angles
     }
-
-    private var lazyInitDraw: Boolean = false
 
     fun setDataPieChart(data: FloatArray, color: IntArray)
     {
@@ -91,13 +98,6 @@ class PieChartView : View
         this.startAnimation(animation)
     }
 
-    private val CIRCLE_THICKNESS: Int = 30
-    private var centerX: Int = 0
-    private var centerY: Int = 0
-    private var data: FloatArray = floatArrayOf(1.0f)
-    private var color: IntArray = intArrayOf(Color.parseColor("#b2bec3"))
-    private val defaultColor: Int = Color.parseColor("#b2bec3")
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -106,7 +106,7 @@ class PieChartView : View
 
         dividerPaint.color = Color.WHITE
         dividerPaint.style = Paint.Style.STROKE
-        //dividerPaint.setTextSize(50)
+        //dividerPaint.textSize(50)
         dividerPaint.strokeWidth = 14f
 
         if (lazyInitDraw) {

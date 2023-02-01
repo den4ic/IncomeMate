@@ -10,39 +10,41 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import com.genesiseternity.incomemate.R
 import com.genesiseternity.incomemate.databinding.RowSpinnerItemBinding
-import com.genesiseternity.incomemate.wallet.CurrencyRecyclerModel
+import com.genesiseternity.incomemate.wallet.CurrencyAccountRecyclerModel
 
-class SpinnerAdapter(context: Context, resource: Int, objects: MutableList<CurrencyRecyclerModel>) :
-    ArrayAdapter<CurrencyRecyclerModel>(context, resource, objects) {
-
+class SpinnerAdapter(context: Context, resource: Int, objects: MutableList<CurrencyAccountRecyclerModel>) :
+    ArrayAdapter<CurrencyAccountRecyclerModel>(context, resource, objects)
+{
     private val layoutInflater: LayoutInflater
 
-    init {
+    init
+    {
         layoutInflater = LayoutInflater.from(context)
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
+    {
         return fillView(position, convertView, parent)
     }
 
-    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View
+    {
         return fillView(position, convertView, parent)
     }
 
-    private fun fillView(position: Int, convertView: View?, parent: ViewGroup) : View {
+    private fun fillView(position: Int, convertView: View?, parent: ViewGroup) : View
+    {
         val binding: RowSpinnerItemBinding = (convertView?.tag as? RowSpinnerItemBinding) ?: RowSpinnerItemBinding.inflate(layoutInflater, parent, false)
-        //binding.root.tag = binding
 
-        val currencyRecyclerModel: CurrencyRecyclerModel? = getItem(position)
+        val currencyAccountRecyclerModel: CurrencyAccountRecyclerModel? = getItem(position)
         val imgIconCurrencySpinner: ImageView = binding.imgIconCurrencySpinner
         val imageCurrencyType: TypedArray = binding.root.resources.obtainTypedArray(R.array.image_currency_type)
 
-        binding.titleCurrencyNameSpinner.text = currencyRecyclerModel!!.titleCurrencyName
-        binding.amountCurrencySpinner.text = currencyRecyclerModel.amountCurrency
+        binding.titleCurrencyNameSpinner.text = currencyAccountRecyclerModel!!.titleCurrencyName
+        binding.amountCurrencySpinner.text = currencyAccountRecyclerModel.amountCurrency
         imgIconCurrencySpinner.setColorFilter(Color.parseColor("#2d3436"))
-        imgIconCurrencySpinner.setImageDrawable(imageCurrencyType.getDrawable(currencyRecyclerModel.imgIconCurrency))
-        //imgIconCurrencySpinner.setImageResource(imageCurrencyType.getResourceId(currencyRecyclerModel.imgIconCurrency, 0))
-        imgIconCurrencySpinner.setBackgroundColor(currencyRecyclerModel.selectedColorId)
+        imgIconCurrencySpinner.setImageDrawable(imageCurrencyType.getDrawable(currencyAccountRecyclerModel.imgIconCurrency))
+        imgIconCurrencySpinner.setBackgroundColor(currencyAccountRecyclerModel.selectedColorId)
 
         return binding.root
     }

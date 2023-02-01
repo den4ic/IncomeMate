@@ -60,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.045" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/selectLoginBtn"
         android:layout_width="154dp"
         android:layout_height="wrap_content"
@@ -69,6 +69,9 @@
         android:layout_alignEnd="@+id/textView"
         android:layout_marginTop="116dp"
         android:text="@string/begin"
+        android:textColor="@color/white"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="@color/blue"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />

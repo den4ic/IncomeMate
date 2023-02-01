@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.EditText
 import com.genesiseternity.incomemate.utils.replaceToRegex
 import com.jakewharton.rxbinding4.widget.textChanges
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -23,9 +24,9 @@ class CurrencyFormat
     private val MAX_LENGTH: Int = 20
     private val MAX_DECIMAL: Int = 2
 
-    private lateinit var disposableTextChanges: Disposable
+    private var compositeDisposable: Disposable = CompositeDisposable()
 
-    fun getSuffix(): String { return suffix }
+    fun getSuffix(): String = suffix
     fun setSuffix(selectedCurrency: Int) { this.suffix = " " + currencySymbol[selectedCurrency] }
     fun getCurrencySymbol(): Array<String> { return currencySymbol }
 
@@ -36,7 +37,7 @@ class CurrencyFormat
 
         suffix = " " + currencySymbol[selectedCurrency]
 
-        disposableTextChanges = editTextCurrency.textChanges()
+        compositeDisposable = editTextCurrency.textChanges()
             .map { it.toString() }
             .subscribe {
                 afterTextChanged(it)
@@ -44,11 +45,11 @@ class CurrencyFormat
             }
     }
 
-    fun disposableCurrencyEditText()
+    fun dispose()
     {
-        if (!disposableTextChanges.isDisposed)
+        if (!compositeDisposable.isDisposed)
         {
-            disposableTextChanges.dispose()
+            compositeDisposable.dispose()
         }
     }
 
@@ -99,10 +100,8 @@ class CurrencyFormat
 
         val formattedString: String = if (cleanString.contains(".")) formatDecimal(cleanString) else formatInteger(cleanString)
 
-        //editTextCurrency.removeTextChangedListener(this) // Remove listener
         editTextCurrency.setText(formattedString)
         handleSelection()
-        //editTextCurrency.addTextChangedListener(this) // Add listener
     }
 
     private fun setDecimalFormatSymbols(decimalFormat: DecimalFormat, decimalSeparator: Char)
@@ -217,6 +216,5 @@ class CurrencyFormat
             return@OnKeyListener false
 
         })
-
     }
 }

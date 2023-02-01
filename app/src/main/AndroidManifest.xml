@@ -37,7 +37,7 @@
             android:name=".colorPicker.ColorPickerActivity"
             android:exported="false" />
         <activity
-            android:name=".wallet.CurrencyActivity"
+            android:name=".wallet.CurrencyAccountActivity"
             android:exported="false" />
         <activity
             android:name=".InfoActivity"
